@@ -1,0 +1,21 @@
+#main {
+  background-color: #f0f0f0;
+}
+
+#header {
+  background: url(/static/images/banner.jpg) center no-repeat;
+  background-size: cover;
+  padding-top: 460px;
+}
+
+#contact {
+  margin-bottom: 2em;
+}
+
+labels .icon {
+  height: 1.4em;
+  width: 1.4em;
+  display: inline-block;
+  background-size: auto 100%;
+  margin-right: 0.3em;
+}

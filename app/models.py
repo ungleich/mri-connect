@@ -31,7 +31,6 @@ class Person(db.Model):
     personal_url = db.Column(db.Unicode(255))
 
     # research_scale = db.Column(db.Enum(*RESEARCH_SCALES, name="researchscale"))
-
     # expertise_field = db.Column(db.Unicode(255))
     # expertise_geo = db.Column(db.Unicode(255))
     resources = db.relationship('Resource', secondary=resources_people,
@@ -43,9 +42,11 @@ class Person(db.Model):
         return self.fullname()
     def dict(self):
         return {
-            'fullname': self.fullname,
+            'fullname': self.fullname(),
             'organisation': self.organisation,
-            'personal_url': self.url,
+            'position': self.position,
+            'country': self.country,
+            'personal_url': self.personal_url,
             'biography': self.biography,
         }
 

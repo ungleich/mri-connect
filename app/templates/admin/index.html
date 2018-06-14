@@ -1,0 +1,28 @@
+{% extends 'admin/master.html' %}
+{% block body %}
+{{ super() }}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-10 col-sm-offset-1">
+            <h1>GMBA Connect Administration</h1>
+            <p class="lead">
+            A search engine and members directory for the Global Mountain Biodiversity Assessment (GMBA) research network.
+            </p>
+
+            <form action="/refresh" method="post">
+                <button type="submit" class="btn btn-primary">
+                    Refresh
+                    <i class="glyphicon glyphicon-chevron-right"></i>
+                </button>
+
+
+                <a class="btn" href='/api/people'>
+                    People API
+                </a><a class="btn" href='/api/resources'>
+                    Resources API
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock body %}

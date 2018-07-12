@@ -4,6 +4,8 @@
   padding-top: 3em;
 }
 
+html { overflow: hidden; }
+
 #header {
   background: url(/static/images/banner.jpg) center no-repeat;
   background-size: cover;

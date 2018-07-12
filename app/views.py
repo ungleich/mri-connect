@@ -5,12 +5,13 @@ from app import app, db, admin
 from .models import *
 from flask_admin.contrib.sqla import ModelView, filters
 from flask import (
-    url_for,
-    request,
+    url_for, redirect,
+    request, flash,
     render_template,
     send_from_directory
 )
 
+from os.path import isfile
 import csv
 
 # Add views
@@ -35,16 +36,20 @@ def resources_list():
     return [r.dict() for r in Resource.query.limit(10).all()]
 
 # Static paths
-@app.route('/site/<path:path>')
-def send_site(path):
+@app.route('/client/<path:path>')
+def send_client(path):
     return send_from_directory('../client', path)
 @app.route('/static/<path:path>')
 def send_static(path):
-    return send_from_directory('../client/static', path)
+    return send_from_directory('../static', path)
 
 # Data update
 @app.route('/refresh', methods=["POST"])
 def refresh_data():
+    if not isfile('data/people_details.csv'):
+        flash("Add people_details, resources CSV files to the data folder first.")
+        return redirect(url_for('admin.index'))
+
     count_p = 0
     with open('data/people_details.csv', 'rt') as csvfile:
         datareader = csv.DictReader(csvfile)
@@ -79,4 +84,5 @@ def refresh_data():
             count_r = count_r + 1
         db.session.commit()
 
-    return "%d people and %d resources updated<p><a href='/admin'>Continue</a>" % (count_p, count_r)
+    flash("%d people and %d resources updated<p><a href='/admin'>Continue</a>" % (count_p, count_r))
+    return redirect(url_for('admin.index'))

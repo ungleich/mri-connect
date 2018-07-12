@@ -12,9 +12,9 @@ To install and start the backend using Pipenv (Pip and Virtualenv should work fi
 
     $ pipenv --three
     $ pipenv install
-    $ python api.py
+    $ python run.py
 
-The interface will now be available at http://localhost:5000
+The interface will now be available at http://localhost:5000/admin
 
 ## License
 

@@ -5,14 +5,50 @@
 		$container = $('#content')
 		$.getJSON('/api/people', function(data) {
 			$.each(data, function() {
+				var fulltext = this.fullname + ' ' + this.organisation;
+				fulltext = fulltext.toLowerCase();
 				$container.append(
 					'<div class="3u 6u(narrower) 12u$(mobilep)">' +
 					'<h4>' + this.fullname + '</h4>' +
-					'<p>' + this.organisation + '</p>' +
-					'<a href="' + this.personal + '">Homepage</a></div>'
+					'<span>' + this.organisation + '</span> &nbsp;' +
+					'<a class="c-button c-button--brand u-small" href="' + this.personal + '">Details</a>' +
+					'<hide>' + fulltext + '</hide>' +
+					'</div>'
 				);
 			});
+		}); //- getJSON
+
+		var delay = (function(){
+		  var timer = 0;
+		  return function(callback, ms){
+		    clearTimeout (timer);
+		    timer = setTimeout(callback, ms);
+		  };
+		})();
+		$('input[name="query"]').on('input', function() {
+				var q = $(this).val().toLowerCase();
+				if (q.length < 3)
+					return $container.addClass('hide');
+
+				// console.log(q);
+				$container.removeClass('hide').find('div').hide();
+				$container.find('div:contains("' + q + '")').show();
 		});
+
+		$('#show-advanced').click(function() { $('#advanced').show() });
+
+		var mymap = L.map('map').setView([51.505, -0.09], 1);
+
+		L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+			maxZoom: 18,
+			attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+				'<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+				'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+			id: 'mapbox.streets'
+		}).addTo(mymap);
+
+		var mountain_ranges = new L.GeoJSON.AJAX("/data/gmba.geojson");
+		mountain_ranges.addTo(mymap);
 
 	});
 

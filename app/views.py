@@ -36,6 +36,9 @@ def resources_list():
     return [r.dict() for r in Resource.query.limit(10).all()]
 
 # Static paths
+@app.route('/data/<path:path>')
+def send_data(path):
+    return send_from_directory('../data', path)
 @app.route('/client/<path:path>')
 def send_client(path):
     return send_from_directory('../client', path)
@@ -84,5 +87,5 @@ def refresh_data():
             count_r = count_r + 1
         db.session.commit()
 
-    flash("%d people and %d resources updated<p><a href='/admin'>Continue</a>" % (count_p, count_r))
+    flash("%d people and %d resources updated" % (count_p, count_r))
     return redirect(url_for('admin.index'))

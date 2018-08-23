@@ -26,14 +26,21 @@ UPLOAD_PATH = gettempdir()
 DATAFILE = ospath.join(ospath.dirname(__file__), '..', 'data', 'people_details.csv')
 
 # Add views
-PersonView = ModelView(Person, db.session)
-PersonView.column_list = ['first_name', 'last_name', 'organisation']
-admin.add_view(PersonView)
+class PersonView(ModelView):
+    column_list = ('first_name', 'last_name', 'organisation')
+admin.add_view(PersonView(Person, db.session))
 
-ResourceView = ModelView(Resource, db.session)
-ResourceView.column_list = ['title', 'citation', 'url']
-admin.add_view(ResourceView)
+class ResourceView(ModelView):
+    column_list = ('title', 'citation', 'url')
+admin.add_view(ResourceView(Resource, db.session))
 
+# Custom view
+class ConfigurationView(BaseView):
+    @expose('/')
+    def index(self):
+        return self.render('admin/config.html')
+
+admin.add_view(ConfigurationView(name='Configuration', endpoint='config'))
 
 # API views
 @app.route("/api/people", methods=['GET'])
@@ -51,25 +58,6 @@ def people_detail(people_id):
 @app.route("/api/resources", methods=['GET'])
 def resources_list():
     return [r.dict() for r in Resource.query.limit(10).all()]
-
-# Custom view
-class ConfigurationView(BaseView):
-    @expose('/')
-    def index(self):
-        return self.render('admin/config.html')
-
-admin.add_view(ConfigurationView(name='Configuration', endpoint='config'))
-
-# Static paths
-@app.route('/data/<path:path>')
-def send_data(path):
-    return send_from_directory('../data', path)
-@app.route('/client/<path:path>')
-def send_client(path):
-    return send_from_directory('../client', path)
-@app.route('/static/<path:path>')
-def send_static(path):
-    return send_from_directory('../static', path)
 
 # Data upload
 @app.route('/upload', methods=['GET', 'POST'])
@@ -145,3 +133,14 @@ def refresh_data():
 
     flash("%d people and %d resources updated from dataset" % (count_p, count_r))
     return redirect(url_for('config.index'))
+
+# Static paths
+@app.route('/data/<path:path>')
+def send_data(path):
+    return send_from_directory('../data', path)
+@app.route('/client/<path:path>')
+def send_client(path):
+    return send_from_directory('../client', path)
+@app.route('/static/<path:path>')
+def send_static(path):
+    return send_from_directory('../static', path)

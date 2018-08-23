@@ -1792,7 +1792,7 @@
 /* Basic */
 
 	body {
-		background: #f7f7f7 url("images/bg01.png");
+		background: #f7f7f7;
 	}
 
 		body.is-loading * {

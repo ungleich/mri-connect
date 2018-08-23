@@ -1,6 +1,3 @@
-DEV_HOST = '0.0.0.0'
-DEV_PORT = 5000
-
 if __name__ == '__main__':
 
     import os
@@ -8,4 +5,7 @@ if __name__ == '__main__':
 
     db.create_all()
 
-    app.run(host=DEV_HOST, port=DEV_PORT)
+    host = os.environ.get('HOST', '0.0.0.0')
+    port = int(os.environ.get('PORT', 5000))
+
+    app.run(host=host, port=port)

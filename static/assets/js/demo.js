@@ -5,10 +5,10 @@
 		$container = $('#content')
 		$.getJSON('/api/people', function(data) {
 			$.each(data, function() {
-				var fulltext = this.fullname + ' ' + this.organisation;
+				var fulltext = this.fullname + ' ' + this.organisation + ' ' + this.biography;
 				fulltext = fulltext.toLowerCase();
 				$container.append(
-					'<div class="3u 6u(narrower) 12u$(mobilep)">' +
+					'<div class="person">' +
 					'<h4>' + this.fullname + '</h4>' +
 					'<span>' + this.organisation + '</span> &nbsp;' +
 					'<a class="c-button c-button--brand u-small" href="' + this.personal + '">Details</a>' +
@@ -31,6 +31,7 @@
 					return $container.addClass('hide');
 
 				// console.log(q);
+				$('#help').hide();
 				$container.removeClass('hide').find('div').hide();
 				$container.find('div:contains("' + q + '")').show();
 		});

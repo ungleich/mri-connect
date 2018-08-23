@@ -1,9 +1,9 @@
 if __name__ == '__main__':
 
     import os
-    from app import app, db, models, views
+    from app import app, db, models, views, init_app
 
-    db.create_all()
+    init_app()
 
     host = os.environ.get('HOST', '0.0.0.0')
     port = int(os.environ.get('PORT', 5000))

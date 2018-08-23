@@ -1,0 +1,32 @@
+{% extends 'admin/master.html' %}
+{% block body %}
+{{ super() }}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-10 col-sm-offset-1">
+            <h1>Configuration</h1>
+            <p class="lead">
+                Settings and data can be updated here.
+            </p>
+
+            <h4>Import dataset</h4>
+            <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload_data') }}">
+                <input type="file" name="datafile"><br>
+                <button type="submit" class="btn btn-primary">
+                    Upload and refresh new data
+                    <i class="glyphicon glyphicon-chevron-right"></i>
+                </button>
+            </form>
+            <br>
+            <form action="{{ url_for('refresh_data') }}" method="post">
+                <button type="submit" class="btn btn-sm btn-default">
+                    Refresh from existing data
+                    <i class="glyphicon glyphicon-chevron-right"></i>
+                </button>
+            </form>
+            <hr>
+            <p>Details about file format to be added here.</p>
+        </div>
+    </div>
+</div>
+{% endblock body %}

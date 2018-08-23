@@ -6,8 +6,16 @@
         <div class="col-sm-10 col-sm-offset-1">
             <h1>Configuration</h1>
             <p class="lead">
-                Settings and data can be updated here.
+                Settings and data for the application can be updated here.
             </p>
+
+            <p>The following data formats are allowed here, based on the GMBA Access databank:
+            <ul>
+                <li><b>people_details</b></li>
+                <li><b>resources</b></li>
+                <li><b>people_resources</b></li>
+                <li><b>GeoJSON</b></li>
+            </ul>
 
             <h4>Import dataset</h4>
             <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload_data') }}">

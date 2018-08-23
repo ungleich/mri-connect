@@ -15,6 +15,7 @@ from flask import (
     send_from_directory,
 )
 from werkzeug import secure_filename
+from enum import Enum
 
 import csv
 import os.path as ospath
@@ -59,6 +60,24 @@ def people_detail(people_id):
 def resources_list():
     return [r.dict() for r in Resource.query.limit(10).all()]
 
+class DataFormat(Enum):
+    PERSON_DETAIL = 1
+    PERSON_RESOURCE = 2
+    PERSON_RANGE = 3
+    RESOURCE_DETAIL = 4
+
+def detect_dataformat(datareader):
+    if datareader.length == 0: return None
+    row = datareader[0]
+    if 'First name' in row and 'Biography' in row:
+        return DataFormat.PERSON_DETAIL
+    if 'Citation' in row and 'Abstract' in row:
+        return DataFormat.RESOURCE_DETAIL
+    if 'Resource' in row and 'Person' in row:
+        return DataFormat.PERSON_RESOURCE
+    if 'Person' in row and 'MountainRange' in row:
+        return DataFormat.PERSON_RANGE
+
 # Data upload
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_data():
@@ -71,20 +90,16 @@ def upload_data():
         count = 0
         with open(fs_path, 'rt') as csvfile:
             datareader = csv.DictReader(csvfile)
-            for row in datareader:
-                if row is None: continue
-                person = Person(first_name=row['First name'], last_name=row['Last name'])
-                person.title = row['Title']
-                person.organisation = row['Organisation English']
-                person.country = row['Country']
-                person.biography = row['Biography']
-                person.contact_email = row['e-mail 1']
-                person.personal_url = row['URL']
-                count = count + 1
+            if detect_dataformat(datareader) is None:
+                flash("Could not detect data format!")
+            else:
+                for row in datareader:
+                    if row is None: continue
+                    count = count + 1
         if count > 0:
             move(fs_path, DATAFILE)
-        flash("Uploaded and validated %d rows" % count)
-        return refresh_data()
+            flash("Uploaded and validated %d rows" % count)
+            return refresh_data()
     else:
         flash("Please select a valid file")
     return redirect(url_for('config.index'))
@@ -99,39 +114,61 @@ def refresh_data():
     count_p = 0
     with open(DATAFILE, 'rt') as csvfile:
         datareader = csv.DictReader(csvfile)
-        for row in datareader:
-            if row is None: continue
-            person = Person.query.filter_by(first_name=row['First name'], last_name=row['Last name']).first()
-            if not person:
-                person = Person(first_name=row['First name'], last_name=row['Last name'])
-            person.title = row['Title']
-            person.organisation = row['Organisation English']
-            person.country = row['Country']
-            person.biography = row['Biography']
-            person.contact_email = row['e-mail 1']
-            person.personal_url = row['URL']
+        datafmt = detect_dataformat(datareader)
+        if datafmt is DataFormat.PERSON_DETAIL:
+            for row in datareader:
+                if row is None: continue
+                person = Person.query.filter_by(first_name=row['First name'], last_name=row['Last name']).first()
+                if not person:
+                    person = Person(first_name=row['First name'], last_name=row['Last name'])
+                person.source_id = row['Id']
+                person.title = row['Title']
+                person.organisation = row['Organisation English']
+                person.country = row['Country']
+                person.biography = row['Biography']
+                person.contact_email = row['e-mail 1']
+                person.personal_url = row['URL']
 
-            db.session.add(person)
-            count_p = count_p + 1
-        db.session.commit()
+                db.session.add(person)
+                count_p = count_p + 1
+            db.session.commit()
 
     count_r = 0
     with open('data/resources.csv', 'rt') as csvfile:
         datareader = csv.DictReader(csvfile)
-        for row in datareader:
-            if row is None: continue
-            res = Resource.query.filter_by(title=row['Title']).first()
-            if not res:     res = Resource(title=row['Title'])
-            res.title = row['Title']
-            res.citation = row['Citation']
-            res.url = row['URL']
-            res.abstract = row['Abstract']
+        if datafmt is DataFormat.RESOURCE_DETAIL:
+            for row in datareader:
+                if row is None: continue
+                res = Resource.query.filter_by(title=row['Title']).first()
+                if not res:     res = Resource(title=row['Title'])
+                res.source_id = row['Id']
+                res.title = row['Title']
+                res.citation = row['Citation']
+                res.url = row['URL']
+                res.abstract = row['Abstract']
 
-            db.session.add(res)
-            count_r = count_r + 1
+                db.session.add(res)
+                count_r = count_r + 1
         db.session.commit()
 
-    flash("%d people and %d resources updated from dataset" % (count_p, count_r))
+    count_rp = 0
+    with open('data/people_resources.csv', 'rt') as csvfile:
+        datareader = csv.DictReader(csvfile)
+        if datafmt is DataFormat.PERSON_RESOURCE:
+            for row in datareader:
+                if row is None: continue
+                rzs = Resource.query.filter_by(source_id=row['Resource'])
+                if not rzs.first(): continue
+                ppl = Person.query.filter_by(source_id=row['Person'])
+                if not ppl.first(): continue
+                for person in ppl:
+                    for resource in rzs:
+                        person.resources.add(rzs)
+                        db.session.add(person)
+                count_rp = count_rp + 1
+        db.session.commit()
+
+    flash("%d people, %d resources, %d links updated from dataset" % (count_p, count_r, count_rp))
     return redirect(url_for('config.index'))
 
 # Static paths

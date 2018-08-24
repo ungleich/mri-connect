@@ -9,13 +9,14 @@
                 Settings and data for the application can be updated here.
             </p>
 
-            <p>The following data formats are allowed here, based on the GMBA Access databank:
+            <p>The following data formats are supported, based on the GMBA Access databank:
             <ul>
-                <li><b>people_details</b></li>
-                <li><b>resources</b></li>
-                <li><b>people_resources</b></li>
-                <li><b>GeoJSON</b></li>
+                {% for fmt in DATAFORMATS %}
+                <li><b>{{ fmt.filename }}</b> ({{ fmt.extension }})</li>
+                {% endfor %}
             </ul>
+
+            <hr>
 
             <h4>Import dataset</h4>
             <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload_data') }}">
@@ -26,9 +27,9 @@
                 </button>
             </form>
             <br>
-            <form action="{{ url_for('refresh_data') }}" method="post">
+            <form action="{{ url_for('refresh_all') }}" method="post">
                 <button type="submit" class="btn btn-sm btn-default">
-                    Refresh from existing data
+                    Refresh all available data
                     <i class="glyphicon glyphicon-chevron-right"></i>
                 </button>
             </form>

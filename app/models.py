@@ -18,6 +18,7 @@ RESEARCH_SCALES = (
 
 class Person(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    gmbaid = db.Column(db.Integer)
     title = db.Column(db.Unicode(16))
     first_name = db.Column(db.Unicode(128))
     last_name = db.Column(db.Unicode(128))
@@ -52,6 +53,7 @@ class Person(db.Model):
 
 class Resource(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    gmbaid = db.Column(db.Integer)
     title = db.Column(db.String(255), unique=True)
     citation = db.Column(db.String(255))
     url = db.Column(db.String(255))
@@ -65,4 +67,18 @@ class Resource(db.Model):
             'citation': self.citation,
             'url': self.url,
             'abstract': self.abstract,
+        }
+
+class Range(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    gmbaid = db.Column(db.Integer)
+    name = db.Column(db.String(255), unique=True)
+    countries = db.Column(db.String(255))
+    def __repr__(self):
+        return self.name
+    def dict(self):
+        r = {
+            'id': self.id,
+            'name': self.name,
+            'countries': self.countries,
         }

@@ -12,12 +12,12 @@ DATAFORMATS = [
         'dataformat': DataFormat.PERSON_DETAIL,
         'extension': 'csv',
         'filename': 'people_details',
-        'required': ['Id', 'First name', 'Biography']
+        'required': ['ID', 'First name', 'Biography']
     },{
         'dataformat': DataFormat.RESOURCE_DETAIL,
         'extension': 'csv',
         'filename': 'resources',
-        'required': ['Id', 'Citation', 'Abstract']
+        'required': ['ID', 'Citation', 'Abstract']
     },{
         'dataformat': DataFormat.RANGE_SHAPES,
         'extension': 'geojson',

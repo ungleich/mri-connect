@@ -112,14 +112,21 @@ def upload_data():
 def refresh_data(fmt=None):
     count = 0
     filename = ospath.join(DATA_PATH, fmt['filename'] + '.' + fmt['extension'])
-    if not ospath.isfile(filename): return None
+    if not ospath.isfile(filename):
+        flash("Missing data: %s  - refresh aborted." % fmt['filename'])
+        return None
     if fmt['extension'] is 'csv':
         with open(filename, 'rt') as csvfile:
             datareader = csv.DictReader(csvfile)
             for row in datareader:
                 if row is None: continue
 
-                if fmt is DataFormat.PERSON_DETAIL:
+                for r in fmt['required']:
+                    if not r in row:
+                        flash("Missing attribute in %s (%s)" % (r, fmt['filename']))
+                        return None
+
+                if fmt['dataformat'] is DataFormat.PERSON_DETAIL:
                     person = Person.query.filter_by(first_name=row['First name'], last_name=row['Last name']).first()
                     if not person:
                         person = Person(first_name=row['First name'], last_name=row['Last name'])
@@ -133,7 +140,7 @@ def refresh_data(fmt=None):
                     db.session.add(person)
                     count = count + 1
 
-                elif fmt is DataFormat.RESOURCE_DETAIL:
+                elif fmt['dataformat'] is DataFormat.RESOURCE_DETAIL:
                     res = Resource.query.filter_by(title=row['Title']).first()
                     if not res:     res = Resource(title=row['Title'])
                     res.source_id = row['Id']
@@ -144,7 +151,7 @@ def refresh_data(fmt=None):
                     db.session.add(res)
                     count = count + 1
 
-                elif fmt is DataFormat.PERSON_RESOURCE:
+                elif fmt['dataformat'] is DataFormat.PERSON_RESOURCE:
                     rzs = Resource.query.filter_by(source_id=row['Resource'])
                     if not rzs.first(): continue
                     ppl = Person.query.filter_by(source_id=row['Person'])
@@ -154,7 +161,7 @@ def refresh_data(fmt=None):
                         db.session.add(person)
                         count = count + 1
 
-                elif fmt is DataFormat.PERSON_RANGE:
+                elif fmt['dataformat'] is DataFormat.PERSON_RANGE:
                     rzs = Range.query.filter_by(source_id=row['MountainRange'])
                     if not rzs.first(): continue
                     ppl = Person.query.filter_by(source_id=row['Person'])
@@ -167,7 +174,7 @@ def refresh_data(fmt=None):
     elif fmt['extension'] is 'geojson':
         with open(filename, 'rt') as jsonfile:
             jsondata = json.load(jsonfile)
-            if fmt is DataFormat.RANGE_SHAPES:
+            if fmt['dataformat'] is DataFormat.RANGE_SHAPES:
                 for f in jsondata['features']:
                     p = f['properties']
                     rge = Range.query.filter_by(gmbaid=p['GMBA_ID']).first()
@@ -188,7 +195,6 @@ def refresh_all():
     for fmt in DATAFORMATS:
         count = refresh_data(fmt)
         if count is None:
-            flash("Missing data: %s (refresh aborted)" % fmt['filename'])
             return redirect(url_for('config.index'))
         stats.append({ 'format': fmt['dataformat'], 'count': count })
         count_total = count_total + count

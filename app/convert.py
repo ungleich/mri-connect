@@ -72,8 +72,11 @@ def refresh_data(filename, fmt=None):
             if fmt['dataformat'] is DataFormat.RANGE_SHAPES:
                 for f in jsondata['features']:
                     p = f['properties']
-                    rge = Range.query.filter_by(source_id=p['GMBA_ID']).first()
-                    if not rge: rge = Range(source_id=p['GMBA_ID'])
+                    rge = Range.query.filter_by(gmba_id=p['GMBA_ID']).first()
+                    if not rge:
+                        #rge = Range(gmba_id=p['GMBA_ID'])
+                        print("Range not found: %s" % p['GMBA_ID'])
+                        continue
                     rge.name = p['Name']
                     for c in ['Country_1', 'Country_2_']:
                         if c in p: rge.countries = p[c]

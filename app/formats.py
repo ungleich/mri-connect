@@ -32,7 +32,7 @@ DATAFORMATS = [
         'dataformat': DataFormat.PERSON_RANGE,
         'extension': 'csv',
         'filename': 'people_ranges',
-        'required': ['Person', 'MountainRange']
+        'required': ['Person', 'Range', 'GMBA_ID']
     }
 ]
 

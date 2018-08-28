@@ -70,8 +70,9 @@ class Resource(db.Model):
 
 class Range(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    source_id = db.Column(db.Integer)
-    name = db.Column(db.Unicode(255), unique=True)
+    source_id = db.Column(db.Integer, unique=True)
+    gmba_id = db.Column(db.Unicode(32))
+    name = db.Column(db.Unicode(255))
     countries = db.Column(db.Unicode(255))
     def __repr__(self):
         return self.name

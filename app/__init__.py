@@ -15,3 +15,4 @@ admin = admin.Admin(app, name='GMBA Connect', template_mode='bootstrap3')
 
 def init_app():
     db.create_all()
+    print("Database initialized")

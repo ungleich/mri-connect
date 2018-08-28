@@ -43,4 +43,8 @@ a { color: #444; }
     margin-bottom: 1em;
 }
 
+#detail .person {
+  width: auto;
+}
+
 #content { clear: both; }

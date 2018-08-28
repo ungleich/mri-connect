@@ -43,12 +43,13 @@ class Person(db.Model):
         return self.fullname()
     def dict(self):
         return {
+            'id': self.id,
             'fullname': self.fullname(),
-            'organisation': self.organisation,
-            'position': self.position,
-            'country': self.country,
-            'personal_url': self.personal_url,
-            'biography': self.biography,
+            'organisation': self.organisation or '',
+            'position': self.position or '',
+            'country': self.country or '',
+            'personal_url': self.personal_url or '',
+            'biography': self.biography or '',
         }
 
 class Resource(db.Model):
@@ -61,12 +62,12 @@ class Resource(db.Model):
     def __repr__(self):
         return self.title
     def dict(self):
-        r = {
+        return {
             'id': self.id,
-            'title': self.title,
-            'citation': self.citation,
-            'url': self.url,
-            'abstract': self.abstract,
+            'title': self.title or '',
+            'citation': self.citation or '',
+            'url': self.url or '',
+            'abstract': self.abstract or '',
         }
 
 class Range(db.Model):

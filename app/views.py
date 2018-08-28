@@ -23,7 +23,7 @@ from sqlalchemy import or_
 
 import csv, json
 import os.path as ospath
-import os.makedirs
+from os import makedirs
 from shutil import move
 from tempfile import gettempdir
 

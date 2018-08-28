@@ -77,6 +77,7 @@ def people_detail(people_id):
     person = Person.query.filter_by(id=people_id).first_or_404()
     return {
         'data': person.dict(),
+        'ranges': [r.dict() for r in person.ranges],
         'resources': [r.dict() for r in person.resources]
     }
 
@@ -111,36 +112,29 @@ def upload_data():
         fs.save(fs_path)
 
         # Validation
-        count = 0
         fmt = None
         if fs_name.endswith('.csv'):
             with open(fs_path, 'rt') as csvfile:
                 datareader = csv.DictReader(csvfile)
                 datalist = list(datareader)
                 fmt = detect_dataformat(datalist[0])
-                if fmt is not None:
-                    count = len(datalist)
 
         elif fs_name.endswith('.geojson'):
             with open(fs_path, 'rt') as jsonfile:
                 jsondata = json.load(jsonfile)
                 fmt = detect_dataformat(jsondata['features'][0]['properties'])
-                if fmt is not None:
-                    count = len(jsondata['features'])
 
         # Loading
-        if count > 0 and fmt is not None:
+        if fmt is not None:
             fs_target = get_datafile(fmt)
             move(fs_path, fs_target)
             final_count = refresh_data(fs_target, fmt)
-            flash("Uploaded, validated %d and imported %d objects for %s" %
-                (count, final_count, fmt['filename']))
-        elif count == 0:
-            flash("No data rows could be loaded!")
+            flash("Uploaded and imported %d objects for %s" %
+                (final_count, fmt['filename']), 'success')
         else:
-            flash("Could not detect data format!")
+            flash("Could not validate data format!", 'error')
     else:
-        flash("Please select a valid file")
+        flash("Please select a valid file", 'error')
     return redirect(url_for('config.index'))
 
 # Data update

@@ -9,6 +9,11 @@ resources_people = db.Table(
     db.Column('person_id', db.Integer(), db.ForeignKey('person.id')),
     db.Column('resource_id', db.Integer(), db.ForeignKey('resource.id'))
 )
+ranges_people = db.Table(
+    'ranges_people',
+    db.Column('person_id', db.Integer(), db.ForeignKey('person.id')),
+    db.Column('range_id', db.Integer(), db.ForeignKey('range.id'))
+)
 
 # Country	Biography	Field of expertise	Taxa	Methods	Geographic area of expertise	Scale	ProfileOnWeb
 
@@ -33,6 +38,8 @@ class Person(db.Model):
     # expertise_field = db.Column(db.Unicode(255))
     # expertise_geo = db.Column(db.Unicode(255))
     resources = db.relationship('Resource', secondary=resources_people,
+        backref=db.backref('people', lazy='dynamic'))
+    ranges = db.relationship('Range', secondary=ranges_people,
         backref=db.backref('people', lazy='dynamic'))
 
     def fullname(self):
@@ -80,5 +87,6 @@ class Range(db.Model):
         r = {
             'id': self.id,
             'name': self.name,
+            'gmba_id': self.gmba_id,
             'countries': self.countries,
         }

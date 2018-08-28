@@ -36,14 +36,22 @@ def refresh_data(filename, fmt=None):
                     count = count + 1
 
                 elif fmt['dataformat'] is DataFormat.RESOURCE_DETAIL:
-                    res = Resource.query.filter_by(title=row['Title']).first()
-                    if not res:     res = Resource(title=row['Title'])
-                    res.source_id = row['ID']
+                    res = Resource.query.filter_by(source_id=row['ID']).first()
+                    if not res:     res = Resource(source_id=row['ID'])
                     res.title = row['Title']
                     res.citation = row['Citation']
                     res.url = row['URL']
                     res.abstract = row['Abstract']
                     db.session.add(res)
+                    count = count + 1
+
+                elif fmt['dataformat'] is DataFormat.RANGE_DETAIL:
+                    rng = Range.query.filter_by(source_id=row['Range_ID']).first()
+                    if not rng: rng = Range(source_id=row['Range_ID'])
+                    rng.gmba_id = row['GMBA_ID']
+                    rng.name = row['RangeName']
+                    rng.countries = row['Countries']
+                    db.session.add(rng)
                     count = count + 1
 
                 elif fmt['dataformat'] is DataFormat.PERSON_RESOURCE:
@@ -74,7 +82,6 @@ def refresh_data(filename, fmt=None):
                     p = f['properties']
                     rge = Range.query.filter_by(gmba_id=p['GMBA_ID']).first()
                     if not rge:
-                        #rge = Range(gmba_id=p['GMBA_ID'])
                         print("Range not found: %s" % p['GMBA_ID'])
                         continue
                     rge.name = p['Name']

@@ -6,6 +6,7 @@ class DataFormat(Enum):
     PERSON_RANGE = 3
     RESOURCE_DETAIL = 4
     RANGE_SHAPES = 5
+    RANGE_DETAIL = 6
 
 DATAFORMATS = [
     {
@@ -18,6 +19,11 @@ DATAFORMATS = [
         'extension': 'csv',
         'filename': 'resources',
         'required': ['ID', 'Citation', 'Abstract']
+    },{
+        'dataformat': DataFormat.RANGE_DETAIL,
+        'extension': 'csv',
+        'filename': 'ranges',
+        'required': ['Range_ID', 'RangeName', 'GMBA_ID']
     },{
         'dataformat': DataFormat.RANGE_SHAPES,
         'extension': 'geojson',
@@ -32,7 +38,7 @@ DATAFORMATS = [
         'dataformat': DataFormat.PERSON_RANGE,
         'extension': 'csv',
         'filename': 'people_ranges',
-        'required': ['Person', 'Range', 'GMBA_ID']
+        'required': ['ID', 'Person', 'MountainRange']
     }
 ]
 

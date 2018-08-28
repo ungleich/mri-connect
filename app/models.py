@@ -19,17 +19,15 @@ RESEARCH_SCALES = (
 class Person(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     source_id = db.Column(db.Integer)
-    title = db.Column(db.Unicode(16))
-    first_name = db.Column(db.Unicode(128))
-    last_name = db.Column(db.Unicode(128))
-
-    organisation = db.Column(db.Unicode(128))
-    position = db.Column(db.Unicode(128))
-    country = db.Column(db.Unicode(128))
-    biography = db.Column(db.UnicodeText)
-
+    title = db.Column(db.Unicode(64))
+    first_name = db.Column(db.Unicode(255))
+    last_name = db.Column(db.Unicode(255))
+    organisation = db.Column(db.Unicode(255))
+    position = db.Column(db.Unicode(255))
+    country = db.Column(db.Unicode(255))
     contact_email = db.Column(db.Unicode(255))
     personal_url = db.Column(db.Unicode(255))
+    biography = db.Column(db.UnicodeText)
 
     # research_scale = db.Column(db.Enum(*RESEARCH_SCALES, name="researchscale"))
     # expertise_field = db.Column(db.Unicode(255))
@@ -55,9 +53,9 @@ class Person(db.Model):
 class Resource(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     source_id = db.Column(db.Integer)
-    title = db.Column(db.String(255), unique=True)
-    citation = db.Column(db.String(255))
-    url = db.Column(db.String(255))
+    title = db.Column(db.Unicode(255), unique=True)
+    url = db.Column(db.Unicode(255))
+    citation = db.Column(db.UnicodeText)
     abstract = db.Column(db.UnicodeText)
     def __repr__(self):
         return self.title
@@ -73,8 +71,8 @@ class Resource(db.Model):
 class Range(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     source_id = db.Column(db.Integer)
-    name = db.Column(db.String(255), unique=True)
-    countries = db.Column(db.String(255))
+    name = db.Column(db.Unicode(255), unique=True)
+    countries = db.Column(db.Unicode(255))
     def __repr__(self):
         return self.name
     def dict(self):

@@ -27,6 +27,8 @@ from tempfile import gettempdir
 # Get temporary file storage
 UPLOAD_PATH = gettempdir()
 DATA_PATH = ospath.join(ospath.dirname(__file__), '..', 'data')
+def get_datafile(fmt):
+    return ospath.join(DATA_PATH, fmt['filename'] + '.' + fmt['extension'])
 
 # Add views
 class PersonView(ModelView):
@@ -45,7 +47,9 @@ admin.add_view(RangeView(Range, db.session))
 class ConfigurationView(BaseView):
     @expose('/')
     def index(self):
-        return self.render('admin/config.html', DATAFORMATS=DATAFORMATS)
+        fmts = DATAFORMATS
+        for f in fmts: f['ready'] = ospath.isfile(get_datafile(f))
+        return self.render('admin/config.html', dataformats=fmts)
 
 admin.add_view(ConfigurationView(name='Configuration', endpoint='config'))
 
@@ -98,7 +102,7 @@ def upload_data():
 
         # Loading
         if count > 0 and fmt is not None:
-            fs_target = ospath.join(DATA_PATH, fmt['filename'] + '.' + fmt['extension'])
+            fs_target = get_datafile(fmt)
             move(fs_path, fs_target)
             flash("Uploaded, validated and imported %d objects for " %
                 (count, fmt['filename']))
@@ -115,7 +119,7 @@ def refresh_all():
     stats = []
     count_total = 0
     for fmt in DATAFORMATS:
-        filename = ospath.join(DATA_PATH, fmt['filename'] + '.' + fmt['extension'])
+        filename = get_datafile(fmt)
         count = refresh_data(filename, fmt)
         if count is None:
             return redirect(url_for('config.index'))

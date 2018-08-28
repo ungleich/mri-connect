@@ -43,5 +43,5 @@ def detect_dataformat(row):
         for prop in fmt['required']:
             if not prop in row: missing_property = True
         if not missing_property:
-            return fmt['dataformat']
+            return fmt
     return None

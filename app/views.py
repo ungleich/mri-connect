@@ -116,22 +116,22 @@ def upload_data():
                 datareader = csv.DictReader(csvfile)
                 fmt = detect_dataformat(datareader)
                 if fmt is not None:
-                    count = length(datareader)
+                    count = len(datareader)
 
         elif fs_name.endswith('.geojson'):
             with open(fs_path, 'rt') as jsonfile:
                 jsondata = json.load(jsonfile)
                 fmt = detect_dataformat(jsondata['features'][0]['properties'])
                 if fmt is not None:
-                    count = length(jsondata['features'])
+                    count = len(jsondata['features'])
 
         # Loading
         if count > 0 and fmt is not None:
             fs_target = get_datafile(fmt)
             move(fs_path, fs_target)
-            flash("Uploaded, validated and imported %d objects for " %
-                (count, fmt['filename']))
-            return refresh_data(fs_target, fmt)
+            final_count = refresh_data(fs_target, fmt)
+            flash("Uploaded, validated %d and imported %d objects for %s" %
+                (count, final_count, fmt['filename']))
         else:
             flash("Could not detect data format!")
     else:

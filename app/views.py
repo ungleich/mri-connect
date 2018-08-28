@@ -23,12 +23,14 @@ from sqlalchemy import or_
 
 import csv, json
 import os.path as ospath
+import os.makedirs
 from shutil import move
 from tempfile import gettempdir
 
 # Get temporary file storage
 UPLOAD_PATH = gettempdir()
 DATA_PATH = ospath.join(ospath.dirname(__file__), '..', 'data')
+if not ospath.exists(DATA_PATH): makedirs(DATA_PATH)
 def get_datafile(fmt):
     return ospath.join(DATA_PATH, fmt['filename'] + '.' + fmt['extension'])
 

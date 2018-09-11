@@ -11,8 +11,11 @@
 
             <p>The following data formats are supported, based on the GMBA Access databank:
             <ul>
-                {% for fmt in DATAFORMATS %}
-                <li><b>{{ fmt.filename }}</b> ({{ fmt.extension }})</li>
+                {% for fmt in dataformats %}
+                <li style="list-style:none">
+                  <font color={% if fmt.ready %}"green">&#9745;{% else %}"red">&#10683;{% endif %}</font>
+                  <b>{{ fmt.filename }}</b> ({{ fmt.extension }})
+                </li>
                 {% endfor %}
             </ul>
 

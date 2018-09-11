@@ -6,18 +6,24 @@ class DataFormat(Enum):
     PERSON_RANGE = 3
     RESOURCE_DETAIL = 4
     RANGE_SHAPES = 5
+    RANGE_DETAIL = 6
 
 DATAFORMATS = [
     {
         'dataformat': DataFormat.PERSON_DETAIL,
         'extension': 'csv',
         'filename': 'people_details',
-        'required': ['First name', 'Biography']
+        'required': ['ID', 'First name', 'Biography']
     },{
         'dataformat': DataFormat.RESOURCE_DETAIL,
         'extension': 'csv',
         'filename': 'resources',
-        'required': ['Citation', 'Abstract']
+        'required': ['ID', 'Citation', 'Abstract']
+    },{
+        'dataformat': DataFormat.RANGE_DETAIL,
+        'extension': 'csv',
+        'filename': 'ranges',
+        'required': ['Range_ID', 'RangeName', 'GMBA_ID']
     },{
         'dataformat': DataFormat.RANGE_SHAPES,
         'extension': 'geojson',
@@ -32,7 +38,7 @@ DATAFORMATS = [
         'dataformat': DataFormat.PERSON_RANGE,
         'extension': 'csv',
         'filename': 'people_ranges',
-        'required': ['Person', 'MountainRange']
+        'required': ['ID', 'Person', 'MountainRange']
     }
 ]
 
@@ -43,5 +49,5 @@ def detect_dataformat(row):
         for prop in fmt['required']:
             if not prop in row: missing_property = True
         if not missing_property:
-            return fmt['dataformat']
+            return fmt
     return None

@@ -27,13 +27,13 @@ from tempfile import gettempdir
 UPLOAD_PATH = gettempdir()
 DATA_PATH = ospath.join(ospath.dirname(__file__), '..', 'data')
 
-# Add views
+# Administrative views
 class PersonView(ModelView):
     column_list = ('first_name', 'last_name', 'organisation')
 admin.add_view(PersonView(Person, db.session))
 
 class ResourceView(ModelView):
-    column_list = ('title', 'citation', 'url')
+    column_list = ('title', 'url')
 admin.add_view(ResourceView(Resource, db.session))
 
 class RangeView(ModelView):

@@ -12,6 +12,17 @@ To install and start the backend using Pipenv (Pip and Virtualenv should work fi
 
     $ pipenv --three
     $ pipenv install
+
+To initialize and/or migrate the database:
+
+    $ flask db init
+    $ flask db migrate
+    $ flask db upgrade
+
+To start the backend:
+
+    $ export FLASK_ENV=development
+    $ export FLASK_DEBUG=1
     $ python run.py
 
 The interface will now be available at http://localhost:5000/admin

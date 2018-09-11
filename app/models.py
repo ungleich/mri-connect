@@ -53,7 +53,6 @@ class Person(db.Model):
 
 class Resource(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    gmbaid = db.Column(db.Integer)
     title = db.Column(db.String(255), unique=True)
     citation = db.Column(db.String(255))
     url = db.Column(db.String(255))

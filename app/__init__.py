@@ -12,6 +12,7 @@ app.logger.info('>>> {}'.format(Config.FLASK_ENV))
 
 db = SQLAlchemy(app)
 whooshee = Whooshee(app)
+whooshee.reindex()
 
 from .models import *
 migrate = Migrate(app, db)

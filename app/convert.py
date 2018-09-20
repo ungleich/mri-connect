@@ -24,6 +24,16 @@ def add_linked(person, field, obj, data):
         db.session.add(tgt)
         field.append(tgt)
 
+# Fetch an object by source_id (numeric identifier used in source DB)
+def get_by_id(rowid, obj, first=True):
+    if type(rowid) is str and rowid.isdigit():
+        rowid = int(rowid)
+    if type(rowid) is int:
+        l = obj.query.filter_by(source_id=rowid)
+        if first: return l.first(), rowid
+        else: return l, rowid
+    return None, None
+
 # Data update routine
 def refresh_data(filename, fmt=None):
     count = 0
@@ -42,14 +52,14 @@ def refresh_data(filename, fmt=None):
                         return None
 
                 if fmt['dataformat'] is DataFormat.PERSON_DETAIL:
-                    person = Person.query.filter_by(source_id=row['ID']).first()
+                    person, source_id = get_by_id(row['ID'], Person)
                     if not person:
                         person = Person.query.filter_by(first_name=row['First name'], last_name=row['Last name']).first()
                     if not person:
                         person = Person(first_name=row['First name'], last_name=row['Last name'], source_id=row['ID'])
 
                     # Update data fields
-                    person.source_id = row['ID']
+                    person.source_id = source_id
                     person.title = row['Title']
                     person.organisation = row['Organisation English']
                     person.country = row['Country']
@@ -68,8 +78,8 @@ def refresh_data(filename, fmt=None):
                     count = count + 1
 
                 elif fmt['dataformat'] is DataFormat.RESOURCE_DETAIL:
-                    res = Resource.query.filter_by(source_id=row['ID']).first()
-                    if not res:     res = Resource(source_id=row['ID'])
+                    res, source_id = get_by_id(row['ID'], Resource)
+                    if not res: res = Resource(source_id=source_id)
                     res.title = row['Title']
                     res.citation = row['Citation']
                     res.url = row['URL']
@@ -78,8 +88,8 @@ def refresh_data(filename, fmt=None):
                     count = count + 1
 
                 elif fmt['dataformat'] is DataFormat.RANGE_DETAIL:
-                    rng = Range.query.filter_by(source_id=row['Range_ID']).first()
-                    if not rng: rng = Range(source_id=row['Range_ID'])
+                    rng, source_id = get_by_id(row['Range_ID'], Range)
+                    if not rng: rng = Range(source_id=source_id)
                     rng.gmba_id = row['GMBA_ID']
                     rng.name = row['RangeName']
                     rng.countries = row['Countries']
@@ -87,9 +97,9 @@ def refresh_data(filename, fmt=None):
                     count = count + 1
 
                 elif fmt['dataformat'] is DataFormat.PERSON_RESOURCE:
-                    rzs = Resource.query.filter_by(source_id=row['Resource'])
+                    rzs, source_id = get_by_id(row['Resource'], Resource, first=False)
                     if not rzs.first(): continue
-                    ppl = Person.query.filter_by(source_id=row['Person'])
+                    ppl, source_id = get_by_id(row['Person'], Person, first=False)
                     if not ppl.first(): continue
                     for person in ppl:
                         for r in rzs: person.resources.append(r)
@@ -97,9 +107,9 @@ def refresh_data(filename, fmt=None):
                         count = count + 1
 
                 elif fmt['dataformat'] is DataFormat.PERSON_RANGE:
-                    rzs = Range.query.filter_by(source_id=row['MountainRange'])
+                    rzs, source_id = get_by_id(row['MountainRange'], Range, first=False)
                     if not rzs.first(): continue
-                    ppl = Person.query.filter_by(source_id=row['Person'])
+                    ppl, source_id = get_by_id(row['Person'], Person, first=False)
                     if not ppl.first(): continue
                     for person in ppl:
                         for r in rzs: person.ranges.append(r)

@@ -29,7 +29,7 @@ class Config(object):
     else:
         SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/gmbaconnect.sqlite3'
 
-    if not 'FLASK_ENV' is 'production':
-        WHOOSHEE_MEMORY_STORAGE = True
+    # if not 'FLASK_ENV' is 'production':
+    WHOOSHEE_MEMORY_STORAGE = True
 
 app.config.from_object('app.config.Config')

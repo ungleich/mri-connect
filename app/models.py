@@ -14,11 +14,25 @@ ranges_people = db.Table(
     db.Column('person_id', db.Integer(), db.ForeignKey('person.id')),
     db.Column('range_id', db.Integer(), db.ForeignKey('range.id'))
 )
-
-# Country	Biography	Field of expertise	Taxa	Methods	Geographic area of expertise	Scale	ProfileOnWeb
-
-RESEARCH_SCALES = (
-    '', '', '', ''
+methods_people = db.Table(
+    'methods_people',
+    db.Column('person_id', db.Integer(), db.ForeignKey('person.id')),
+    db.Column('method_id', db.Integer(), db.ForeignKey('method.id'))
+)
+scales_people = db.Table(
+    'scales_people',
+    db.Column('person_id', db.Integer(), db.ForeignKey('person.id')),
+    db.Column('scale_id', db.Integer(), db.ForeignKey('scale.id'))
+)
+taxa_people = db.Table(
+    'taxa_people',
+    db.Column('person_id', db.Integer(), db.ForeignKey('person.id')),
+    db.Column('taxon_id', db.Integer(), db.ForeignKey('taxon.id'))
+)
+fields_people = db.Table(
+    'fields_people',
+    db.Column('person_id', db.Integer(), db.ForeignKey('person.id')),
+    db.Column('field_id', db.Integer(), db.ForeignKey('field.id'))
 )
 
 class Person(db.Model):
@@ -34,12 +48,15 @@ class Person(db.Model):
     personal_url = db.Column(db.Unicode(2048))
     biography = db.Column(db.UnicodeText)
 
-    contact_email = db.Column(db.Unicode(255))
-    personal_url = db.Column(db.Unicode(255))
+    research_methods = db.relationship('Method', secondary=methods_people,
+        backref=db.backref('people', lazy='dynamic'))
+    research_scales = db.relationship('Scale', secondary=scales_people,
+        backref=db.backref('people', lazy='dynamic'))
+    research_taxa = db.relationship('Taxon', secondary=taxa_people,
+        backref=db.backref('people', lazy='dynamic'))
+    research_fields = db.relationship('Field', secondary=fields_people,
+        backref=db.backref('people', lazy='dynamic'))
 
-    # research_scale = db.Column(db.Enum(*RESEARCH_SCALES, name="researchscale"))
-    # expertise_field = db.Column(db.Unicode(255))
-    # expertise_geo = db.Column(db.Unicode(255))
     resources = db.relationship('Resource', secondary=resources_people,
         backref=db.backref('people', lazy='dynamic'))
     ranges = db.relationship('Range', secondary=ranges_people,
@@ -87,9 +104,37 @@ class Range(db.Model):
     def __repr__(self):
         return self.name
     def dict(self):
-        r = {
+        return {
             'id': self.id,
             'name': self.name,
             'gmba_id': self.gmba_id,
             'countries': self.countries,
         }
+
+class Method(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Unicode(255))
+    def __repr__(self): return self.name
+    def dict(self):
+        return { 'id': self.id, 'name': self.name, 'people': self.people }
+
+class Scale(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Unicode(255))
+    def __repr__(self): return self.name
+    def dict(self):
+        return { 'id': self.id, 'name': self.name, 'people': self.people }
+
+class Taxon(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Unicode(255))
+    def __repr__(self): return self.name
+    def dict(self):
+        return { 'id': self.id, 'name': self.name, 'people': self.people }
+
+class Field(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Unicode(255))
+    def __repr__(self): return self.name
+    def dict(self):
+        return { 'id': self.id, 'name': self.name, 'people': self.people }

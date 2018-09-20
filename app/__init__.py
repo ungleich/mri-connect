@@ -15,5 +15,8 @@ db = SQLAlchemy(app)
 from .models import *
 migrate = Migrate(app, db)
 
+
 # Create admin
 admin = admin.Admin(app, name='GMBA Connect', template_mode='bootstrap3')
+
+from .views import *

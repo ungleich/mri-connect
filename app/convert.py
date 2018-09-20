@@ -4,6 +4,18 @@ from flask import flash
 from .models import *
 from .formats import *
 
+def add_linked(person, field, obj, data):
+    items = data.split(',')
+    for i in items:
+        n = i.strip()
+        if len(n)<3: continue
+        tgt = obj.query.filter_by(name=n).first()
+        if not tgt:
+            tgt = obj()
+            tgt.name = n
+        db.session.add(tgt)
+        field.append(tgt)
+
 # Data update routine
 def refresh_data(filename, fmt=None):
     count = 0
@@ -22,16 +34,28 @@ def refresh_data(filename, fmt=None):
                         return None
 
                 if fmt['dataformat'] is DataFormat.PERSON_DETAIL:
-                    person = Person.query.filter_by(first_name=row['First name'], last_name=row['Last name']).first()
+                    person = Person.query.filter_by(source_id=row['ID']).first()
                     if not person:
-                        person = Person(first_name=row['First name'], last_name=row['Last name'])
+                        person = Person.query.filter_by(first_name=row['First name'], last_name=row['Last name']).first()
+                    if not person:
+                        person = Person(first_name=row['First name'], last_name=row['Last name'], source_id=row['ID'])
+
+                    # Update data fields
                     person.source_id = row['ID']
                     person.title = row['Title']
                     person.organisation = row['Organisation English']
                     person.country = row['Country']
+                    person.position = row['Position']
                     person.biography = row['Biography']
                     person.contact_email = row['e-mail 1']
                     person.personal_url = row['URL']
+
+                    with db.session.no_autoflush:
+                        add_linked(person, person.research_methods, Method, row['Methods'])
+                        add_linked(person, person.research_scales,  Scale,  row['Scale'])
+                        add_linked(person, person.research_taxa,    Taxon,  row['Taxa'])
+                        add_linked(person, person.research_fields,  Field,  row['Field of expertise'])
+
                     db.session.add(person)
                     count = count + 1
 

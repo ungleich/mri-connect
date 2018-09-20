@@ -47,6 +47,11 @@ class RangeView(ModelView):
     column_list = ('name', 'countries')
 admin.add_view(RangeView(Range, db.session))
 
+admin.add_view(ModelView(Method, db.session))
+admin.add_view(ModelView(Scale, db.session))
+admin.add_view(ModelView(Taxon, db.session))
+admin.add_view(ModelView(Field, db.session))
+
 # Custom view
 class ConfigurationView(BaseView):
     @expose('/')

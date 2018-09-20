@@ -1,11 +1,19 @@
-import csv, json
+import csv, json, re
 from os.path import isfile
 from flask import flash
 from .models import *
 from .formats import *
 
+# Correct commas inside of a linked field
+def fix_bracketed_lists(data):
+    for fix in re.findall(r'\([^\s]*,[ ]*[^\s]*\)', data):
+        data = data.replace(fix, fix.replace(',', ' /'))
+    return data
+
+# Create linked objects
 def add_linked(person, field, obj, data):
-    items = data.split(',')
+    # TODO: fuzzy matching instead of lower()
+    items = fix_bracketed_lists(data).lower().split(',')
     for i in items:
         n = i.strip()
         if len(n)<3: continue

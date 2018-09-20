@@ -87,3 +87,5 @@
 	});
 
 })(jQuery);
+
+riot.mount('gmba-search');

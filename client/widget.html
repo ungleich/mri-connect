@@ -38,36 +38,20 @@
 			<!-- Main -->
 				<section class="wrapper style1" id="main">
 					<div class="container">
-						<div id="search">
-							<input name="query" class="c-field" placeholder="Search ..." type="text" />
-							<!-- <a href="#" class="button c-button" id="show-advanced">Advanced search</a> -->
-						</div>
-						<div id="help">
-							<p>
-								To search for research scientists, enter partial names (e.g. Dr. Jill)
-								or research field keywords (e.g. alpine monitoring ecology).
-								You can also use the map below to focus on a geographic region.
-							</p>
-						</div>
-						<div id="content" class="hide">
-							<!-- Content -->
-						</div>
-						<div id="detail" class="hide">
-							<!-- Details -->
-						</div>
+						<gmba-search></gmba-search>
+						<noscript>
+							<u>This application requires JavaScript to work.</u>
+						</noscript>
+						
 						<br clear="all">
-						<div id="intro"><hr>
-
-
-
-								<br><br>
+						<div id="intro">
 
 								<h3>Mountain ranges</h3>
 
 								<div id="map"></div>
 
 						</div>
-						<div id="fields" style="display:none">
+						<!-- <div id="fields" style="display:none">
 
 								<h3>Research Fields</h3>
 
@@ -97,11 +81,15 @@
 								&nbsp; <a href="#">nature conservation</a>
 								&nbsp; <a href="#">monitoring</a>
 
-						</div>
+						</div> -->
 					</div>
 				</section>
 
 		</div>
+
+		<!-- Riot tags -->
+			<script src="/static/assets/tags/gmba-search.tag" type="riot/tag"></script>
+
 
 		<!-- Scripts -->
 			<script src="/static/assets/js/jquery.min.js"></script>

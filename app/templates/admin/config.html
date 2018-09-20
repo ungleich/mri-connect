@@ -36,6 +36,12 @@
                     <i class="glyphicon glyphicon-chevron-right"></i>
                 </button>
             </form>
+            <form action="{{ url_for('reindex') }}" method="post">
+                <button type="submit" class="btn btn-sm btn-default">
+                    Reindex the search engine
+                    <i class="glyphicon glyphicon-chevron-right"></i>
+                </button>
+            </form>
             <hr>
             <p>Details about file format to be added here.</p>
         </div>

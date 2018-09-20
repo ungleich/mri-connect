@@ -4,7 +4,7 @@
 from app import app, db, admin
 from .models import *
 from .formats import *
-from .convert import refresh_data
+from .convert import refresh_data, reindex_search
 
 from flask_admin.contrib.sqla import ModelView, filters
 from flask_admin.form import FileUploadField
@@ -73,9 +73,15 @@ def get_paginated(query):
     }
 
 # API views
-@app.route("/api/people", methods=['GET'])
-def people_list():
-    return get_paginated(Person.query.order_by(Person.last_name.asc()))
+
+@app.route("/api/search", methods=['GET'])
+def search_list():
+    q = request.args.get('q')
+    if not q or len(q) < 3: return {}
+    query = Person.query.\
+        whooshee_search(q).\
+        order_by(Person.last_name.asc())
+    return get_paginated(query)
 
 @app.route("/api/people/<int:people_id>", methods=['GET'])
 def people_detail(people_id):
@@ -86,6 +92,10 @@ def people_detail(people_id):
         'resources': [r.dict() for r in person.resources]
     }
 
+@app.route("/api/people", methods=['GET'])
+def people_list():
+    return get_paginated(Person.query.order_by(Person.last_name.asc()))
+
 @app.route("/api/resources", methods=['GET'])
 def resources_list():
     return get_paginated(Resource.query.order_by(Resource.title.asc()))
@@ -93,18 +103,6 @@ def resources_list():
 @app.route("/api/ranges", methods=['GET'])
 def ranges_list():
     return [r.dict() for r in Range.query.limit(10).all()]
-
-@app.route("/api/search", methods=['GET'])
-def search_list():
-    q = request.args.get('q')
-    if not q or len(q) < 3: return {}
-    query = Person.query.filter(or_(
-        Person.first_name.ilike('%' + q + '%'),
-        Person.last_name.ilike('%' + q + '%'),
-        Person.organisation.ilike('%' + q + '%'),
-        Person.biography.ilike('%' + q + '%'),
-    )).order_by(Person.last_name.asc())
-    return get_paginated(query)
 
 
 # Data upload
@@ -140,6 +138,12 @@ def upload_data():
             flash("Could not validate data format!", 'error')
     else:
         flash("Please select a valid file", 'error')
+    return redirect(url_for('config.index'))
+
+@app.route('/reindex', methods=['GET', 'POST'])
+def reindex():
+    reindex_search()
+    flash("Search engine refresh complete")
     return redirect(url_for('config.index'))
 
 # Data update

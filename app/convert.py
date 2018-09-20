@@ -123,4 +123,8 @@ def refresh_data(filename, fmt=None):
                     count = count + 1
 
     db.session.commit()
+    whooshee.reindex()
     return count
+
+def reindex_search():
+    whooshee.reindex()

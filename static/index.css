@@ -30,21 +30,17 @@ a { color: #444; }
 
 #help { font-size: 150%; line-height: 1.5em; }
 
-.person {
-    display: inline-block;
-    clear: none;
-    height: auto;
-    width: 15em;
-    float: left;
-    border: 1px solid #999;
-    box-shadow: 3px 3px 3px #CCD;
-    padding: 1em;
-    margin-right: 1em;
-    margin-bottom: 1em;
+.results .person {
+  display: block;
+  height: auto;
+  width: 100%;
+  border-top: 1px solid #999;
+  padding: 1em;
+  margin: 0em;
 }
-
-#detail .person {
-  width: auto;
+.results .person:hover {
+  background-color: #fff;
+  color: black;
 }
 
 #content { clear: both; }

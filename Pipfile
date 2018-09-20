@@ -19,6 +19,7 @@ markupsafe = "*"
 werkzeug = "*"
 wtforms = "*"
 "psycopg2-binary" = "*"
+flask-whooshee = "*"
 
 [requires]
 python_version = "3.6"

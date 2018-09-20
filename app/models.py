@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from app import app, db
-
+from app import app, db, whooshee
 
 resources_people = db.Table(
     'resources_people',
@@ -35,6 +34,10 @@ fields_people = db.Table(
     db.Column('field_id', db.Integer(), db.ForeignKey('field.id'))
 )
 
+@whooshee.register_model(
+    'first_name', 'last_name', 'organisation', 'biography',
+    'country', 
+)
 class Person(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     source_id = db.Column(db.Integer, unique=True)

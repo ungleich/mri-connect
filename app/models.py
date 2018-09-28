@@ -35,8 +35,7 @@ fields_people = db.Table(
 )
 
 @whooshee.register_model(
-    'first_name', 'last_name', 'organisation', 'biography',
-    'country', 
+    'first_name', 'last_name', 'organisation', 'position', 'biography',
 )
 class Person(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -51,6 +50,11 @@ class Person(db.Model):
     personal_url = db.Column(db.Unicode(2048))
     biography = db.Column(db.UnicodeText)
 
+    resources = db.relationship('Resource', secondary=resources_people,
+        backref=db.backref('people', lazy='dynamic'))
+    ranges = db.relationship('Range', secondary=ranges_people,
+        backref=db.backref('people', lazy='dynamic'))
+
     research_methods = db.relationship('Method', secondary=methods_people,
         backref=db.backref('people', lazy='dynamic'))
     research_scales = db.relationship('Scale', secondary=scales_people,
@@ -58,11 +62,6 @@ class Person(db.Model):
     research_taxa = db.relationship('Taxon', secondary=taxa_people,
         backref=db.backref('people', lazy='dynamic'))
     research_fields = db.relationship('Field', secondary=fields_people,
-        backref=db.backref('people', lazy='dynamic'))
-
-    resources = db.relationship('Resource', secondary=resources_people,
-        backref=db.backref('people', lazy='dynamic'))
-    ranges = db.relationship('Range', secondary=ranges_people,
         backref=db.backref('people', lazy='dynamic'))
 
     def fullname(self):

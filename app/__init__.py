@@ -16,7 +16,6 @@ if Config.SQLALCHEMY_DATABASE_URI.startswith("sqlite"):
 
 db = SQLAlchemy(app)
 whooshee = Whooshee(app)
-whooshee.reindex()
 
 from .models import *
 migrate = Migrate(app, db)

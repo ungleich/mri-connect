@@ -4,7 +4,7 @@
 from app import app, db, admin
 from .models import *
 from .formats import *
-from .convert import refresh_data, reindex_search
+from .convert import refresh_data
 
 from flask_admin.contrib.sqla import ModelView, filters
 from flask_admin.form import FileUploadField
@@ -73,14 +73,35 @@ def get_paginated(query):
     }
 
 # API views
+FILTER_QUERIES = [ 'country', 'range', 'field', 'taxon' ]
 
 @app.route("/api/search", methods=['GET'])
 def search_list():
-    q = request.args.get('q')
-    if not q or len(q) < 3: return {}
-    query = Person.query.\
-        whooshee_search(q).\
-        order_by(Person.last_name.asc())
+    ra = request.args
+    q = ra.get('q')
+    if not q or len(q) < 3: 
+        query = Person.query
+    else:
+        query = Person.query.whooshee_search(q)
+
+    if ra.get('country') and len(ra.get('country')) > 2:
+        query = query.filter(
+            Person.country.like("%" + ra.get('country') + "%")
+        )
+    if ra.get('range') and len(ra.get('range')) > 2:
+        query = query.join(Person.ranges).filter(
+            Range.name.like("%" + ra.get('range') + "%")
+        )
+    if ra.get('field') and len(ra.get('field')) > 2:
+        query = query.join(Person.research_fields).filter(
+            Field.name.like("%" + ra.get('field') + "%")
+        )
+    if ra.get('taxon') and len(ra.get('taxon')) > 2:
+        query = query.join(Person.research_taxa).filter(
+            Taxon.name.like("%" + ra.get('taxon') + "%")
+        )
+
+    query = query.order_by(Person.last_name.asc())
     return get_paginated(query)
 
 @app.route("/api/people/<int:people_id>", methods=['GET'])
@@ -88,8 +109,12 @@ def people_detail(people_id):
     person = Person.query.filter_by(id=people_id).first_or_404()
     return {
         'data': person.dict(),
+        'resources': [r.dict() for r in person.resources],
         'ranges': [r.dict() for r in person.ranges],
-        'resources': [r.dict() for r in person.resources]
+        'fields': [r.name for r in person.research_fields],
+        'methods': [r.name for r in person.research_methods],
+        'scales': [r.name for r in person.research_scales],
+        'taxa': [r.name for r in person.research_taxa],
     }
 
 @app.route("/api/people", methods=['GET'])
@@ -102,7 +127,28 @@ def resources_list():
 
 @app.route("/api/ranges", methods=['GET'])
 def ranges_list():
-    return [r.dict() for r in Range.query.limit(10).all()]
+    q = request.args.get('q')
+    if not q or len(q) < 3: 
+        return [r.dict() for r in Range.query.order_by(Range.name.asc()).limit(25).all()]
+    else:
+        return [r.dict() for r in Range.query.filter(Range.name.like("%" + q + "%")).all()]
+
+@app.route("/api/fields", methods=['GET'])
+def fields_list():
+    q = request.args.get('q')
+    if not q or len(q) < 3: 
+        return [r.dict() for r in Field.query.order_by(Field.name.asc()).limit(25).all()]
+    else:
+        return [r.dict() for r in Field.query.filter(Field.name.like("%" + q + "%")).all()]
+
+@app.route("/api/taxa", methods=['GET'])
+def taxa_list():
+    q = request.args.get('q')
+    if not q or len(q) < 3: 
+        return [r.dict() for r in Taxon.query.order_by(Taxon.name.asc()).limit(25).all()]
+    else:
+        return [r.dict() for r in Taxon.query.filter(Taxon.name.like("%" + q + "%")).all()]
+
 
 #@app.errorhandler(Exception)
 #def handle_exception(error):
@@ -145,15 +191,19 @@ def upload_data():
         flash("Please select a valid file", 'error')
     return redirect(url_for('config.index'))
 
-@app.route('/reindex', methods=['GET', 'POST'])
-def reindex():
-    reindex_search()
-    flash("Search engine refresh complete")
-    return redirect(url_for('config.index'))
-
-# Data update
+# Data update tracking
 c_progress = 0
 c_filename = ""
+
+@app.route('/reindex', methods=['POST'])
+def reindex():
+    global c_progress
+    c_progress = 0
+    global c_filename
+    c_filename = ""
+    whooshee.reindex()
+    flash("Search engine refresh complete")
+    return redirect(url_for('config.index'))
 
 @app.route('/refresh', methods=["POST"])
 def refresh_all():

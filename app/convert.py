@@ -145,9 +145,5 @@ def refresh_data(filename, fmt=None):
                     db.session.add(rge)
 
     db.session.commit()
-    whooshee.reindex()
     yield None, None
     return count
-
-def reindex_search():
-    whooshee.reindex()

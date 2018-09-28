@@ -1,6 +1,5 @@
 import csv, json, re
 from os.path import isfile
-from flask import flash
 from .models import *
 from .formats import *
 
@@ -38,17 +37,25 @@ def get_by_id(rowid, obj, first=True):
 def refresh_data(filename, fmt=None):
     count = 0
     if not isfile(filename):
-        flash("Missing data: %s  - refresh aborted." % fmt['filename'])
+        yield("Missing data: %s  - refresh aborted." % fmt['filename'], "error")
         return None
     if fmt['extension'] is 'csv':
-        with open(filename, 'rt') as csvfile:
+        with open(filename, 'rt', encoding='utf-8', errors='ignore') as csvfile:
             datareader = csv.DictReader(csvfile)
+            totalrows = 0
+            for row in datareader: totalrows += 1
+            csvfile.seek(0)
+
             for row in datareader:
                 if row is None: continue
 
+                yield count, count/totalrows
+                # Ensure any new data is flushed
+                db.session.commit()
+
                 for r in fmt['required']:
                     if not r in row:
-                        flash("Missing attribute in %s (%s)" % (r, fmt['filename']))
+                        yield("Missing attribute in %s (%s)" % (r, fmt['filename']), "error")
                         return None
 
                 if fmt['dataformat'] is DataFormat.PERSON_DETAIL:
@@ -120,7 +127,11 @@ def refresh_data(filename, fmt=None):
         with open(filename, 'rt') as jsonfile:
             jsondata = json.load(jsonfile)
             if fmt['dataformat'] is DataFormat.RANGE_SHAPES:
+                totalrows = len(jsondata['features'])
                 for f in jsondata['features']:
+                    yield count, count/totalrows
+                    count = count + 1
+
                     p = f['properties']
                     rge = Range.query.filter_by(gmba_id=p['GMBA_ID']).first()
                     if not rge:
@@ -130,10 +141,10 @@ def refresh_data(filename, fmt=None):
                     for c in ['Country_1', 'Country_2_']:
                         if c in p: rge.countries = p[c]
                     db.session.add(rge)
-                    count = count + 1
 
     db.session.commit()
     whooshee.reindex()
+    yield None, None
     return count
 
 def reindex_search():

@@ -12,7 +12,7 @@ from flask_admin import (
     BaseView, expose
 )
 from flask import (
-    url_for, redirect,
+    url_for, redirect, Response,
     request, flash,
     render_template,
     send_from_directory,
@@ -21,7 +21,7 @@ from flask import (
 from werkzeug import secure_filename
 from sqlalchemy import or_
 
-import csv, json
+import csv, json, time
 import os.path as ospath
 from os import makedirs
 from shutil import move
@@ -104,6 +104,11 @@ def resources_list():
 def ranges_list():
     return [r.dict() for r in Range.query.limit(10).all()]
 
+#@app.errorhandler(Exception)
+#def handle_exception(error):
+#    response = json.dumps(error.to_dict())
+#    response.status_code = error.status_code
+#    return response
 
 # Data upload
 @app.route('/upload', methods=['GET', 'POST'])
@@ -147,20 +152,53 @@ def reindex():
     return redirect(url_for('config.index'))
 
 # Data update
+c_progress = 0
+
 @app.route('/refresh', methods=["POST"])
 def refresh_all():
-    stats = []
-    count_total = 0
-    for fmt in DATAFORMATS:
-        filename = get_datafile(fmt)
-        count = refresh_data(filename, fmt)
-        if count is None:
-            return redirect(url_for('config.index'))
-        stats.append({ 'format': fmt['dataformat'], 'count': count })
-        count_total = count_total + count
-    flash("%d objects updated" % (count_total))
-    print(stats)
-    return redirect(url_for('config.index'))
+    global c_progress
+    c_progress = 0
+    def generate():
+        stats = []
+        total = 0
+        for fmt in DATAFORMATS:
+            filename = get_datafile(fmt)
+            c = 1
+            c_counter = 0
+            rd = refresh_data(filename, fmt)
+            while c is not None:
+                try:
+                    c, p = next(rd)
+                except Exception as e:
+                    print(e)
+                    yield 'error: %s' % str(e)
+                if isinstance(c, (int, float)):
+                    global c_progress
+                    c_counter = c
+                    if isinstance(p, (int, float)):
+                        c_progress = p
+                    yield str(c) + "\n\n" 
+                elif isinstance(p, str) and isinstance(c, str):
+                    # Error condition
+                    yield p + ": " + c + "\n\n"
+                    return
+            
+            stats.append({ 'format': fmt['dataformat'], 'count': c_counter })
+            total = total + c_counter
+        
+        yield "done: %d objects updated" % total
+        c_progress = 0
+        print(stats)
+    return Response(generate(), mimetype='text/html')
+
+@app.route('/progress')
+def get_progress():
+    global c_progress
+    def generate():
+        while 1:
+            yield "data:" + str(100*c_progress) + "\n\n"
+            time.sleep(1.0)
+    return Response(generate(), mimetype='text/event-stream')
 
 # Static paths
 @app.route('/data/<path:path>')

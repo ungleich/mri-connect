@@ -25,11 +25,6 @@ DATAFORMATS = [
         'filename': 'ranges',
         'required': ['Range_ID', 'RangeName', 'GMBA_ID']
     },{
-        'dataformat': DataFormat.RANGE_SHAPES,
-        'extension': 'geojson',
-        'filename': 'gmba',
-        'required': ['Name', 'GMBA_ID']
-    },{
         'dataformat': DataFormat.PERSON_RESOURCE,
         'extension': 'csv',
         'filename': 'people_resources',
@@ -39,6 +34,11 @@ DATAFORMATS = [
         'extension': 'csv',
         'filename': 'people_ranges',
         'required': ['ID', 'Person', 'MountainRange']
+    },{
+        'dataformat': DataFormat.RANGE_SHAPES,
+        'extension': 'geojson',
+        'filename': 'gmba',
+        'required': ['Name', 'GMBA_ID']
     }
 ]
 

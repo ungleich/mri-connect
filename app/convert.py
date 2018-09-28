@@ -36,6 +36,7 @@ def get_by_id(rowid, obj, first=True):
 # Data update routine
 def refresh_data(filename, fmt=None):
     count = 0
+    rowcount = 0
     if not isfile(filename):
         yield("Missing data: %s  - refresh aborted." % fmt['filename'], "error")
         return None
@@ -47,11 +48,12 @@ def refresh_data(filename, fmt=None):
             csvfile.seek(0)
 
             for row in datareader:
+                rowcount += 1
                 if row is None: continue
-
-                yield count, count/totalrows
-                # Ensure any new data is flushed
-                db.session.commit()
+                yield rowcount, rowcount/totalrows
+                # Ensure any new data is flushed from time to time
+                if count % 25 == 0:
+                    db.session.commit()
 
                 for r in fmt['required']:
                     if not r in row:
@@ -105,9 +107,9 @@ def refresh_data(filename, fmt=None):
 
                 elif fmt['dataformat'] is DataFormat.PERSON_RESOURCE:
                     rzs, source_id = get_by_id(row['Resource'], Resource, first=False)
-                    if not rzs.first(): continue
+                    if not rzs or not rzs.first(): continue
                     ppl, source_id = get_by_id(row['Person'], Person, first=False)
-                    if not ppl.first(): continue
+                    if not ppl or not ppl.first(): continue
                     for person in ppl:
                         for r in rzs: person.resources.append(r)
                         db.session.add(person)
@@ -115,16 +117,16 @@ def refresh_data(filename, fmt=None):
 
                 elif fmt['dataformat'] is DataFormat.PERSON_RANGE:
                     rzs, source_id = get_by_id(row['MountainRange'], Range, first=False)
-                    if not rzs.first(): continue
+                    if not rzs or not rzs.first(): continue
                     ppl, source_id = get_by_id(row['Person'], Person, first=False)
-                    if not ppl.first(): continue
+                    if not ppl or not ppl.first(): continue
                     for person in ppl:
                         for r in rzs: person.ranges.append(r)
                         db.session.add(person)
                         count = count + 1
 
     elif fmt['extension'] is 'geojson':
-        with open(filename, 'rt') as jsonfile:
+        with open(filename, 'rt', encoding='utf-8', errors='ignore') as jsonfile:
             jsondata = json.load(jsonfile)
             if fmt['dataformat'] is DataFormat.RANGE_SHAPES:
                 totalrows = len(jsondata['features'])
@@ -135,7 +137,7 @@ def refresh_data(filename, fmt=None):
                     p = f['properties']
                     rge = Range.query.filter_by(gmba_id=p['GMBA_ID']).first()
                     if not rge:
-                        print("Range not found: %s" % p['GMBA_ID'])
+                        print("Warning: range not found (%s)" % p['GMBA_ID'])
                         continue
                     rge.name = p['Name']
                     for c in ['Country_1', 'Country_2_']:

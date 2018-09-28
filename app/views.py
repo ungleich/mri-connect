@@ -21,7 +21,7 @@ from flask import (
 from werkzeug import secure_filename
 from sqlalchemy import or_
 
-import csv, json, time
+import csv, json, time, traceback
 import os.path as ospath
 from os import makedirs
 from shutil import move
@@ -153,6 +153,7 @@ def reindex():
 
 # Data update
 c_progress = 0
+c_filename = ""
 
 @app.route('/refresh', methods=["POST"])
 def refresh_all():
@@ -162,6 +163,8 @@ def refresh_all():
         stats = []
         total = 0
         for fmt in DATAFORMATS:
+            global c_filename
+            c_filename = fmt['filename']
             filename = get_datafile(fmt)
             c = 1
             c_counter = 0
@@ -170,8 +173,9 @@ def refresh_all():
                 try:
                     c, p = next(rd)
                 except Exception as e:
-                    print(e)
                     yield 'error: %s' % str(e)
+                    traceback.print_exc()
+                    return
                 if isinstance(c, (int, float)):
                     global c_progress
                     c_counter = c
@@ -187,16 +191,19 @@ def refresh_all():
             total = total + c_counter
         
         yield "done: %d objects updated" % total
+        print("done: %d objects updated" % total)
         c_progress = 0
-        print(stats)
+        c_filename = ""
     return Response(generate(), mimetype='text/html')
 
 @app.route('/progress')
 def get_progress():
     global c_progress
+    global c_filename
     def generate():
         while 1:
-            yield "data:" + str(100*c_progress) + "\n\n"
+            p = str(100*c_progress)
+            yield 'data: { "p":'+p+',"f":"'+c_filename+'"}\n\n'
             time.sleep(1.0)
     return Response(generate(), mimetype='text/event-stream')
 

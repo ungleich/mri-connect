@@ -168,12 +168,12 @@ def upload_data():
         # Validation
         fmt = None
         if fs_name.endswith('.csv'):
-            with open(fs_path, 'rt') as csvfile:
+            with open(fs_path, 'rt', encoding='utf-8', errors='ignore') as csvfile:
                 datareader = csv.DictReader(csvfile)
                 datalist = list(datareader)
                 fmt = detect_dataformat(datalist[0])
 
-        elif fs_name.endswith('.geojson'):
+        elif fs_name.endswith('.geojson', encoding='utf-8', errors='ignore'):
             with open(fs_path, 'rt') as jsonfile:
                 jsondata = json.load(jsonfile)
                 fmt = detect_dataformat(jsondata['features'][0]['properties'])
@@ -182,9 +182,7 @@ def upload_data():
         if fmt is not None:
             fs_target = get_datafile(fmt)
             move(fs_path, fs_target)
-            final_count = refresh_data(fs_target, fmt)
-            flash("Uploaded and imported %d objects for %s" %
-                (final_count, fmt['filename']), 'success')
+            flash("Uploaded new data file %s" % fmt['filename'], 'success')
         else:
             flash("Could not validate data format!", 'error')
     else:

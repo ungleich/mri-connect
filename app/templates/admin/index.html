@@ -18,16 +18,23 @@
             <hr>
 
             <center><div class="btn-group">
-                    <a class="btn btn-success" href='/client/index.html'>
+                    <a class="btn btn-success" href='{{ url_for('home_demo') }}'>
                         Demo page
                     </a>
-                    <a class="btn btn-info" target="_blank" href='/client/widget.html'>
+                    <a class="btn btn-info" target="_blank" href='{{ url_for('home_embed') }}'>
                         Full screen
                     </a>
-                    <a class="btn btn-warning" href='/api/people'>
-                        People API
-                    </a><a class="btn btn-warning" href='/api/resources'>
-                        Resources API
+                </div>
+                <br><br>
+                <div class="btn-group">
+                    <a class="btn btn-default" href='https://www.flaskapi.org/' target="_blank">
+                        API
+                    </a><a class="btn btn-warning" href='{{ url_for('people_list') }}'>
+                        People
+                    </a><a class="btn btn-warning" href='{{ url_for('resources_list') }}'>
+                        Resources
+                    </a><a class="btn btn-warning" href='{{ url_for('ranges_list') }}'>
+                        Ranges
                     </a>
                 </div>
                 <br><br><br><small>

@@ -172,3 +172,15 @@ def send_client(path):
 @app.route('/static/<path:path>')
 def send_static(path):
     return send_from_directory('../static', path)
+
+# Home paths
+@app.route('/demo')
+def home_demo():
+    return redirect('/client/index.html')
+@app.route('/embed')
+def home_embed():
+    return redirect('/client/widget.html')
+
+@app.route('/')
+def home_page():
+    return redirect(url_for('home_demo'))

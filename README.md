@@ -13,11 +13,14 @@ To install and start the backend using Pipenv (Pip and Virtualenv should work fi
     $ pipenv --three
     $ pipenv install
 
-To initialize and/or migrate the database:
+To create a blank database or upgrade the configured one:
+
+    $ flask db upgrade
+
+To initialize and/or migrate the database, if necessary:
 
     $ flask db init
     $ flask db migrate
-    $ flask db upgrade
 
 To start the backend:
 

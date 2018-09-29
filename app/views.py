@@ -86,19 +86,19 @@ def search_list():
 
     if ra.get('country') and len(ra.get('country')) > 2:
         query = query.filter(
-            Person.country.ilike("%" + ra.get('country').trim().lower() + "%")
+            Person.country.ilike("%" + ra.get('country').strip().lower() + "%")
         )
     if ra.get('range') and len(ra.get('range')) > 2:
         query = query.join(Person.ranges).filter(
-            Range.name.ilike("%" + ra.get('range').trim().lower() + "%")
+            Range.name.ilike("%" + ra.get('range').strip().lower() + "%")
         )
     if ra.get('field') and len(ra.get('field')) > 2:
         query = query.join(Person.research_fields).filter(
-            Field.name.ilike("%" + ra.get('field').trim().lower() + "%")
+            Field.name.ilike("%" + ra.get('field').strip().lower() + "%")
         )
     if ra.get('taxon') and len(ra.get('taxon')) > 2:
         query = query.join(Person.research_taxa).filter(
-            Taxon.name.ilike("%" + ra.get('taxon').trim().lower() + "%")
+            Taxon.name.ilike("%" + ra.get('taxon').strip().lower() + "%")
         )
 
     query = query.order_by(Person.last_name.asc())
@@ -131,7 +131,7 @@ def ranges_list():
     if not q or len(q) < 3: 
         return [r.dict() for r in Range.query.order_by(Range.name.asc()).limit(25).all()]
     else:
-        return [r.dict() for r in Range.query.filter(Range.name.ilike("%" + q.trim().lower() + "%")).all()]
+        return [r.dict() for r in Range.query.filter(Range.name.ilike("%" + q.strip().lower() + "%")).all()]
 
 @app.route("/api/fields", methods=['GET'])
 def fields_list():
@@ -139,7 +139,7 @@ def fields_list():
     if not q or len(q) < 3: 
         return [r.dict() for r in Field.query.order_by(Field.name.asc()).limit(25).all()]
     else:
-        return [r.dict() for r in Field.query.filter(Field.name.ilike("%" + q.trim().lower() + "%")).all()]
+        return [r.dict() for r in Field.query.filter(Field.name.ilike("%" + q.strip().lower() + "%")).all()]
 
 @app.route("/api/taxa", methods=['GET'])
 def taxa_list():
@@ -147,7 +147,7 @@ def taxa_list():
     if not q or len(q) < 3: 
         return [r.dict() for r in Taxon.query.order_by(Taxon.name.asc()).limit(25).all()]
     else:
-        return [r.dict() for r in Taxon.query.filter(Taxon.name.ilike("%" + q.trim().lower() + "%")).all()]
+        return [r.dict() for r in Taxon.query.filter(Taxon.name.ilike("%" + q.strip().lower() + "%")).all()]
 
 
 #@app.errorhandler(Exception)

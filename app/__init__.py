@@ -24,3 +24,6 @@ migrate = Migrate(app, db)
 admin = admin.Admin(app, name='GMBA Connect', template_mode='bootstrap3')
 
 from .views import *
+
+# Rebuild the search index on startup
+whooshee.reindex()

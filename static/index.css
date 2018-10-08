@@ -1,13 +1,15 @@
-#main {
-  background-color: #f0f0f0;
-  padding: 0;
-  padding-top: 3em;
+body {
+  margin: 0; padding: 0;
 }
 
-#header {
-  background: url(/static/images/banner.jpg) center no-repeat;
-  background-size: cover;
-  padding-top: 460px;
+main {
+  background-color: #f0f0f0;
+  padding: 1em;
+  color: rgb(102, 102, 102);
+  font-family: FrutigerLTW02-55Roman, Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  line-height: 30.0667px;
+  text-rendering: optimizelegibility;
 }
 
 #search, #contact {
@@ -58,11 +60,14 @@ a { color: #444; }
   border-left: 20px solid wheat;
 }
 
-.field_country .material-icons {
-  float: left;
-  margin: 7pt;
+gmba-search .o-field { margin: 1em; }
+
+gmba-search .c-field {
+  padding-left: 2em;
 }
 
-.field_country .c-field{
-  width: 71%;
+gmba-search .material-icons {
+  position:absolute;
+  margin-top:0.3em;
+  margin-left:0.3em;
 }

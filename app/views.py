@@ -62,12 +62,34 @@ class ConfigurationView(BaseView):
 
 admin.add_view(ConfigurationView(name='Configuration', endpoint='config'))
 
+
 def get_paginated(query):
     page = int(request.args.get('page', 1))
     per_page = int(request.args.get('per_page', 10))
     ppp = query.paginate(page, per_page, error_out=False)
+    filters = {
+       'country': [],
+       'range': [],
+       'field': [],
+       'taxon': [],
+    }
+    for p in ppp.items:
+        filters['country'].append(p.country)
+        for r in p.ranges:
+            filters['range'].append(r.name)
+        for r in p.research_fields:
+            filters['field'].append(r.name)
+        for r in p.research_taxa:
+            filters['taxon'].append(r.name)
+    filters = {
+       'country': sorted(set(filters['country'])),
+       'range': sorted(set(filters['range'])),
+       'field': sorted(set(filters['field'])),
+       'taxon': sorted(set(filters['taxon'])),
+    }
     return {
         'items': [p.dict() for p in ppp.items],
+        'filters': filters,
         'page': page, 'pages': ppp.pages, 'total': ppp.total,
         'has_next': ppp.has_next, 'has_prev': ppp.has_prev
     }
@@ -272,7 +294,7 @@ def send_static(path):
 @app.route('/demo')
 def home_demo():
     return redirect('/client/index.html')
-    
+
 @app.route('/embed')
 def home_embed():
     return redirect('/client/widget.html')

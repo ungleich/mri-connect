@@ -11,10 +11,11 @@
 			Template: Arcana by HTML5 UP
 			html5up.net | @ajlkn
 			Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
-		-->
 		<link rel="stylesheet" href="/static/assets/css/main.css" />
+	-->
 		<!--[if lte IE 8]><link rel="stylesheet" href="/static/assets/css/ie8.css" /><![endif]-->
 		<!--[if lte IE 9]><link rel="stylesheet" href="/static/assets/css/ie9.css" /><![endif]-->
+
 		<!--[if lt IE 9]>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.0.5/es5-shim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -27,19 +28,17 @@
    crossorigin=""></script>
 	 <script src="https://cdn.rawgit.com/calvinmetcalf/leaflet-ajax/master/dist/leaflet.ajax.min.js"></script>
 
-
 	 <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
 	       rel="stylesheet">
+				 
 		<link rel="stylesheet" href="/static/assets/css/blaze.min.css">
 		<link rel="stylesheet" href="/static/index.css">
 	</head>
 	<body>
-		<div id="page-wrapper">
-
-			<h1 style="display:none"><a href="#top" id="logo"><em>GMBA</em> Connect</a></h1>
+		<blaze-site>
 
 			<!-- Main -->
-				<section class="wrapper style1" id="main">
+				<main>
 					<div class="container">
 						<gmba-search></gmba-search>
 						<noscript>
@@ -91,11 +90,10 @@
 					</div>
 				</section>
 
-<div class="attribution">
-					Design by html5up.net [CCA 3.0 license](html5up.net/license)
-</div>
 
-		</div>
+				<h5 style="display:none"><a href="#" id="logo"><em>GMBA</em> Connect</a></h5>
+
+		</blaze-site>
 
 		<!-- Riot tags -->
 			<script src="/static/assets/tags/gmba-search.tag" type="riot/tag"></script>
@@ -108,6 +106,7 @@
 			<!-- <script src="/static/assets/js/util.js"></script> -->
 			<!--[if lte IE 8]><script src="/static/assets/js/ie/respond.min.js"></script><![endif]-->
 			<script src="/static/assets/js/riot+compiler.min.js"></script>
+			<script src="https://cdn.jsdelivr.net/riotgear/latest/rg.min.js"></script>
 
 			<script src="/static/assets/js/gmba.1.0.js"></script>
 

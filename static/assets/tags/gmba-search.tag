@@ -1,20 +1,32 @@
 <gmba-search>
 
   <form onsubmit={ search }>
-    <div style="margin:1em" class="o-field o-field--icon-left">
-      <i class="fa fa-search c-icon" style="position:absolute;margin-top:0.6em"></i>
+    <div class="o-field o-field--icon-left">
+      <i class="material-icons">
+        search
+      </i>
       <input name="query" class="c-field" placeholder="Search ..." type="text" />
     </div>
   </form>
 
-  <div class="o-grid field_country">
+  <div class="o-grid o-grid--wrap field-filters">
     <form onsubmit={ search }>
+
       <div class="o-grid__cell">
 
-        <i class="material-icons">
-        public
-        </i>
-        <input name="filter-country" type="text" class="c-field" placeholder="Country" />
+        <div role="menu" class="c-card c-card--menu u-high">
+          <label role="menuitem" class="c-card__control c-field c-field--choice">
+            <i class="material-icons">
+            public
+            </i>
+            <input name="filter-country" type="text" class="c-field" placeholder="Country" onblur={ clearfilter } onfocus={ focusfilter } oninput={ focusfilter } />
+          </label>
+          <label role="menuitem" class="c-card__control c-field c-field--choice"
+            each={ f in filters_shown.country }
+            data-target="filter-country" onclick={ selectfilter }>
+              { f }
+          </label>
+        </div>
 
       </div>
     </form><form onsubmit={ search }>
@@ -60,7 +72,7 @@
   <button role="menuitem" class="c-card__control">Proposition 6</button>
 </div>-->
 
-  <div class="help" style="margin:1em">
+  <div class="help" style="margin:1em" hide={ results.people }>
     <p>
       To search for research scientists, enter partial names (e.g. Jill)
       or research field keywords (e.g. alpine monitoring ecology), or
@@ -128,23 +140,55 @@
     this.results = {}
     this.detailview = false
     this.person = { 'data': false, 'resources': [] }
+    const FILTER_BLANK = {
+       'country': [], 'range': [], 'field': [], 'taxon': []
+    }
+    this.filters_shown = {}
+    this.filters_available = {}
 
     search(e) {
       e.preventDefault()
       var self = this
+
+      // Get the value of the search query
       q = $('input[name="query"]').val()
 
-      ffs = [ 'country', 'range', 'field', 'taxon' ]
-      $.each(ffs, function() {
+      // Iterate through the filter fields
+      $.each(Object.keys(FILTER_BLANK), function() {
         fq = $('input[name="filter-'+this+'"]').val()
         if (fq.length > 2)
           q += '&' + this + '=' + fq
       })
 
+      // Run a search query
       $.getJSON('/api/search?q=' + q, function(data) {
         self.results = { 'people': data.items }
+        self.filters_available = data.filters
         self.update()
       })
+    }
+
+    clearfilter(e) {
+      self.filters_shown = FILTER_BLANK
+    }
+
+    focusfilter(e) {
+      var self = this
+      self.filters_shown = FILTER_BLANK
+      fq = $('input[name="filter-country"]').val().toLowerCase()
+      if (self.filters_available === {}) return
+      console.log(self.filters_shown)
+      $.each(self.filters_available.country, function() {
+        if (this.toLowerCase().indexOf(fq) >= 0)
+          self.filters_shown.country.push(this)
+      })
+    }
+
+    selectfilter(e) {
+      $obj = $(e.target)
+      $tgt = $('input[name="' + $obj.attr('data-target') + '"]')
+      $tgt.val($obj.text())
+      this.search(e)
     }
 
     details(e) {

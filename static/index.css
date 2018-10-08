@@ -57,3 +57,12 @@ a { color: #444; }
   background: white;
   border-left: 20px solid wheat;
 }
+
+.field_country .material-icons {
+  float: left;
+  margin: 7pt;
+}
+
+.field_country .c-field{
+  width: 71%;
+}

@@ -7,28 +7,40 @@
     </div>
   </form>
 
-  <div class="o-grid">
+  <div class="o-grid field_country">
     <form onsubmit={ search }>
       <div class="o-grid__cell">
 
+        <i class="material-icons">
+        public
+        </i>
         <input name="filter-country" type="text" class="c-field" placeholder="Country" />
 
       </div>
     </form><form onsubmit={ search }>
       <div class="o-grid__cell">
 
+        <i class="material-icons">
+        filter_hdr
+        </i>
         <input name="filter-range" type="text" class="c-field" placeholder="Range" />
 
       </div>
     </form><form onsubmit={ search }>
       <div class="o-grid__cell">
 
+        <i class="material-icons">
+        work
+        </i>
         <input name="filter-field" type="text" class="c-field" placeholder="Field" />
 
       </div>
     </form><form onsubmit={ search }>
       <div class="o-grid__cell">
 
+        <i class="material-icons">
+        pets
+        </i>
         <input name="filter-taxon" type="text" class="c-field" placeholder="Taxon" />
 
         <!--<select class="c-field" filter-type="taxa" placeholder="Taxa">
@@ -38,6 +50,15 @@
       </div>
     </form>
   </div>
+
+  <!--<div role="menu" class="c-card c-card--menu u-high c-card--grouped">
+  <button role="menuitem" class="c-card__control">Proposition 1</button>
+  <button role="menuitem" class="c-card__control">Proposition 2</button>
+  <button role="menuitem" class="c-card__control">Proposition 3</button>
+  <button role="menuitem" class="c-card__control">Proposition 4</button>
+  <button role="menuitem" class="c-card__control">Proposition 5</button>
+  <button role="menuitem" class="c-card__control">Proposition 6</button>
+</div>-->
 
   <div class="help" style="margin:1em">
     <p>
@@ -107,7 +128,7 @@
     this.results = {}
     this.detailview = false
     this.person = { 'data': false, 'resources': [] }
-    
+
     search(e) {
       e.preventDefault()
       var self = this

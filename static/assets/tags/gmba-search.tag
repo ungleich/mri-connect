@@ -1,34 +1,50 @@
 <gmba-search>
 
   <form onsubmit={ search }>
-
-    <input name="query" class="c-field" placeholder="Search ..." type="text" />
-
-    <!-- <a href="#" class="button c-button" id="show-advanced">Advanced search</a> -->
-<!--
-    <select onchange={ refine(country) } class="c-field">
-      <option each={ filters.country }></option>
-    </select> -->
-
-    <!-- <select onchange={ refine(range) }>
-      <option each={ filters.range }></option>
-    </select>
-
-    <select onchange={ refine(expertise) }>
-      <option each={ filters.expertise }></option>
-    </select>
-
-    <select onchange={ refine(taxa) }>
-      <option each={ filters.taxa }></option>
-    </select> -->
-
+    <div style="margin:1em" class="o-field o-field--icon-left">
+      <i class="fa fa-search c-icon" style="position:absolute;margin-top:0.6em"></i>
+      <input name="query" class="c-field" placeholder="Search ..." type="text" />
+    </div>
   </form>
 
-  <div class="help">
+  <div class="o-grid">
+    <form onsubmit={ search }>
+      <div class="o-grid__cell">
+
+        <input name="filter-country" type="text" class="c-field" placeholder="Country" />
+
+      </div>
+    </form><form onsubmit={ search }>
+      <div class="o-grid__cell">
+
+        <input name="filter-range" type="text" class="c-field" placeholder="Range" />
+
+      </div>
+    </form><form onsubmit={ search }>
+      <div class="o-grid__cell">
+
+        <input name="filter-field" type="text" class="c-field" placeholder="Field" />
+
+      </div>
+    </form><form onsubmit={ search }>
+      <div class="o-grid__cell">
+
+        <input name="filter-taxon" type="text" class="c-field" placeholder="Taxon" />
+
+        <!--<select class="c-field" filter-type="taxa" placeholder="Taxa">
+          <option each={ filters.taxa }>{ name }</option>
+        </select>-->
+
+      </div>
+    </form>
+  </div>
+
+  <div class="help" style="margin:1em">
     <p>
-      To search for research scientists, enter partial names (e.g. Dr. Jill)
-      or research field keywords (e.g. alpine monitoring ecology).
-      You can also use the map below to focus on a geographic region.
+      To search for research scientists, enter partial names (e.g. Jill)
+      or research field keywords (e.g. alpine monitoring ecology), or
+      you even submit it blank to use the filters.
+      Use the map below to focus on a geographic region.
     </p>
   </div>
   <div class="results" hide={ detailview }>
@@ -40,26 +56,50 @@
     </div>
   </div>
   <div class="details" hide={ !detailview }>
-    <div class="person">
-      <button class="c-button c-button--brand" onclick={ closedetails }>
-        Close</button>
-      <h4>{ person.data.fullname }</h4>
-      <p>{ person.data.position }</p>
-      <h5>{ person.data.organisation }</h5>
-      <p>{ person.data.country }</p>
-      <p>{ person.data.biography }</p>
-      <p>
-        <a target="_blank" href={ person.data.personal_url }>Website</a>
-      </p>
-      <ul class="resources">
-        <li each={ res in person.resources }>
-          <a href={ res.url } target="_blank">
-            <b>{ res.title }</b>
-          </a>
-          <br>{ res.abstract }<br>
-          <small>{ res.citation }</small>
-        </li>
-      </ul>
+    <div class="person c-card">
+      <header class="c-card__header">
+        <button onclick={ closedetails } type="button" class="c-button c-button--close" title="Close">&times;</button>
+        <h2 class="c-heading">
+          { person.data.fullname }
+        </h2>
+      </header>
+      <div class="c-card__body">
+        <a hide={ !person.data.personal_url } href={ person.data.personal_url } class="c-button c-button--brand" target="_blank">Website</a>
+        <h4>
+          { person.data.position }<br>
+          { person.data.organisation }<br>
+          { person.data.country }
+        </h4>
+        <p>{ person.data.biography }</p>
+      </div>
+      <footer class="c-card__footer">
+        <div class="o-grid">
+          <div class="o-grid__cell fields">
+            <h5>Fields</h5>
+            <ul><li each={ f in person.fields }>{ f }</li></ul>
+          </div><div class="o-grid__cell methods">
+            <h5>Methods</h5>
+            <ul><li each={ f in person.methods }>{ f }</li></ul>
+          </div><div class="o-grid__cell scales">
+            <h5>Scales</h5>
+            <ul><li each={ f in person.scales }>{ f }</li></ul>
+          </div><div class="o-grid__cell taxa">
+            <h5>Taxa</h5>
+            <ul><li each={ f in person.taxa }>{ f }</li></ul>
+          </div>
+        </div>
+
+        <h2>Resources</h2>
+        <ul class="resources">
+          <li each={ res in person.resources }>
+            <a href={ res.url } target="_blank">
+              <b>{ res.title }</b>
+            </a>
+            <br>{ res.abstract }<br>
+            <small>{ res.citation }</small>
+          </li>
+        </ul>
+      </footer>
     </div>
   </div>
 
@@ -67,13 +107,19 @@
     this.results = {}
     this.detailview = false
     this.person = { 'data': false, 'resources': [] }
-
-    // var results = riot.observable()
-
+    
     search(e) {
       e.preventDefault()
       var self = this
       q = $('input[name="query"]').val()
+
+      ffs = [ 'country', 'range', 'field', 'taxon' ]
+      $.each(ffs, function() {
+        fq = $('input[name="filter-'+this+'"]').val()
+        if (fq.length > 2)
+          q += '&' + this + '=' + fq
+      })
+
       $.getJSON('/api/search?q=' + q, function(data) {
         self.results = { 'people': data.items }
         self.update()

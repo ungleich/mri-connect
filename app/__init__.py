@@ -10,9 +10,12 @@ app = FlaskAPI(__name__, static_url_path='')
 from .config import Config
 app.logger.info('>>> {}'.format(Config.FLASK_ENV))
 
+if Config.SQLALCHEMY_DATABASE_URI.startswith("sqlite"):
+    app.logger.info('Warning: temporary database, changes will not persist.')
+    app.logger.info('>>> {}'.format(Config.SQLALCHEMY_DATABASE_URI))
+
 db = SQLAlchemy(app)
 whooshee = Whooshee(app)
-whooshee.reindex()
 
 from .models import *
 migrate = Migrate(app, db)
@@ -21,3 +24,6 @@ migrate = Migrate(app, db)
 admin = admin.Admin(app, name='GMBA Connect', template_mode='bootstrap3')
 
 from .views import *
+
+# Rebuild the search index on startup
+whooshee.reindex()

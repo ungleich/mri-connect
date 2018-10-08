@@ -4,7 +4,7 @@
 from app import app, db, admin
 from .models import *
 from .formats import *
-from .convert import refresh_data, reindex_search
+from .convert import refresh_data
 
 from flask_admin.contrib.sqla import ModelView, filters
 from flask_admin.form import FileUploadField
@@ -12,7 +12,7 @@ from flask_admin import (
     BaseView, expose
 )
 from flask import (
-    url_for, redirect,
+    url_for, redirect, Response,
     request, flash,
     render_template,
     send_from_directory,
@@ -21,7 +21,7 @@ from flask import (
 from werkzeug import secure_filename
 from sqlalchemy import or_
 
-import csv, json
+import csv, json, time, traceback
 import os.path as ospath
 from os import makedirs
 from shutil import move
@@ -73,14 +73,35 @@ def get_paginated(query):
     }
 
 # API views
+FILTER_QUERIES = [ 'country', 'range', 'field', 'taxon' ]
 
 @app.route("/api/search", methods=['GET'])
 def search_list():
-    q = request.args.get('q')
-    if not q or len(q) < 3: return {}
-    query = Person.query.\
-        whooshee_search(q).\
-        order_by(Person.last_name.asc())
+    ra = request.args
+    q = ra.get('q')
+    if not q or len(q) < 3:
+        query = Person.query
+    else:
+        query = Person.query.whooshee_search(q)
+
+    if ra.get('country') and len(ra.get('country')) > 2:
+        query = query.filter(
+            Person.country.ilike("%" + ra.get('country').strip().lower() + "%")
+        )
+    if ra.get('range') and len(ra.get('range')) > 2:
+        query = query.join(Person.ranges).filter(
+            Range.name.ilike("%" + ra.get('range').strip().lower() + "%")
+        )
+    if ra.get('field') and len(ra.get('field')) > 2:
+        query = query.join(Person.research_fields).filter(
+            Field.name.ilike("%" + ra.get('field').strip().lower() + "%")
+        )
+    if ra.get('taxon') and len(ra.get('taxon')) > 2:
+        query = query.join(Person.research_taxa).filter(
+            Taxon.name.ilike("%" + ra.get('taxon').strip().lower() + "%")
+        )
+
+    query = query.order_by(Person.last_name.asc())
     return get_paginated(query)
 
 @app.route("/api/people/<int:people_id>", methods=['GET'])
@@ -88,8 +109,12 @@ def people_detail(people_id):
     person = Person.query.filter_by(id=people_id).first_or_404()
     return {
         'data': person.dict(),
+        'resources': [r.dict() for r in person.resources],
         'ranges': [r.dict() for r in person.ranges],
-        'resources': [r.dict() for r in person.resources]
+        'fields': [r.name for r in person.research_fields],
+        'methods': [r.name for r in person.research_methods],
+        'scales': [r.name for r in person.research_scales],
+        'taxa': [r.name for r in person.research_taxa],
     }
 
 @app.route("/api/people", methods=['GET'])
@@ -102,8 +127,34 @@ def resources_list():
 
 @app.route("/api/ranges", methods=['GET'])
 def ranges_list():
-    return [r.dict() for r in Range.query.limit(10).all()]
+    q = request.args.get('q')
+    if not q or len(q) < 3:
+        return [r.dict() for r in Range.query.order_by(Range.name.asc()).limit(25).all()]
+    else:
+        return [r.dict() for r in Range.query.filter(Range.name.ilike("%" + q.strip().lower() + "%")).all()]
 
+@app.route("/api/fields", methods=['GET'])
+def fields_list():
+    q = request.args.get('q')
+    if not q or len(q) < 3:
+        return [r.dict() for r in Field.query.order_by(Field.name.asc()).limit(25).all()]
+    else:
+        return [r.dict() for r in Field.query.filter(Field.name.ilike("%" + q.strip().lower() + "%")).all()]
+
+@app.route("/api/taxa", methods=['GET'])
+def taxa_list():
+    q = request.args.get('q')
+    if not q or len(q) < 3:
+        return [r.dict() for r in Taxon.query.order_by(Taxon.name.asc()).limit(25).all()]
+    else:
+        return [r.dict() for r in Taxon.query.filter(Taxon.name.ilike("%" + q.strip().lower() + "%")).all()]
+
+
+#@app.errorhandler(Exception)
+#def handle_exception(error):
+#    response = json.dumps(error.to_dict())
+#    response.status_code = error.status_code
+#    return response
 
 # Data upload
 @app.route('/upload', methods=['GET', 'POST'])
@@ -117,12 +168,12 @@ def upload_data():
         # Validation
         fmt = None
         if fs_name.endswith('.csv'):
-            with open(fs_path, 'rt') as csvfile:
+            with open(fs_path, 'rt', encoding='utf-8', errors='ignore') as csvfile:
                 datareader = csv.DictReader(csvfile)
                 datalist = list(datareader)
                 fmt = detect_dataformat(datalist[0])
 
-        elif fs_name.endswith('.geojson'):
+        elif fs_name.endswith('.geojson', encoding='utf-8', errors='ignore'):
             with open(fs_path, 'rt') as jsonfile:
                 jsondata = json.load(jsonfile)
                 fmt = detect_dataformat(jsondata['features'][0]['properties'])
@@ -131,36 +182,78 @@ def upload_data():
         if fmt is not None:
             fs_target = get_datafile(fmt)
             move(fs_path, fs_target)
-            final_count = refresh_data(fs_target, fmt)
-            flash("Uploaded and imported %d objects for %s" %
-                (final_count, fmt['filename']), 'success')
+            flash("Uploaded new data file %s" % fmt['filename'], 'success')
         else:
             flash("Could not validate data format!", 'error')
     else:
         flash("Please select a valid file", 'error')
     return redirect(url_for('config.index'))
 
-@app.route('/reindex', methods=['GET', 'POST'])
+# Data update tracking
+c_progress = 0
+c_filename = ""
+
+@app.route('/reindex', methods=['POST'])
 def reindex():
-    reindex_search()
+    global c_progress
+    c_progress = 0
+    global c_filename
+    c_filename = ""
+    whooshee.reindex()
     flash("Search engine refresh complete")
     return redirect(url_for('config.index'))
 
-# Data update
 @app.route('/refresh', methods=["POST"])
 def refresh_all():
-    stats = []
-    count_total = 0
-    for fmt in DATAFORMATS:
-        filename = get_datafile(fmt)
-        count = refresh_data(filename, fmt)
-        if count is None:
-            return redirect(url_for('config.index'))
-        stats.append({ 'format': fmt['dataformat'], 'count': count })
-        count_total = count_total + count
-    flash("%d objects updated" % (count_total))
-    print(stats)
-    return redirect(url_for('config.index'))
+    global c_progress
+    c_progress = 0
+    def generate():
+        stats = []
+        total = 0
+        for fmt in DATAFORMATS:
+            global c_filename
+            c_filename = fmt['filename']
+            filename = get_datafile(fmt)
+            c = 1
+            c_counter = 0
+            rd = refresh_data(filename, fmt)
+            while c is not None:
+                try:
+                    c, p = next(rd)
+                except Exception as e:
+                    yield 'error: %s' % str(e)
+                    traceback.print_exc()
+                    return
+                if isinstance(c, (int, float)):
+                    global c_progress
+                    c_counter = c
+                    if isinstance(p, (int, float)):
+                        c_progress = p
+                    yield str(c) + "\n\n"
+                elif isinstance(p, str) and isinstance(c, str):
+                    # Error condition
+                    yield p + ": " + c + "\n\n"
+                    return
+
+            stats.append({ 'format': fmt['dataformat'], 'count': c_counter })
+            total = total + c_counter
+
+        yield "done: %d objects updated" % total
+        print("done: %d objects updated" % total)
+        c_progress = 0
+        c_filename = ""
+    return Response(generate(), mimetype='text/html')
+
+@app.route('/progress')
+def get_progress():
+    global c_progress
+    global c_filename
+    def generate():
+        while 1:
+            p = str(100*c_progress)
+            yield 'data: { "p":'+p+',"f":"'+c_filename+'"}\n\n'
+            time.sleep(1.0)
+    return Response(generate(), mimetype='text/event-stream')
 
 # Static paths
 @app.route('/data/<path:path>')
@@ -173,7 +266,14 @@ def send_client(path):
 def send_static(path):
     return send_from_directory('../static', path)
 
-# Home page
+# Home paths
+@app.route('/demo')
+def home_demo():
+    return redirect('/client/index.html')
+@app.route('/embed')
+def home_embed():
+    return redirect('/client/widget.html')
+
 @app.route('/')
 def home_page():
-    return redirect('/client/index.html')
+    return redirect(url_for('home_demo'))

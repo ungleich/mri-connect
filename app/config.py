@@ -6,7 +6,7 @@ set FLASK_CONFIG to 'development
 
 import os
 from app import app
-
+from tempfile import gettempdir
 
 class Config(object):
     # If not set fall back to production for safety
@@ -27,7 +27,8 @@ class Config(object):
     if 'DATABASE_URL' in os.environ:
         SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
     else:
-        SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/gmbaconnect.sqlite3'
+        tf = os.path.join(gettempdir(), 'gmbaconnect.sqlite3')
+        SQLALCHEMY_DATABASE_URI = 'sqlite:///' + tf
 
     # if not 'FLASK_ENV' is 'production':
     WHOOSHEE_MEMORY_STORAGE = True

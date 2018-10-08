@@ -32,6 +32,8 @@ a { color: #444; }
 
 #help { font-size: 150%; line-height: 1.5em; }
 
+#content { clear: both; }
+
 .results .person {
   display: block;
   height: auto;
@@ -47,27 +49,35 @@ a { color: #444; }
   color: black;
 }
 
-#content { clear: both; }
-
 .details .c-button {
   position: relative;
   float: right;
   cursor: pointer;
 }
 
-.details {
-  background: white;
-  border-left: 20px solid wheat;
+.o-field--icon-left .c-button--close {
+  top: 0.25em;
 }
 
-gmba-search .o-field { margin: 1em; }
+.details {
+  background: white;
+  border: 20px solid wheat;
+}
 
-gmba-search .c-field {
+.o-field { margin: 1em; }
+
+.c-field {
   padding-left: 2em;
 }
 
-gmba-search .material-icons {
+.material-icons {
   position:absolute;
   margin-top:0.3em;
   margin-left:0.3em;
 }
+
+.field-filters .c-card--menu { margin: 0 0 0.5em 0; }
+
+.person .name { font-weight: bold; }
+
+.results .footer { text-align: center; margin: 1em; }

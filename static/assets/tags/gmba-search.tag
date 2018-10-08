@@ -18,7 +18,7 @@
         <i class="material-icons">
         public
         </i>
-        <input name="filter-country" type="text" class="c-field" placeholder="Country" onfocus={ focusfilter } onkeydown={ focusfilter } />
+        <input name="filter-country" type="text" class="c-field" placeholder="Country" onfocus={ focusfilter } onkeydown={ keydownfilter } />
 
         <div role="menu" class="c-card c-card--menu u-high">
           <label role="menuitem" class="c-card__control c-field c-field--choice"
@@ -34,7 +34,7 @@
         <i class="material-icons">
         filter_hdr
         </i>
-        <input name="filter-range" type="text" class="c-field" placeholder="Range" onfocus={ focusfilter } onkeydown={ focusfilter } />
+        <input name="filter-range" type="text" class="c-field" placeholder="Range" onfocus={ focusfilter } onkeydown={ keydownfilter } />
 
         <div role="menu" class="c-card c-card--menu u-high">
           <label role="menuitem" class="c-card__control c-field c-field--choice"
@@ -50,7 +50,7 @@
         <i class="material-icons">
         work
         </i>
-        <input name="filter-field" type="text" class="c-field" placeholder="Field" onfocus={ focusfilter } onkeydown={ focusfilter } />
+        <input name="filter-field" type="text" class="c-field" placeholder="Field" onfocus={ focusfilter } onkeydown={ keydownfilter } />
 
         <div role="menu" class="c-card c-card--menu u-high">
           <label role="menuitem" class="c-card__control c-field c-field--choice"
@@ -66,7 +66,7 @@
         <i class="material-icons">
         pets
         </i>
-        <input name="filter-taxon" type="text" class="c-field" placeholder="Taxon" onfocus={ focusfilter } onkeydown={ focusfilter } />
+        <input name="filter-taxon" type="text" class="c-field" placeholder="Taxon" onfocus={ focusfilter } onkeydown={ keydownfilter } />
 
         <div role="menu" class="c-card c-card--menu u-high">
           <label role="menuitem" class="c-card__control c-field c-field--choice"
@@ -218,12 +218,14 @@
       $('form').each(function() { this.reset() })
       self.clearfilter(e)
       self.results = { 'items': [] }
+      self.search(e)
     }
 
     focusfilter(e) {
       var self = this
       self.clearfilter()
       if (self.results.items === []) return
+      if (!self.results.filters) return
 
       $.each(Object.keys(FILTER_BLANK), function() {
         var filter = this
@@ -233,6 +235,11 @@
             self.filters_shown[filter].push(this)
         })
       })
+    }
+
+    keydownfilter(e) {
+      // TODO: json call to fetch more data
+      this.focusfilter(e)
     }
 
     selectfilter(e) {

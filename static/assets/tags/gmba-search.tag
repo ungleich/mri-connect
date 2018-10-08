@@ -10,17 +10,16 @@
   </form>
 
   <div class="o-grid o-grid--wrap field-filters">
-    <form onsubmit={ search }>
+    <form onsubmit={ search } autocomplete="off">
 
       <div class="o-grid__cell">
 
+        <i class="material-icons">
+        public
+        </i>
+        <input name="filter-country" type="text" class="c-field" placeholder="Country" onfocus={ focusfilter } onkeydown={ focusfilter } />
+
         <div role="menu" class="c-card c-card--menu u-high">
-          <label role="menuitem" class="c-card__control c-field c-field--choice">
-            <i class="material-icons">
-            public
-            </i>
-            <input name="filter-country" type="text" class="c-field" placeholder="Country" onblur={ clearfilter } onfocus={ focusfilter } oninput={ focusfilter } />
-          </label>
           <label role="menuitem" class="c-card__control c-field c-field--choice"
             each={ f in filters_shown.country }
             data-target="filter-country" onclick={ selectfilter }>
@@ -37,6 +36,14 @@
         </i>
         <input name="filter-range" type="text" class="c-field" placeholder="Range" />
 
+                <div role="menu" class="c-card c-card--menu u-high">
+                  <label role="menuitem" class="c-card__control c-field c-field--choice"
+                    each={ f in filters_shown.range }
+                    data-target="filter-range" onclick={ selectfilter }>
+                      { f }
+                  </label>
+                </div>
+
       </div>
     </form><form onsubmit={ search }>
       <div class="o-grid__cell">
@@ -46,6 +53,14 @@
         </i>
         <input name="filter-field" type="text" class="c-field" placeholder="Field" />
 
+                <div role="menu" class="c-card c-card--menu u-high">
+                  <label role="menuitem" class="c-card__control c-field c-field--choice"
+                    each={ f in filters_shown.field }
+                    data-target="filter-field" onclick={ selectfilter }>
+                      { f }
+                  </label>
+                </div>
+
       </div>
     </form><form onsubmit={ search }>
       <div class="o-grid__cell">
@@ -54,6 +69,14 @@
         pets
         </i>
         <input name="filter-taxon" type="text" class="c-field" placeholder="Taxon" />
+
+                <div role="menu" class="c-card c-card--menu u-high">
+                  <label role="menuitem" class="c-card__control c-field c-field--choice"
+                    each={ f in filters_shown.taxon }
+                    data-target="filter-taxon" onclick={ selectfilter }>
+                      { f }
+                  </label>
+                </div>
 
         <!--<select class="c-field" filter-type="taxa" placeholder="Taxa">
           <option each={ filters.taxa }>{ name }</option>
@@ -143,12 +166,13 @@
     const FILTER_BLANK = {
        'country': [], 'range': [], 'field': [], 'taxon': []
     }
-    this.filters_shown = {}
-    this.filters_available = {}
+    this.filters_shown = FILTER_BLANK
+    this.filters_available = FILTER_BLANK
 
     search(e) {
       e.preventDefault()
       var self = this
+      self.clearfilter()
 
       // Get the value of the search query
       q = $('input[name="query"]').val()
@@ -169,25 +193,33 @@
     }
 
     clearfilter(e) {
-      self.filters_shown = FILTER_BLANK
+      var self = this
+      $.each(Object.keys(FILTER_BLANK), function() {
+        self.filters_shown[this] = []
+      })
     }
 
     focusfilter(e) {
       var self = this
-      self.filters_shown = FILTER_BLANK
-      fq = $('input[name="filter-country"]').val().toLowerCase()
+      self.clearfilter()
       if (self.filters_available === {}) return
-      console.log(self.filters_shown)
-      $.each(self.filters_available.country, function() {
-        if (this.toLowerCase().indexOf(fq) >= 0)
-          self.filters_shown.country.push(this)
+
+      $.each(Object.keys(FILTER_BLANK), function() {
+        var filter = this
+        fq = $('input[name="filter-' + filter + '"]').val().toLowerCase().trim()
+        $.each(self.filters_available[filter], function() {
+          if (this.toLowerCase().indexOf(fq) >= 0)
+            self.filters_shown[filter].push(this)
+        })
       })
+
     }
 
     selectfilter(e) {
+      if (typeof(e.target) === 'undefined') return
       $obj = $(e.target)
       $tgt = $('input[name="' + $obj.attr('data-target') + '"]')
-      $tgt.val($obj.text())
+      $tgt.val($obj.text().trim())
       this.search(e)
     }
 

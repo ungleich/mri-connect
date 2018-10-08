@@ -108,9 +108,9 @@ def refresh_data(filename, fmt=None):
 
                 elif fmt['dataformat'] is DataFormat.PERSON_RANGE:
                     rzs, source_id = get_by_id(row['MountainRange'], Range, first=False)
-                    if not rzs.first(): continue
+                    if not rzs or not rzs.first(): continue
                     ppl, source_id = get_by_id(row['Person'], Person, first=False)
-                    if not ppl.first(): continue
+                    if not ppl or not ppl.first(): continue
                     for person in ppl:
                         for r in rzs: person.ranges.append(r)
                         db.session.add(person)

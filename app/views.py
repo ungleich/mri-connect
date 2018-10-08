@@ -125,11 +125,13 @@ def people_list():
 def resources_list():
     return get_paginated(Resource.query.order_by(Resource.title.asc()))
 
+MAX_RESULTS = 25
+
 @app.route("/api/ranges", methods=['GET'])
 def ranges_list():
     q = request.args.get('q')
     if not q or len(q) < 3:
-        return [r.dict() for r in Range.query.order_by(Range.name.asc()).limit(25).all()]
+        return [r.dict() for r in Range.query.order_by(Range.name.asc()).limit(MAX_RESULTS).all()]
     else:
         return [r.dict() for r in Range.query.filter(Range.name.ilike("%" + q.strip().lower() + "%")).all()]
 
@@ -137,7 +139,7 @@ def ranges_list():
 def fields_list():
     q = request.args.get('q')
     if not q or len(q) < 3:
-        return [r.dict() for r in Field.query.order_by(Field.name.asc()).limit(25).all()]
+        return [r.dict() for r in Field.query.order_by(Field.name.asc()).limit(MAX_RESULTS).all()]
     else:
         return [r.dict() for r in Field.query.filter(Field.name.ilike("%" + q.strip().lower() + "%")).all()]
 
@@ -145,7 +147,7 @@ def fields_list():
 def taxa_list():
     q = request.args.get('q')
     if not q or len(q) < 3:
-        return [r.dict() for r in Taxon.query.order_by(Taxon.name.asc()).limit(25).all()]
+        return [r.dict() for r in Taxon.query.order_by(Taxon.name.asc()).limit(MAX_RESULTS).all()]
     else:
         return [r.dict() for r in Taxon.query.filter(Taxon.name.ilike("%" + q.strip().lower() + "%")).all()]
 
@@ -270,6 +272,7 @@ def send_static(path):
 @app.route('/demo')
 def home_demo():
     return redirect('/client/index.html')
+    
 @app.route('/embed')
 def home_embed():
     return redirect('/client/widget.html')

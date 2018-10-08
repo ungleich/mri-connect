@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_whooshee import Whooshee
 import flask_admin as admin
+import click
 
 # Create application
 app = FlaskAPI(__name__, static_url_path='')
@@ -25,5 +26,7 @@ admin = admin.Admin(app, name='GMBA Connect', template_mode='bootstrap3')
 
 from .views import *
 
-# Rebuild the search index on startup
-whooshee.reindex()
+@app.cli.command()
+def reindex():
+    """ Rebuild the search index. """
+    whooshee.reindex()

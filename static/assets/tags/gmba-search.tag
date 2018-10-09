@@ -88,6 +88,11 @@
 
   </div><!-- /o-grid -->
 
+  <div class="noresults" style="margin:1em" hide={ !results.not_found }>
+    <h5>
+      No results for this search. Please try another query.
+    </h5>
+  </div>
 
   <div class="help" style="margin:1em" hide={ results.items.length }>
     <p>
@@ -206,6 +211,7 @@
         self.results = data
         if (current_items.length > 0)
           self.results.items = current_items.concat(self.results.items)
+        self.results.not_found = (data.items.length == 0)
         self.update()
       })
     }

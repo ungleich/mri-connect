@@ -1,85 +1,93 @@
 <gmba-search>
 
-  <form onsubmit={ search }>
+  <form onsubmit={ search } autocomplete="off">
+
     <div class="o-field o-field--icon-left">
       <i class="material-icons">
         search
       </i>
       <button onclick={ resetsearch } type="button" class="c-button c-button--close" title="Reset search">&times;</button>
-      <input name="query" class="c-field" placeholder="Search ..." type="text" />
+      <input name="query" class="c-field" placeholder="Search name, organisation, biography ..." type="text" />
     </div>
+
   </form>
+  <div class="o-grid o-grid--wrap o-grid--small-full o-grid--medium-small o-grid--large-full">
 
-  <form class="field-filters" onsubmit={ search } autocomplete="off">
-    <div class="o-grid o-grid--wrap o-grid--small-full o-grid--medium-small o-grid--large-full">
+    <div class="o-grid__cell o-grid__cell--width-25">
+      <form onsubmit={ search } autocomplete="off">
 
-      <div class="o-grid__cell o-grid__cell--width-25">
+      <i class="material-icons">
+      public
+      </i>
+      <input name="filter-country" type="text" class="c-field" placeholder="Country" onfocus={ focusfilter } onkeydown={ keydownfilter } />
 
-        <i class="material-icons">
-        public
-        </i>
-        <input name="filter-country" type="text" class="c-field" placeholder="Country" onfocus={ focusfilter } onkeydown={ keydownfilter } />
-
-        <div role="menu" class="c-card c-card--menu u-high">
-          <label role="menuitem" class="c-card__control c-field c-field--choice"
-            each={ f in filters_shown.country }
-            data-target="filter-country" onclick={ selectfilter }>
-              { f }
-          </label>
-        </div>
-
-      </div>
-      <div class="o-grid__cell o-grid__cell--width-25">
-
-        <i class="material-icons">
-        filter_hdr
-        </i>
-        <input name="filter-range" type="text" class="c-field" placeholder="Range" onfocus={ focusfilter } onkeydown={ keydownfilter } />
-
-        <div role="menu" class="c-card c-card--menu u-high">
-          <label role="menuitem" class="c-card__control c-field c-field--choice"
-            each={ f in filters_shown.range }
-            data-target="filter-range" onclick={ selectfilter }>
-              { f }
-          </label>
-        </div>
-
-      </div>
-      <div class="o-grid__cell o-grid__cell--width-25">
-
-        <i class="material-icons">
-        work
-        </i>
-        <input name="filter-field" type="text" class="c-field" placeholder="Field" onfocus={ focusfilter } onkeydown={ keydownfilter } />
-
-        <div role="menu" class="c-card c-card--menu u-high">
-          <label role="menuitem" class="c-card__control c-field c-field--choice"
-            each={ f in filters_shown.field }
-            data-target="filter-field" onclick={ selectfilter }>
-              { f }
-          </label>
-        </div>
-
-      </div>
-      <div class="o-grid__cell o-grid__cell--width-25">
-
-        <i class="material-icons">
-        pets
-        </i>
-        <input name="filter-taxon" type="text" class="c-field" placeholder="Taxon" onfocus={ focusfilter } onkeydown={ keydownfilter } />
-
-        <div role="menu" class="c-card c-card--menu u-high">
-          <label role="menuitem" class="c-card__control c-field c-field--choice"
-            each={ f in filters_shown.taxon }
-            data-target="filter-taxon" onclick={ selectfilter }>
-              { f }
-          </label>
-        </div>
-
+      <div role="menu" class="c-card c-card--menu u-high">
+        <label role="menuitem" class="c-card__control c-field c-field--choice"
+          each={ f in filters_shown.country }
+          data-target="filter-country" onclick={ selectfilter }>
+            { f }
+        </label>
       </div>
 
+      </form>
     </div>
-  </form>
+    <div class="o-grid__cell o-grid__cell--width-25">
+      <form onsubmit={ search } autocomplete="off">
+
+      <i class="material-icons">
+      filter_hdr
+      </i>
+      <input name="filter-range" type="text" class="c-field" placeholder="Range" onfocus={ focusfilter } onkeydown={ keydownfilter } />
+
+      <div role="menu" class="c-card c-card--menu u-high">
+        <label role="menuitem" class="c-card__control c-field c-field--choice"
+          each={ f in filters_shown.range }
+          data-target="filter-range" onclick={ selectfilter }>
+            { f }
+        </label>
+      </div>
+
+      </form>
+    </div>
+    <div class="o-grid__cell o-grid__cell--width-25">
+      <form onsubmit={ search } autocomplete="off">
+
+      <i class="material-icons">
+      work
+      </i>
+      <input name="filter-field" type="text" class="c-field" placeholder="Field" onfocus={ focusfilter } onkeydown={ keydownfilter } />
+
+      <div role="menu" class="c-card c-card--menu u-high">
+        <label role="menuitem" class="c-card__control c-field c-field--choice"
+          each={ f in filters_shown.field }
+          data-target="filter-field" onclick={ selectfilter }>
+            { f }
+        </label>
+      </div>
+
+      </form>
+    </div>
+    <div class="o-grid__cell o-grid__cell--width-25">
+      <form onsubmit={ search } autocomplete="off">
+
+      <i class="material-icons">
+      pets
+      </i>
+      <input name="filter-taxon" type="text" class="c-field" placeholder="Taxon" onfocus={ focusfilter } onkeydown={ keydownfilter } />
+
+      <div role="menu" class="c-card c-card--menu u-high">
+        <label role="menuitem" class="c-card__control c-field c-field--choice"
+          each={ f in filters_shown.taxon }
+          data-target="filter-taxon" onclick={ selectfilter }>
+            { f }
+        </label>
+      </div>
+
+      </form>
+    </div>
+
+  </div><!-- /o-grid -->
+
 
   <div class="help" style="margin:1em" hide={ results.items.length }>
     <p>
@@ -170,6 +178,7 @@
     this.filters_shown = FILTER_BLANK
 
     search(e, nextpage) {
+      console.log("Searching")
       e.preventDefault()
       var self = this
       self.closedetails()
@@ -218,7 +227,6 @@
       $('form').each(function() { this.reset() })
       self.clearfilter(e)
       self.results = { 'items': [] }
-      self.search(e)
     }
 
     focusfilter(e) {

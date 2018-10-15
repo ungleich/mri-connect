@@ -302,7 +302,8 @@
 				id: 'mapbox.streets'
 			}).addTo(mymap)
 
-			var mountain_ranges = new L.GeoJSON.AJAX("/data/gmba.geojson")
+			var mountain_ranges = new L.GeoJSON.AJAX("/static/geodata/gmba.geojson")
+      // TODO: reduce weight of line style
 			mountain_ranges.addTo(mymap)
       mountain_ranges.on('click', function(e) {
         $('input[name="filter-range"]').val(e.layer.feature.properties.Name)

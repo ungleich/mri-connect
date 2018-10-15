@@ -17,6 +17,11 @@ if Config.SQLALCHEMY_DATABASE_URI.startswith("sqlite"):
 
 db = SQLAlchemy(app)
 whooshee = Whooshee(app)
+try:
+    whooshee.reindex()
+    app.logger.info('Search engine index ready.')
+except Exception:
+    app.logger.warn('Could not reindex search, is the database migrated?')
 
 from .models import *
 migrate = Migrate(app, db)
@@ -25,8 +30,3 @@ migrate = Migrate(app, db)
 admin = admin.Admin(app, name='GMBA Connect', template_mode='bootstrap3')
 
 from .views import *
-
-@app.cli.command()
-def reindex():
-    """ Rebuild the search index. """
-    whooshee.reindex()

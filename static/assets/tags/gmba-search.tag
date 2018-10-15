@@ -143,20 +143,31 @@
         <!--<p>{ person.data.biography }</p>-->
       </div>
       <footer class="c-card__footer">
-        <div class="o-grid">
-          <div class="o-grid__cell fields">
-            <h5>Expertise</h5>
-            <ul><li each={ f in person.fields }>{ f }</li></ul>
-          </div><div class="o-grid__cell methods">
-            <h5>Methods</h5>
-            <ul><li each={ f in person.methods }>{ f }</li></ul>
-          </div><div class="o-grid__cell scales">
-            <h5>Scales</h5>
-            <ul><li each={ f in person.scales }>{ f }</li></ul>
-          </div><div class="o-grid__cell taxa">
-            <h5>Taxa</h5>
-            <ul><li each={ f in person.taxa }>{ f }</li></ul>
-          </div>
+        <div class="c-card c-card--accordion">
+          <button role="heading" aria-expanded="false" class="c-card__control" onclick={ toggleaccordion }>
+            Expertise
+          </button>
+          <section class="c-card__item c-card__item--pane fields">
+            <span each={ f in person.fields }>{ f } /</span>
+          </section>
+          <button role="heading" aria-expanded="false" class="c-card__control" onclick={ toggleaccordion }>
+            Methods
+          </button>
+          <section class="c-card__item c-card__item--pane methods">
+            <span each={ f in person.methods }>{ f } /</span>
+          </section>
+          <button role="heading" aria-expanded="false" class="c-card__control" onclick={ toggleaccordion }>
+            Scales
+          </button>
+          <section class="c-card__item c-card__item--pane scales">
+            <span each={ f in person.scales }>{ f } /</span>
+          </section>
+          <button role="heading" aria-expanded="false" class="c-card__control" onclick={ toggleaccordion }>
+            Taxa
+          </button>
+          <section class="c-card__item c-card__item--pane taxa">
+            <span each={ f in person.taxa }>{ f } /</span>
+          </section>
         </div>
 
         <h2>Resources</h2>
@@ -262,6 +273,11 @@
     keydownfilter(e) {
       // TODO: json call to fetch more data
       this.focusfilter(e)
+    }
+    
+    toggleaccordion(e) {
+      $obj = $(e.target)
+      $obj.attr('aria-expanded', ''+$obj.attr('aria-expanded')!='true')
     }
 
     selectfilter(e) {

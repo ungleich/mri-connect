@@ -1,5 +1,11 @@
 <gmba-search>
 
+  <div class="help" style="margin:1em" hide={ results.items.length }>
+    <p>
+      To search for a scientist, enter partial names (e.g. Jill), organization, position, or leave blank to search by country, range, expertise or taxa. Both the Range filter or the map below can be used to select a mountain range.
+    </p>
+  </div>
+  
   <form onsubmit={ search } autocomplete="off">
 
     <div class="o-field o-field--icon-left">
@@ -7,7 +13,7 @@
         search
       </i>
       <button onclick={ resetsearch } type="button" class="c-button c-button--close" title="Reset search">&times;</button>
-      <input name="query" class="c-field" placeholder="Search name, organisation, biography ..." type="text" />
+      <input name="query" class="c-field" placeholder="Search name, organisation, position" type="text" />
     </div>
 
   </form>
@@ -55,7 +61,7 @@
       <i class="material-icons">
       work
       </i>
-      <input name="filter-field" type="text" class="c-field" placeholder="Field" onfocus={ focusfilter } onkeydown={ keydownfilter } />
+      <input name="filter-field" type="text" class="c-field" placeholder="Expertise" onfocus={ focusfilter } onkeydown={ keydownfilter } />
 
       <div role="menu" class="c-card c-card--menu u-high">
         <label role="menuitem" class="c-card__control c-field c-field--choice"
@@ -92,15 +98,6 @@
     <h5>
       No results for this search. Please try another query.
     </h5>
-  </div>
-
-  <div class="help" style="margin:1em" hide={ results.items.length }>
-    <p>
-      To search for research scientists, enter partial names (e.g. Jill)
-      or biography keywords (e.g. alpine monitoring ecology), or
-      submit it blank to use the filters directly.
-      Use the map below to focus on a geographic region.
-    </p>
   </div>
 
   <div class="mapview" hide={ detailview || results.items.length }>
@@ -143,12 +140,12 @@
           { person.data.country }
         </p>
         <a hide={ !person.data.personal_url } href={ person.data.personal_url } target="_blank">{ person.data.personal_url }</a>
-        <p>{ person.data.biography }</p>
+        <!--<p>{ person.data.biography }</p>-->
       </div>
       <footer class="c-card__footer">
         <div class="o-grid">
           <div class="o-grid__cell fields">
-            <h5>Fields</h5>
+            <h5>Expertise</h5>
             <ul><li each={ f in person.fields }>{ f }</li></ul>
           </div><div class="o-grid__cell methods">
             <h5>Methods</h5>
@@ -165,11 +162,15 @@
         <h2>Resources</h2>
         <ul class="resources">
           <li each={ res in person.resources }>
-            <a href={ res.url } target="_blank">
-              <b>{ res.title }</b>
-            </a>
-            <br>{ res.abstract }<br>
-            <small>{ res.citation }</small>
+            <b>{ res.title }</b>
+            <span class="c-input-group c-input-group--rounded">
+              <a href={ res.url } class="c-button u-small c-button--info" target="_blank">Link</a>
+              <a href="#" onclick="console.log($(this));$(this).parent().next().toggle();return false" class="c-button u-small c-button--brand" target="_blank">Details</a>
+            </span>
+            <div class="resource-detail" style="display:none">
+              <div class="abstract">{ res.abstract }<div>
+              <div class="citation">{ res.citation }</div>
+            </div>
           </li>
         </ul>
       </footer>

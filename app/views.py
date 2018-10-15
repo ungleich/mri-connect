@@ -197,8 +197,8 @@ def upload_data():
                 datalist = list(datareader)
                 fmt = detect_dataformat(datalist[0])
 
-        elif fs_name.endswith('.geojson', encoding='utf-8', errors='ignore'):
-            with open(fs_path, 'rt') as jsonfile:
+        elif fs_name.endswith('.geojson'):
+            with open(fs_path, 'rt', encoding='utf-8', errors='ignore') as jsonfile:
                 jsondata = json.load(jsonfile)
                 fmt = detect_dataformat(jsondata['features'][0]['properties'])
 

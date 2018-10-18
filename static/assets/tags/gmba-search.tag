@@ -126,11 +126,11 @@
   <div class="details" hide={ !detailview }>
     <div class="person c-card">
       <header class="c-card__header">
-        <center>
-          <button onclick={ closedetails } type="button" class="c-button" title="Close this file">Return to results</button>
-          <button onclick={ permalink } type="button" class="c-button" title="Permalink">Link</button>
-          <button href={ person.data.personal_url } target="_blank" type="button" class="c-button" title="Website">Website</button>
-        </center>
+        <div class="c-input-group c-input-group--rounded" style="float:right">
+          <button onclick={ closedetails } type="button" class="c-button c-button--success" title="Close this file">Return to results</button>
+          <button onclick={ permalink } type="button" class="c-button c-button--brand" title="Permalink">Permalink</button>
+          <button href={ person.data.personal_url } target="_blank" type="button" class="c-button c-button--info" title="Website">Website</button>
+        </div>
         <h2 class="c-heading">
           { person.data.fullname }
         </h2>
@@ -146,54 +146,69 @@
       </div>
       <footer class="c-card__footer">
         <div class="c-card c-card--accordion person-tags">
+
           <button role="heading" aria-expanded="false" class="c-card__control" onclick={ toggleaccordion }>
             Expertise
           </button>
           <section class="c-card__item c-card__item--pane fields">
             <span each={ f in person.fields }>{ f }</span>
           </section>
+
           <button role="heading" aria-expanded="false" class="c-card__control" onclick={ toggleaccordion }>
             Methods
           </button>
           <section class="c-card__item c-card__item--pane methods">
             <span each={ f in person.methods }>{ f }</span>
           </section>
+
           <button role="heading" aria-expanded="false" class="c-card__control" onclick={ toggleaccordion }>
             Scales
           </button>
           <section class="c-card__item c-card__item--pane scales">
             <span each={ f in person.scales }>{ f }</span>
           </section>
+
           <button role="heading" aria-expanded="false" class="c-card__control" onclick={ toggleaccordion }>
             Taxa
           </button>
           <section class="c-card__item c-card__item--pane taxa">
             <span each={ f in person.taxa }>{ f }</span>
           </section>
-        </div>
 
-        <h2>Resources</h2>
-        <ul class="resources">
-          <li each={ res in person.resources }>
-            <b>{ res.title }</b>
-            <span class="c-input-group c-input-group--rounded">
-              <a href={ res.url } class="c-button u-small c-button--info" target="_blank">Link</a>
-              <a href="#" onclick="console.log($(this));$(this).parent().next().toggle();return false" class="c-button u-small c-button--brand" target="_blank">Details</a>
-            </span>
-            <div class="resource-detail" style="display:none">
-              <div class="abstract">{ res.abstract }<div>
-              <div class="citation">{ res.citation }</div>
-            </div>
-          </li>
-        </ul>
+          <button role="heading" aria-expanded="false" class="c-card__control" onclick={ toggleaccordion }>
+            Mountain ranges
+          </button>
+          <section class="c-card__item c-card__item--pane ranges">
+            <span each={ f in person.ranges }>{ f.name }</span>
+          </section>
+
+          <button role="heading" aria-expanded="false" class="c-card__control" onclick={ toggleaccordion }>
+            Resources
+          </button>
+          <section class="c-card__item c-card__item--pane resources">
+            <ul style="list-style:none;padding:0;margin:0"><li style="clear:both;margin-bottom:1em" each={ res in person.resources }>
+              <div class="c-input-group c-input-group--rounded" style="float:left; clear:both; margin-right:1em">
+                <a href="#" onclick="$(this).parent().parent().find('.resource-detail').toggle();return false" class="c-button u-small c-button--brand" target="_blank">Details</a>
+                <a href={ res.url } class="c-button u-small c-button--info" target="_blank">Link</a>
+              </div>
+              <b>{ res.title }</b>
+              <div class="resource-detail" style="display:none">
+                <div class="abstract">{ res.abstract }<div>
+                <div class="citation">{ res.citation }</div>
+              </div>
+              <br clear="all">
+            </li></ul>
+          </section>
+
+        </div><!-- /c-card--accordion -->
 
         <h2>Contact</h2>
         <form action="https://formspree.io/hi@datalets.ch" b="gmba@ips.unibe.ch" method="POST" class="contact-form">
-          <textarea name="message"></textarea>
           <input type="hidden" name="subject" value="Contact request from GMBA Connect">
           <input type="hidden" name="person" value={ person.data.fullname }>
-          <input type="text" name="name">
-          <input type="email" name="_replyto">
+          <textarea name="message" cols="80" rows="3" placeholder="Enter a message"></textarea><br>
+          <input type="text" name="name" placeholder="Your name">
+          <input type="email" name="_replyto" placeholder="E-mail address">
           <input type="submit" value="Send">
         </form>
 
@@ -265,6 +280,7 @@
       $('form').each(function() { this.reset() })
       self.clearfilter(e)
       self.results = { 'items': [] }
+      this.detailview = false
     }
 
     focusfilter(e) {
@@ -326,7 +342,7 @@
 
     this.on('mount', function() {
       var self = this;
-			var mymap = L.map('map').setView([51.505, -0.09], 1)
+			var mymap = L.map('map').setView([51.505, -0.09], 2)
 
 			L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
 				maxZoom: 18,

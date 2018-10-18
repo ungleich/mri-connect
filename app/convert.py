@@ -9,6 +9,12 @@ def fix_bracketed_lists(data):
         data = data.replace(fix, fix.replace(',', ' /'))
     return data
 
+# Check for valid link
+def fix_url(link):
+    if len(link) > 3 and not link.startswith('http'):
+        link = 'http://' + link
+    return link
+
 # Create linked objects
 def add_linked(person, field, obj, data):
     # TODO: fuzzy matching instead of lower()
@@ -33,6 +39,13 @@ def get_by_id(rowid, obj, first=True):
         else: return l, rowid
     return None, None
 
+# Quick check of the number of lines
+def get_total_rows_csv(filename):
+    with open(filename) as f:
+        for i, l in enumerate(f):
+            pass
+    return i + 1
+
 # Data update routine
 def refresh_data(filename, fmt=None):
     count = 0
@@ -41,16 +54,15 @@ def refresh_data(filename, fmt=None):
         yield("Missing data: %s  - refresh aborted." % fmt['filename'], "error")
         return None
     if fmt['extension'] is 'csv':
+        totalrows = get_total_rows_csv(filename)
         with open(filename, 'rt', encoding='utf-8', errors='ignore') as csvfile:
-            datareader = csv.DictReader(csvfile)
-            totalrows = 0
-            for row in datareader: totalrows += 1
-            csvfile.seek(0)
 
+            datareader = csv.DictReader(csvfile)
             for row in datareader:
                 rowcount += 1
                 if row is None: continue
                 yield rowcount, rowcount/totalrows
+
                 # Ensure any new data is flushed from time to time
                 if count % 25 == 0:
                     db.session.commit()
@@ -75,7 +87,7 @@ def refresh_data(filename, fmt=None):
                     person.position = row['Position']
                     person.biography = row['Biography']
                     person.contact_email = row['e-mail 1']
-                    person.personal_url = row['URL']
+                    person.personal_url = fix_url(row['URL'])
 
                     with db.session.no_autoflush:
                         add_linked(person, person.research_methods, Method, row['Methods'])
@@ -91,7 +103,7 @@ def refresh_data(filename, fmt=None):
                     if not res: res = Resource(source_id=source_id)
                     res.title = row['Title']
                     res.citation = row['Citation']
-                    res.url = row['URL']
+                    res.url = fix_url(row['URL'].strip('#')) # remove weird #formatting#
                     res.abstract = row['Abstract']
                     db.session.add(res)
                     count = count + 1

@@ -5,7 +5,7 @@
       To search for a scientist, enter partial names (e.g. Jill), organization, position, or leave blank to search by country, range, expertise or taxa. Both the Range filter or the map below can be used to select a mountain range.
     </p>
   </div>
-  
+
   <form onsubmit={ search } autocomplete="off">
 
     <div class="o-field o-field--icon-left">
@@ -274,7 +274,7 @@
       // TODO: json call to fetch more data
       this.focusfilter(e)
     }
-    
+
     toggleaccordion(e) {
       $obj = $(e.target)
       $obj.attr('aria-expanded', ''+$obj.attr('aria-expanded')!='true')

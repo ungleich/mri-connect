@@ -29,10 +29,14 @@ from tempfile import gettempdir
 
 # Get temporary file storage
 UPLOAD_PATH = gettempdir()
-DATA_PATH = ospath.join(ospath.dirname(__file__), '..', 'data')
+DATA_PATH = ospath.join(ospath.dirname(__file__), '..')
 if not ospath.exists(DATA_PATH): makedirs(DATA_PATH)
 def get_datafile(fmt):
-    return ospath.join(DATA_PATH, fmt['filename'] + '.' + fmt['extension'])
+    return ospath.join(
+        DATA_PATH,
+        fmt['folder'],
+        fmt['filename'] + '.' + fmt['extension']
+    )
 
 # Administrative views
 class PersonView(ModelView):

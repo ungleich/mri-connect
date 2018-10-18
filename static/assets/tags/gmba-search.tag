@@ -186,9 +186,9 @@
             Resources
           </button>
           <section class="c-card__item c-card__item--pane resources">
-            <ul style="list-style:none;padding:0;margin:0"><li style="clear:both;margin-bottom:1em" each={ res in person.resources }>
-              <div class="c-input-group c-input-group--rounded" style="float:left; clear:both; margin-right:1em">
-                <a href="#" onclick="$(this).parent().parent().find('.resource-detail').toggle();return false" class="c-button u-small c-button--brand" target="_blank">Details</a>
+            <ul><li each={ res in person.resources }>
+              <div class="c-input-group c-input-group--rounded">
+                <a href="#" onclick={ openresource } class="c-button u-small c-button--brand" target="_blank">Details</a>
                 <a href={ res.url } class="c-button u-small c-button--info" target="_blank">Link</a>
               </div>
               <b>{ res.title }</b>
@@ -307,6 +307,12 @@
     toggleaccordion(e) {
       $obj = $(e.target)
       $obj.attr('aria-expanded', ''+$obj.attr('aria-expanded')!='true')
+    }
+
+    openresource(e) {
+      e.preventDefault()
+      $obj = $(e.target)
+      $obj.parent().parent().find('.resource-detail').toggle();
     }
 
     selectfilter(e) {

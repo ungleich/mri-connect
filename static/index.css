@@ -89,3 +89,13 @@ a { color: #444; }
 .person-tags section span:last-child:after { content: "" }
 
 .results .footer { text-align: center; margin: 1em; }
+
+section.resources ul {
+  list-style:none;padding:0;margin:0
+}
+section.resources li {
+  clear:both;margin-bottom:1em
+}
+section.resources li .c-input-group {
+  float:left; clear:both; margin-right:1em
+}

@@ -70,6 +70,11 @@ a { color: #444; }
   padding-left: 2em;
 }
 
+.c-card.c-card--menu.u-high {
+  margin: 0px;
+  margin-bottom: 0.5em;
+}
+
 .material-icons {
   position:absolute;
   margin-top:0.3em;

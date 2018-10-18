@@ -128,6 +128,8 @@
       <header class="c-card__header">
         <center>
           <button onclick={ closedetails } type="button" class="c-button" title="Close this file">Return to results</button>
+          <button onclick={ permalink } type="button" class="c-button" title="Permalink">Link</button>
+          <button href={ person.data.personal_url } target="_blank" type="button" class="c-button" title="Website">Website</button>
         </center>
         <h2 class="c-heading">
           { person.data.fullname }
@@ -139,8 +141,8 @@
           { person.data.organisation }<br>
           { person.data.country }
         </p>
-        <a hide={ !person.data.personal_url } href={ person.data.personal_url } target="_blank">{ person.data.personal_url }</a>
-        <!--<p>{ person.data.biography }</p>-->
+        <!-- Hide the bio for now ->->
+        <!-- <p>{ person.data.biography }</p> -->
       </div>
       <footer class="c-card__footer">
         <div class="c-card c-card--accordion person-tags">
@@ -186,8 +188,9 @@
         </ul>
 
         <h2>Contact</h2>
-        <form action="https://formspree.io/hi@datalets.ch" method="POST" class="contact-form">
+        <form action="https://formspree.io/hi@datalets.ch" b="gmba@ips.unibe.ch" method="POST" class="contact-form">
           <textarea name="message"></textarea>
+          <input type="hidden" name="subject" value="Contact request from GMBA Connect">
           <input type="hidden" name="person" value={ person.data.fullname }>
           <input type="text" name="name">
           <input type="email" name="_replyto">
@@ -314,6 +317,11 @@
 
     closedetails(e) {
       this.detailview = false
+    }
+
+    permalink(e) {
+      $obj = $(e.target)
+      console.log($obj)
     }
 
     this.on('mount', function() {

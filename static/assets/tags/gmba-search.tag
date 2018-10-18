@@ -203,7 +203,7 @@
         </div><!-- /c-card--accordion -->
 
         <h2>Contact</h2>
-        <form action="https://formspree.io/hi@datalets.ch" b="gmba@ips.unibe.ch" method="POST" class="contact-form">
+        <form action="https://formspree.io/gmba@ips.unibe.ch" target="_blank" method="POST" class="contact-form">
           <input type="hidden" name="subject" value="Contact request from GMBA Connect">
           <input type="hidden" name="person" value={ person.data.fullname }>
           <textarea name="message" cols="80" rows="3" placeholder="Enter a message"></textarea><br>

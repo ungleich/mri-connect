@@ -80,4 +80,7 @@ a { color: #444; }
 
 .person .name { font-weight: bold; }
 
+.person-tags section span:after { content: "; " }
+.person-tags section span:last-child:after { content: "" }
+
 .results .footer { text-align: center; margin: 1em; }

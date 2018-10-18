@@ -143,30 +143,30 @@
         <!--<p>{ person.data.biography }</p>-->
       </div>
       <footer class="c-card__footer">
-        <div class="c-card c-card--accordion">
+        <div class="c-card c-card--accordion person-tags">
           <button role="heading" aria-expanded="false" class="c-card__control" onclick={ toggleaccordion }>
             Expertise
           </button>
           <section class="c-card__item c-card__item--pane fields">
-            <span each={ f in person.fields }>{ f } /</span>
+            <span each={ f in person.fields }>{ f }</span>
           </section>
           <button role="heading" aria-expanded="false" class="c-card__control" onclick={ toggleaccordion }>
             Methods
           </button>
           <section class="c-card__item c-card__item--pane methods">
-            <span each={ f in person.methods }>{ f } /</span>
+            <span each={ f in person.methods }>{ f }</span>
           </section>
           <button role="heading" aria-expanded="false" class="c-card__control" onclick={ toggleaccordion }>
             Scales
           </button>
           <section class="c-card__item c-card__item--pane scales">
-            <span each={ f in person.scales }>{ f } /</span>
+            <span each={ f in person.scales }>{ f }</span>
           </section>
           <button role="heading" aria-expanded="false" class="c-card__control" onclick={ toggleaccordion }>
             Taxa
           </button>
           <section class="c-card__item c-card__item--pane taxa">
-            <span each={ f in person.taxa }>{ f } /</span>
+            <span each={ f in person.taxa }>{ f }</span>
           </section>
         </div>
 
@@ -184,6 +184,16 @@
             </div>
           </li>
         </ul>
+
+        <h2>Contact</h2>
+        <form action="https://formspree.io/hi@datalets.ch" method="POST" class="contact-form">
+          <textarea name="message"></textarea>
+          <input type="hidden" name="person" value={ person.data.fullname }>
+          <input type="text" name="name">
+          <input type="email" name="_replyto">
+          <input type="submit" value="Send">
+        </form>
+
       </footer>
     </div>
   </div>

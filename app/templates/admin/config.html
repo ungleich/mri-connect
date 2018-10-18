@@ -174,6 +174,22 @@
 				</tr>
 			</table>
 
+	          <h4 id="gmba">gmba.geojson</h4>
+
+	          <p>This file contains geodata about mountain ranges in
+							<a href="http://geojson.org/">GeoJSON</a> format.
+ 							The source of the data is a GIS layer maintained by GMBA with mountain polygons.
+							The export folder contains one small scale layer and one large scale one.
+							We use the small scale version, additionally simplified and compressed using
+							<a href="https://www.qgis.org/">QGIS</a> or <a href="https://mapshaper.org/">Mapshaper</a>.
+							Each polygon comes with a GMBA-ID that matches the <b>people_ranges</b> table.
+						</p>
+
+						<p>The data can be uploaded in the backend, but will be reset on deployments.
+							To ensure that it is preserved, it should also be updated in the
+							<a href="https://github.com/loleg/gmba-connect/blob/master/static/geodata/gmba.geojson">source code</a>
+							- <tt>static/geodata</tt> folder.</p>
+
         </div>
     </div>
 </div>

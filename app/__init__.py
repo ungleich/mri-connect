@@ -27,22 +27,8 @@ from .models import *
 migrate = Migrate(app, db)
 
 # Create admin
-try:
-    import uuid, requests
-    hashlink = str(uuid.uuid1())
-    if Config.MAILGUN_DOMAIN is not '':
-        requests.post(
-            "https://api.mailgun.net/v3/%s/messages" % Config.MAILGUN_DOMAIN,
-            auth=("api", Config.MAILGUN_API_KEY),
-            data={"to": Config.MAILGUN_TO,
-                  "from": "GMBA Connect <noreply@datalets.ch>",
-                  "subject": "System Notification",
-                  "text": "The admin interface is ready at %s/%s" %
-                    (Config.SERVER_URL, hashlink)})
-except Exception as ex:
-    hashlink = 'default-admin'
-    app.logger.warn(ex)
-app.logger.info('Admin access at /%s' % hashlink)
-admin = admin.Admin(app, url='/'+hashlink, name='GMBA Connect', template_mode='bootstrap3')
+adminlink = Config.ADMIN_PATH
+app.logger.info('Admin access at /%s' % adminlink)
+admin = admin.Admin(app, url='/'+adminlink, name='GMBA Connect', template_mode='bootstrap3')
 
 from .views import *

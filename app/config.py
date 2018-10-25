@@ -33,10 +33,7 @@ class Config(object):
     # if not 'FLASK_ENV' is 'production':
     WHOOSHEE_MEMORY_STORAGE = True
 
-    SERVER_URL = os.getenv('SERVER_URL', '')
-    MAILGUN_DOMAIN = os.getenv('MAILGUN_DOMAIN', '')
-    MAILGUN_API_KEY = os.getenv('MAILGUN_API_KEY', '')
-    MAILGUN_TO = os.getenv('MAILGUN_TO', '').split(',')
-
+    # Location of admin interface
+    ADMIN_PATH = os.getenv('ADMIN_PATH', 'admin')
 
 app.config.from_object('app.config.Config')

@@ -16,13 +16,13 @@
                 The widget can be embedded using the following code:
             </p>
             <center>
-                <textarea cols="40" rows="2" readonly>&lt;iframe src="{{ url_for('home_embed', _external=True) }}" width="100%" height="1000" frameborder="0"&gt;&lt;/iframe&gt;</textarea>
+                <textarea cols="40" rows="2" readonly>&lt;iframe src="{{ url_for('home_page', _external=True) }}" width="100%" height="1000" frameborder="0"&gt;&lt;/iframe&gt;</textarea>
                 <br><br>
                 <div class="btn-group">
                     <a class="btn btn-success" href='{{ url_for('home_demo') }}'>
                         Demo page
                     </a>
-                    <a class="btn btn-info" target="_blank" href='{{ url_for('home_embed') }}'>
+                    <a class="btn btn-info" target="_blank" href='{{ url_for('home_page') }}'>
                         Full screen
                     </a>
                     <a class="btn btn-default" href='{{ url_for('config.index') }}'>

@@ -299,10 +299,6 @@ def send_static(path):
 def home_demo():
     return redirect('/client/index.html')
 
-@app.route('/embed')
-def home_embed():
-    return redirect('/client/widget.html')
-
 @app.route('/')
 def home_page():
-    return redirect(url_for('home_demo'))
+    return send_from_directory('../client', 'widget.html')

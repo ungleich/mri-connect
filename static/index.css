@@ -28,12 +28,13 @@ hide, .hide { display: none; }
 
 a { color: #444; }
 
-#map { height: 400px; }
+#map { height: 400px; margin-top: 1em; }
 
-#help { font-size: 150%; line-height: 1.5em; }
+.help { font-size: 90%; line-height: 1.2em; }
 
 #content { clear: both; }
 
+.results { font-size: 90%; }
 .results .person {
   display: block;
   height: auto;
@@ -48,20 +49,31 @@ a { color: #444; }
   border-left: 20px solid wheat;
   color: black;
 }
+.results .person .name {
+  font-weight: bold;
+  display: inline-block; clear: none; margin-right: 1em;
+}
+.results .footer { text-align: center; margin: 1em; }
 
+.details .person-nav { float: right; }
 .details .c-button {
   position: relative;
-  float: right;
   cursor: pointer;
 }
-
-.o-field--icon-left .c-button--close {
-  top: 0.25em;
-}
-
 .details {
   background: white;
   border: 20px solid wheat;
+}
+.details .personal span { display: block; }
+
+.footer .material-icons,
+.details .material-icons { font-size: 0.8em; }
+
+.person-tags section span:after { content: "; " }
+.person-tags section span:last-child:after { content: "" }
+
+.o-field--icon-left .c-button--close {
+  top: 0.25em;
 }
 
 .o-field { margin: 1em; }
@@ -75,7 +87,7 @@ a { color: #444; }
   margin-bottom: 0.5em;
 }
 
-.material-icons {
+.filters .material-icons {
   position:absolute;
   margin-top:0.3em;
   margin-left:0.3em;
@@ -83,19 +95,33 @@ a { color: #444; }
 
 .field-filters .c-card--menu { margin: 0 0 0.5em 0; }
 
-.person .name { font-weight: bold; }
-
-.person-tags section span:after { content: "; " }
-.person-tags section span:last-child:after { content: "" }
-
-.results .footer { text-align: center; margin: 1em; }
-
 section.resources ul {
   list-style:none;padding:0;margin:0
 }
+section.resources li:hover {
+  /* background-color: #ffd; */
+}
 section.resources li {
-  clear:both;margin-bottom:1em
+  clear:both;
+  margin-bottom:1em;
+  border-bottom:1px solid lightgray;
 }
 section.resources li .c-input-group {
-  float:left; clear:both; margin-right:1em
+  position: absolute;
+  clear: both; margin-right:1em
+}
+section.resources li .title {
+  margin-left: 7em;
+}
+section.resources li .resource-detail {
+  font-size: 90%; line-height: 1.2em;
+}
+
+
+.contact-form input, .contact-form textarea {
+  font-family: FrutigerLTW02-55Roman, Arial, Helvetica, sans-serif;
+  font-size: 16px;
+}
+.contact-form textarea {
+  width: 100%; padding: 0.5em;
 }

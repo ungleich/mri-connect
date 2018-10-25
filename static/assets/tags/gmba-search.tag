@@ -6,6 +6,7 @@
     </p>
   </div>
 
+  <div class="filters">
   <form onsubmit={ search } autocomplete="off">
 
     <div class="o-field o-field--icon-left">
@@ -93,6 +94,7 @@
     </div>
 
   </div><!-- /o-grid -->
+  </div><!-- /.filters -->
 
   <div class="noresults" style="margin:1em" hide={ !results.not_found }>
     <h5>
@@ -118,31 +120,46 @@
       </a>
     </div>
 
-    <div class="footer" hide={ !results.has_next }>
-      <button onclick={ nextpage } type="button" class="c-button" title="Show more results">Show more</button>
+    <div class="footer">
+      <button hide={ !results.has_next } onclick={ nextpage } type="button" class="c-button" title="Show more results">
+        <i class="material-icons">
+        navigate_next
+        </i>
+        Show more</button>
+      <button hide={ !results.items.length } onclick={ resetsearch } type="button" class="c-button">New search</button>
     </div>
   </div>
 
   <div class="details" hide={ !detailview }>
-    <div class="person c-card">
+    <div class="person c-card vcard">
       <header class="c-card__header">
-        <div class="c-input-group c-input-group--rounded" style="float:right">
-          <button onclick={ closedetails } type="button" class="c-button c-button--success" title="Close this file">Return to results</button>
-          <button onclick={ permalink } type="button" class="c-button c-button--brand" title="Permalink">Permalink</button>
-          <button href={ person.data.personal_url } target="_blank" type="button" class="c-button c-button--info" title="Website">Website</button>
+        <div class="c-input-group c-input-group--rounded person-nav">
+          <button onclick={ closedetails } type="button" class="c-button c-button--success" title="Close this file">
+            <i class="material-icons">
+              arrow_back
+            </i>
+            Results</button>
+          <a href={ location.hash } onclick={ sharelink } target="_blank" class="c-button c-button--brand">
+            <i class="material-icons">
+              link
+            </i>
+            Share</a>
+          <a href={ person.data.personal_url } target="_blank" class="c-button c-button--info">
+            <i class="material-icons">
+              language
+            </i>
+            Link</a>
         </div>
-        <h2 class="c-heading">
+        <h2 class="c-heading fn">
           { person.data.fullname }
         </h2>
       </header>
-      <div class="c-card__body">
-        <p style="font-size: 110%">
-          <b>{ person.data.position }</b><br>
-          { person.data.organisation }<br>
-          { person.data.country }
-        </p>
-        <!-- Hide the bio for now ->->
-        <!-- <p>{ person.data.biography }</p> -->
+      <div class="c-card__body personal">
+        <b class="position">{ person.data.position }</b>
+        <span class="org">{ person.data.organisation }</span>
+        <span class="adr country-name">{ person.data.country }</span>
+        <!-- Hide the bio for now -->
+        <p class="note hide">{ person.data.biography }</p>
       </div>
       <footer class="c-card__footer">
         <div class="c-card c-card--accordion person-tags">
@@ -188,10 +205,12 @@
           <section class="c-card__item c-card__item--pane resources">
             <ul><li each={ res in person.resources }>
               <div class="c-input-group c-input-group--rounded">
-                <a href="#" onclick={ openresource } class="c-button u-small c-button--brand" target="_blank">Details</a>
-                <a href={ res.url } class="c-button u-small c-button--info" target="_blank">Link</a>
+                <a href="#" onclick={ openresource } class="c-button u-small c-button--brand" target="_blank">
+                  Details</a>
+                <a href={ res.url } class="c-button u-small c-button--info" target="_blank">
+                  Link</a>
               </div>
-              <b>{ res.title }</b>
+              <p class="title">{ res.title }</p>
               <div class="resource-detail" style="display:none">
                 <div class="abstract">{ res.abstract }<div>
                 <div class="citation">{ res.citation }</div>
@@ -206,10 +225,12 @@
         <form action="https://formspree.io/gmba@ips.unibe.ch" target="_blank" method="POST" class="contact-form">
           <input type="hidden" name="subject" value="Contact request from GMBA Connect">
           <input type="hidden" name="person" value={ person.data.fullname }>
-          <textarea name="message" cols="80" rows="3" placeholder="Enter a message"></textarea><br>
-          <input type="text" name="name" placeholder="Your name">
-          <input type="email" name="_replyto" placeholder="E-mail address">
-          <input type="submit" value="Send">
+          <textarea name="message" cols="80" rows="3" placeholder="Enter a message" required></textarea><br>
+          <input type="text" name="name" placeholder="Your name" required>
+          <input type="email" name="_replyto" placeholder="E-mail address" required>
+          <p>
+            <input type="submit" value="Send" class="c-button u-small c-button--brand">
+          </p>
         </form>
 
       </footer>
@@ -281,6 +302,7 @@
       self.clearfilter(e)
       self.results = { 'items': [] }
       this.detailview = false
+      location.hash = ""
     }
 
     focusfilter(e) {
@@ -323,10 +345,7 @@
       this.search(e)
     }
 
-    details(e) {
-      e.preventDefault()
-      var self = this
-      pid = e.item.id
+    getpersonbyid(self, pid) {
       self.person = { 'data': false, 'resources': [] }
       $.getJSON('/api/people/' + pid, function(data) {
         self.detailview = true
@@ -337,17 +356,27 @@
       })
     }
 
-    closedetails(e) {
-      this.detailview = false
+    details(e) {
+      e.preventDefault()
+      this.getpersonbyid(this, e.item.id)
     }
 
-    permalink(e) {
+    closedetails(e) {
+      this.detailview = false
+      location.hash = ""
+    }
+
+    sharelink(e) {
+      e.preventDefault()
       $obj = $(e.target)
-      console.log($obj)
+      url = location.href
+      window.prompt('Direct link to this profile:', url)
     }
 
     this.on('mount', function() {
       var self = this;
+
+      /* Initialize map */
 			var mymap = L.map('map').setView([51.505, -0.09], 2)
 
 			L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
@@ -365,6 +394,12 @@
         $('input[name="filter-range"]').val(e.layer.feature.properties.Name)
         self.runsearch()
       })
+
+      /* Parse query request */
+      var opts = Qs.parse(location.hash.substring(1));
+      if (typeof(opts['person']) !== 'undefined') {
+        this.getpersonbyid(this, parseInt(opts['person']));
+      }
     })
 
   </script>

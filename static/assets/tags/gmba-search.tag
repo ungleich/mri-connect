@@ -144,15 +144,10 @@
               link
             </i>
             Share</a>
-          <a href={ person.data.personal_url } target="_blank" class="c-button c-button--info">
-            <i class="material-icons">
-              language
-            </i>
-            Link</a>
         </div>
-        <h2 class="c-heading fn">
+        <h3 class="c-heading fn">
           { person.data.fullname }
-        </h2>
+        </h3>
       </header>
       <div class="c-card__body personal">
         <b class="position">{ person.data.position }</b>
@@ -160,6 +155,11 @@
         <span class="adr country-name">{ person.data.country }</span>
         <!-- Hide the bio for now -->
         <p class="note hide">{ person.data.biography }</p>
+        <a href={ person.data.personal_url } target="_blank" class="c-button c-button-sm c-button--info">
+          <i class="material-icons">
+            language
+          </i>
+          Link</a>
       </div>
       <footer class="c-card__footer">
         <div class="c-card c-card--accordion person-tags">
@@ -221,7 +221,7 @@
 
         </div><!-- /c-card--accordion -->
 
-        <h2>Contact</h2>
+        <h3>Contact</h3>
         <form action="https://formspree.io/gmba@ips.unibe.ch" target="_blank" method="POST" class="contact-form">
           <input type="hidden" name="subject" value="Contact request from GMBA Connect">
           <input type="hidden" name="person" value={ person.data.fullname }>

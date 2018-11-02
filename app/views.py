@@ -231,6 +231,14 @@ def reindex():
     flash("Search engine refresh complete")
     return redirect(url_for('config.index'))
 
+def refresh_data_all():
+    for fmt in DATAFORMATS:
+        global c_filename
+        c_filename = fmt['filename']
+        print("Refreshing %s" % c_filename)
+        filename = get_datafile(fmt)
+        refresh_data(filename, fmt)
+
 @app.route('/refresh', methods=["POST"])
 def refresh_all():
     global c_progress

@@ -30,9 +30,6 @@ class Config(object):
         tf = os.path.join(gettempdir(), 'gmbaconnect.sqlite3')
         SQLALCHEMY_DATABASE_URI = 'sqlite:///' + tf
 
-    if not 'FLASK_ENV' is 'production':
-        WHOOSHEE_MEMORY_STORAGE = True
-
     # Location of admin interface
     ADMIN_PATH = os.getenv('ADMIN_PATH', 'admin')
 

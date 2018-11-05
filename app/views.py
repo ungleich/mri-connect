@@ -4,7 +4,7 @@
 from app import app, db, admin
 from .models import *
 from .formats import *
-from .convert import refresh_data
+from .convert import reindex_data, refresh_data
 
 from flask_admin.contrib.sqla import ModelView, filters
 from flask_admin.form import FileUploadField
@@ -104,11 +104,13 @@ FILTER_QUERIES = [ 'country', 'range', 'field', 'taxon' ]
 @app.route("/api/search", methods=['GET'])
 def search_list():
     ra = request.args
-    q = ra.get('q')
+    q = ra.get('q').strip()
     if not q or len(q) < 3:
         query = Person.query
     else:
-        query = Person.query.whooshee_search(q)
+        query = Person.query
+        clauses = [Person._indexer.like('%{0}%'.format(k)) for k in q.split(" ")]
+        query = query.filter(*clauses)
 
     if ra.get('country') and len(ra.get('country')) > 2:
         query = query.filter(
@@ -221,24 +223,6 @@ def upload_data():
 c_progress = 0
 c_filename = ""
 
-@app.route('/reindex', methods=['POST'])
-def reindex():
-    global c_progress
-    c_progress = 0
-    global c_filename
-    c_filename = ""
-    whooshee.reindex()
-    flash("Search engine refresh complete")
-    return redirect(url_for('config.index'))
-
-def refresh_data_all():
-    for fmt in DATAFORMATS:
-        global c_filename
-        c_filename = fmt['filename']
-        print("Refreshing %s" % c_filename)
-        filename = get_datafile(fmt)
-        refresh_data(filename, fmt)
-
 @app.route('/refresh', methods=["POST"])
 def refresh_all():
     global c_progress
@@ -281,7 +265,6 @@ def refresh_all():
     return Response(generate(), mimetype='text/html')
 
 # EventStream for progress bar
-
 @app.route('/progress')
 def get_progress():
     global c_progress
@@ -292,6 +275,17 @@ def get_progress():
             yield 'data: { "p":'+p+',"f":"'+c_filename+'"}\n\n'
             time.sleep(1.0)
     return Response(generate(), mimetype='text/event-stream')
+
+# Refresh search index
+@app.route('/reindex', methods=['POST'])
+def reindex():
+    global c_progress
+    c_progress = 0
+    global c_filename
+    c_filename = ""
+    reindex_data()
+    flash("Search engine refresh complete")
+    return redirect(url_for('config.index'))
 
 # Additional paths
 

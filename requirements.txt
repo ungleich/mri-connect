@@ -5,7 +5,6 @@ Flask-Admin
 Flask-API
 Flask-Migrate
 Flask-SQLAlchemy
-flask-whooshee
 itsdangerous
 Jinja2
 MarkupSafe

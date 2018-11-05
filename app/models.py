@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from app import app, db, whooshee
+from app import app, db
 
 resources_people = db.Table(
     'resources_people',
@@ -34,9 +34,6 @@ fields_people = db.Table(
     db.Column('field_id', db.Integer(), db.ForeignKey('field.id'))
 )
 
-@whooshee.register_model(
-    'first_name', 'last_name', 'organisation', 'position', 'biography',
-)
 class Person(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     source_id = db.Column(db.Integer, unique=True)
@@ -64,10 +61,18 @@ class Person(db.Model):
     research_fields = db.relationship('Field', secondary=fields_people,
         backref=db.backref('people', lazy='dynamic'))
 
+    _indexer = db.Column(db.UnicodeText)
+    def index(self):
+        self._indexer = " ".join([
+            self.first_name, self.last_name, self.organisation, self.position, self.biography
+        ])
+        return True
+
     def fullname(self):
         return " ".join([ self.title, self.first_name, self.last_name ])
     def __repr__(self):
         return self.fullname()
+
     def dict(self):
         return {
             'id': self.id,

@@ -48,6 +48,14 @@ def get_total_rows_csv(filename):
             pass
     return i + 1
 
+# Search index routine
+def reindex_data():
+    for i, p in enumerate(Person.query.all()):
+        p.index()
+        db.session.add(p)
+        if i % 10 == 0: db.session.commit()
+    db.session.commit()
+
 # Data update routine
 def refresh_data(filename, fmt=None):
     count = 0
@@ -97,6 +105,7 @@ def refresh_data(filename, fmt=None):
                         add_linked(person, person.research_taxa,    Taxon,  row['Taxa'])
                         add_linked(person, person.research_fields,  Field,  row['Field of expertise'])
 
+                    person.index()
                     db.session.add(person)
                     count = count + 1
 

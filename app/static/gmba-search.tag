@@ -259,6 +259,7 @@
   </div>
 
   <script>
+    this.o = $('gmba-search')
     this.page = 1
     this.map = null
     this.results = { 'items': [] }
@@ -280,11 +281,11 @@
       self.clearfilter()
 
       // Get the value of the search query
-      q = $('input[name="query"]').val()
+      q = $('input[name="query"]', self.o).val()
 
       // Iterate through the filter fields
       $.each(Object.keys(FILTER_BLANK), function() {
-        fq = $('input[name="filter-'+this+'"]').val()
+        fq = $('input[name="filter-'+this+'"]', self.o).val()
         if (fq.length > 2)
           q += '&' + this + '=' + fq
       })
@@ -320,7 +321,7 @@
 
     resetsearch(e) {
       var self = this
-      $('form').each(function() { this.reset() })
+      $('form', self.o).each(function() { this.reset() })
       self.clearfilter(e)
       self.results = { 'items': [] }
       self.detailview = false
@@ -363,7 +364,7 @@
     selectfilter(e) {
       if (typeof(e.target) === 'undefined') return
       $obj = $(e.target)
-      $tgt = $('input[name="' + $obj.attr('data-target') + '"]')
+      $tgt = $('input[name="' + $obj.attr('data-target') + '"]', self.o)
       $tgt.val($obj.text().trim())
       this.search(e)
     }
@@ -375,6 +376,9 @@
 
     getpersonbyid(self, pid) {
       self.person = { 'data': false, 'resources': [] }
+      // Reset accordion
+      $('.person-tags button', self.o).attr('aria-expanded', 'false')
+      // Load detail data
       $.getJSON('/api/people/' + pid, function(data) {
         self.detailview = true
         self.person = data

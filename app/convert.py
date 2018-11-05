@@ -19,7 +19,8 @@ def fix_url(link):
 # Create linked objects
 def add_linked(person, field, obj, data):
     # TODO: fuzzy matching instead of lower()
-    items = fix_bracketed_lists(data).lower().split(',')
+    items = fix_bracketed_lists(data).lower()
+    items = items.replace(';',',').split(',')
     for i in items:
         n = i.strip()
         if len(n)<3: continue

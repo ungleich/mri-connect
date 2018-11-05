@@ -148,13 +148,13 @@
         </h3>
       </header>
       <div class="c-card__body personal">
-        <b class="position">{ person.data.position }</b>
-        <span class="org">{ person.data.organisation }</span>
-        <span class="adr country-name">{ person.data.country }</span>
+        <div class="position">{ person.data.position }</div>
+        <div class="org">{ person.data.organisation }</div>
+        <div class="adr country-name">{ person.data.country }</div>
         <!-- Hide the bio for now -->
         <p class="note hide">{ person.data.biography }</p>
         <p hide={ !person.data.personal_url }>
-          <span each={ u in person.data.personal_urls } style="display:inline">
+          <span each={ u in person.data.personal_urls }>
             <a href={ u.trim() } target="_blank" class="c-button u-small c-button--info">
               <i class="material-icons">
                 language
@@ -171,7 +171,7 @@
             Expertise
           </button>
           <section class="c-card__item c-card__item--pane fields">
-            <span each={ f in person.fields }>{ f }</span>
+            <span each={ f in person.fields }>{ f }<i>; </i></span>
           </section>
 
           <button role="heading" aria-expanded="false" class="c-card__control"
@@ -179,7 +179,7 @@
             Methods
           </button>
           <section class="c-card__item c-card__item--pane methods">
-            <span each={ f in person.methods }>{ f }</span>
+            <span each={ f in person.methods }>{ f }<i>; </i></span>
           </section>
 
           <button role="heading" aria-expanded="false" class="c-card__control"
@@ -187,7 +187,7 @@
             Scales
           </button>
           <section class="c-card__item c-card__item--pane scales">
-            <span each={ f in person.scales }>{ f }</span>
+            <span each={ f in person.scales }>{ f }<i>; </i></span>
           </section>
 
           <button role="heading" aria-expanded="false" class="c-card__control"
@@ -195,7 +195,7 @@
             Taxa
           </button>
           <section class="c-card__item c-card__item--pane taxa">
-            <span each={ f in person.taxa }>{ f }</span>
+            <span each={ f in person.taxa }>{ f }<i>; </i></span>
           </section>
 
           <button role="heading" aria-expanded="false" class="c-card__control"
@@ -203,7 +203,7 @@
             Mountain ranges
           </button>
           <section class="c-card__item c-card__item--pane ranges">
-            <span each={ f in person.ranges }>{ f.name }</span>
+            <span each={ f in person.ranges }>{ f.name }<i>; </i></span>
           </section>
 
           <button role="heading" aria-expanded="false" class="c-card__control"
@@ -214,9 +214,12 @@
             <ul>
               <li each={ res in person.resources }>
                 <div class="c-input-group c-input-group--rounded">
-                  <a href="#" onclick={ openresource } class="c-button u-small c-button--brand" target="_blank">
+                  <a href="#" onclick={ openresource }
+                     hide={ !res.abstract && !res.citation }
+                     class="c-button u-small c-button--brand" target="_blank">
                     Details</a>
-                  <a href={ res.url } class="c-button u-small c-button--info" target="_blank">
+                  <a href={ res.url } hide={ !res.url }
+                     class="c-button u-small c-button--info" target="_blank">
                     Link</a>
                 </div>
                 <p class="title">{ res.title }</p>

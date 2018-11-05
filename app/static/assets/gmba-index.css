@@ -74,13 +74,32 @@ button.maphome {
   background: white;
   border: 20px solid wheat;
 }
-.details .personal span { display: block; }
+.details .personal .org {
+  font-weight: bold;
+}
 
 .footer .material-icons,
 .details .material-icons { font-size: 0.8em; }
 
-.person-tags section span:after { content: "; " }
+.person-tags section a span {
+  background-color: #ddf;
+}
+.person-tags section span {
+  border: 1px solid #eee;
+  padding: 3px;
+  margin: 6px;
+  box-shadow: 3px 3px 3px #eee;
+}
+.person-tags section span:hover {
+  border: 1px solid #ccc;
+  box-shadow: none;
+}
+.person-tags section span i { font-size: 0px; color: transparent }
+
+/*
+.person-tags section span:after { content: "; "; color: #aaa }
 .person-tags section span:last-child:after { content: "" }
+*/
 
 .o-field--icon-left .c-button--close {
   top: 0.25em;
@@ -115,6 +134,10 @@ section.resources li {
   clear:both;
   margin-bottom:1em;
   border-bottom:1px solid lightgray;
+}
+section.resources li:last-child {
+  margin-bottom:0px;
+  border-bottom:none;
 }
 section.resources li .c-input-group {
   position: absolute;

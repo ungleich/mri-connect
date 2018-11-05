@@ -13,6 +13,7 @@ def fix_bracketed_lists(data):
 def fix_url(link):
     if len(link) > 3 and not link.startswith('http'):
         link = 'http://' + link
+    # link = link.split(';')[0]
     return link
 
 # Create linked objects

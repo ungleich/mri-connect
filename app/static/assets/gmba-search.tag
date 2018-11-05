@@ -153,12 +153,15 @@
         <span class="adr country-name">{ person.data.country }</span>
         <!-- Hide the bio for now -->
         <p class="note hide">{ person.data.biography }</p>
-        <br>
-        <a href={ person.data.personal_url } target="_blank" class="c-button u-small c-button--info">
-          <i class="material-icons">
-            language
-          </i>
-          Link</a>
+        <p hide={ !person.data.personal_url }>
+          <span each={ u in person.data.personal_urls } style="display:inline">
+            <a href={ u.trim() } target="_blank" class="c-button u-small c-button--info">
+              <i class="material-icons">
+                language
+              </i>
+              { getbaseurl(u) } ...</a>
+          </span>
+        </p>
       </div>
       <footer class="c-card__footer">
         <div class="c-card c-card--accordion person-tags">
@@ -362,6 +365,11 @@
       $tgt = $('input[name="' + $obj.attr('data-target') + '"]')
       $tgt.val($obj.text().trim())
       this.search(e)
+    }
+
+    getbaseurl(u) {
+      return u.trim().replace('http://','').replace('https://','')
+              .replace('www.','').split('/')[0].substring(0,16)
     }
 
     getpersonbyid(self, pid) {

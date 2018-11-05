@@ -167,7 +167,7 @@
         <div class="c-card c-card--accordion person-tags">
 
           <button role="heading" aria-expanded="false" class="c-card__control"
-                  onclick={ toggleaccordion } hide={ !person.fields.length }>
+                  onclick={ toggleaccordion } hide={ !detailview || !person.fields.length }>
             Expertise
           </button>
           <section class="c-card__item c-card__item--pane fields">
@@ -175,7 +175,7 @@
           </section>
 
           <button role="heading" aria-expanded="false" class="c-card__control"
-                  onclick={ toggleaccordion } hide={ !person.methods.length }>
+                  onclick={ toggleaccordion } hide={ !detailview || !person.methods.length }>
             Methods
           </button>
           <section class="c-card__item c-card__item--pane methods">
@@ -183,7 +183,7 @@
           </section>
 
           <button role="heading" aria-expanded="false" class="c-card__control"
-                  onclick={ toggleaccordion } hide={ !person.scales.length }>
+                  onclick={ toggleaccordion } hide={ !detailview || !person.scales.length }>
             Scales
           </button>
           <section class="c-card__item c-card__item--pane scales">
@@ -191,7 +191,7 @@
           </section>
 
           <button role="heading" aria-expanded="false" class="c-card__control"
-                  onclick={ toggleaccordion } hide={ !person.taxa.length }>
+                  onclick={ toggleaccordion } hide={ !detailview || !person.taxa.length }>
             Taxa
           </button>
           <section class="c-card__item c-card__item--pane taxa">
@@ -199,7 +199,7 @@
           </section>
 
           <button role="heading" aria-expanded="false" class="c-card__control"
-                  onclick={ toggleaccordion } hide={ !person.ranges.length }>
+                  onclick={ toggleaccordion } hide={ !detailview || !person.ranges.length }>
             Mountain ranges
           </button>
           <section class="c-card__item c-card__item--pane ranges">
@@ -207,7 +207,7 @@
           </section>
 
           <button role="heading" aria-expanded="false" class="c-card__control"
-                  onclick={ toggleaccordion } hide={ !person.resources.length }>
+                  onclick={ toggleaccordion } hide={ !detailview || !person.resources.length }>
             Resources
           </button>
           <section class="c-card__item c-card__item--pane resources">

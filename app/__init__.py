@@ -7,7 +7,7 @@ import flask_admin as admin
 import click
 
 # Create application
-app = FlaskAPI(__name__, static_url_path='')
+app = FlaskAPI(__name__)
 from .config import Config
 app.logger.info('>>> {}'.format(Config.FLASK_ENV))
 

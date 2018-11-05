@@ -280,6 +280,8 @@ def refresh_all():
         c_filename = ""
     return Response(generate(), mimetype='text/html')
 
+# EventStream for progress bar
+
 @app.route('/progress')
 def get_progress():
     global c_progress
@@ -291,22 +293,22 @@ def get_progress():
             time.sleep(1.0)
     return Response(generate(), mimetype='text/event-stream')
 
-# Static paths
+# Additional paths
+
 @app.route('/data/<path:path>')
 def send_data(path):
     return send_from_directory('../data', path)
-@app.route('/client/<path:path>')
-def send_client(path):
-    return send_from_directory('../client', path)
-@app.route('/static/<path:path>')
-def send_static(path):
-    return send_from_directory('../static', path)
 
 # Home paths
+
 @app.route('/demo')
 def home_demo():
-    return redirect('/client/index.html')
+    return render_template('demo.html')
+
+@app.route('/offline')
+def home_offline():
+    return render_template('offline.html')
 
 @app.route('/')
 def home_page():
-    return send_from_directory('../client', 'widget.html')
+    return render_template('widget.html')

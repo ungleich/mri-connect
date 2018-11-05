@@ -153,7 +153,8 @@
         <span class="adr country-name">{ person.data.country }</span>
         <!-- Hide the bio for now -->
         <p class="note hide">{ person.data.biography }</p>
-        <a href={ person.data.personal_url } target="_blank" class="c-button c-button-sm c-button--info">
+        <br>
+        <a href={ person.data.personal_url } target="_blank" class="c-button u-small c-button--info">
           <i class="material-icons">
             language
           </i>
@@ -245,7 +246,7 @@
   </div> <!-- /details -->
 
   <div class="mapview" hide={ detailview }>
-    <button onclick={ resetmap } type="button" class="maphome c-button c-button-sm" title="Reset map view to globe">
+    <button onclick={ resetmap } type="button" class="maphome c-button u-small" title="Reset map view to globe">
       <i class="material-icons">
       home
       </i>

@@ -299,6 +299,10 @@ def get_progress():
 def send_data(path):
     return send_from_directory('../data', path)
 
+@app.route('/geodata/<path:path>')
+def send_geodata(path):
+    return send_from_directory('../geodata', path)
+
 # Home paths
 
 @app.route('/demo')

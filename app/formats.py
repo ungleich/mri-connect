@@ -42,7 +42,7 @@ DATAFORMATS = [
     },{
         'dataformat': DataFormat.RANGE_SHAPES,
         'extension': 'geojson',
-        'folder': 'static/geodata',
+        'folder': 'geodata',
         'filename': 'gmba',
         'required': ['Name', 'GMBA_ID']
     }

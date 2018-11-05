@@ -15,11 +15,22 @@
                 Details on how to export them is <a href="#data-sources">documented below</a>. The filenames need to exactly match the ones in this list:
             <ul>
                 {% for fmt in dataformats %}
-                <li style="list-style:none" data-file="{{ fmt.filename }}" class="datafile">
-                  <font color={% if fmt.ready %}"green">&#9745;{% else %}"red">&#10683;{% endif %}</font>
-                  <a href="#{{ fmt.filename }}">
-                    <b>{{ fmt.filename }}</b>.{{ fmt.extension }}
-                  </a>
+                <li data-file="{{ fmt.filename }}" class="datafile">
+									<span class="filename">
+	                  <font color={% if fmt.ready %}"green">&#9745;{% else %}"red">&#10683;{% endif %}</font>
+										<b>{{ fmt.filename }}</b>.{{ fmt.extension }}
+									</span>
+									<span class="commands">
+	                  <a href="#{{ fmt.filename }}" title="Click to see information">
+											info
+											<i class="glyphicon glyphicon-info-sign"></i>
+	                  </a>
+
+										<a href="/{{ fmt.folder }}/{{ fmt.filename }}.{{ fmt.extension }}" download title="Download">
+											download
+											<i class="glyphicon glyphicon-download"></i>
+										</a>
+									</span>
                 </li>
                 {% endfor %}
             </ul>
@@ -187,8 +198,8 @@
 
 						<p>The data can be uploaded in the backend, but will be reset on deployments.
 							To ensure that it is preserved, it should also be updated in the
-							<a href="https://github.com/loleg/gmba-connect/blob/master/static/geodata/gmba.geojson">source code</a>
-							- <tt>static/geodata</tt> folder.</p>
+							<a href="https://github.com/loleg/gmba-connect/blob/master/geodata/gmba.geojson">source code</a>
+							- <tt>geodata</tt> folder.</p>
 
         </div>
     </div>
@@ -249,6 +260,10 @@
 })(jQuery);
 </script>
 <style type="text/css">
-    .datafile.active { background: lightseagreen };
+    .datafile.active { background: lightseagreen }
+
+		li.datafile { list-style:none;font-size:150% }
+		li.datafile:hover { background: yellow }
+		li.datafile .filename, li.datafile .commands { display:inline-block; width:16em }
 </style>
 {% endblock %}

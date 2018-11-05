@@ -2,8 +2,6 @@
 
   <div class="help" style="margin:1em" hide={ results.items.length }>
     <p>
-      To search for a scientist, enter partial names (e.g. Jill), organization, position, or leave blank to search by country, range, expertise or taxa. Both the Range filter or the map below can be used to select a mountain range.
-
       To search for a scientist, enter partial names of people (e.g. Jill), organizations (e.g. university), or positions (e.g. prof) in the first search bar or leave it blank to search by country, range, expertise, or taxon. Both the Range filter and the map below can be used to search by mountain range. For questions or comments, please <a href="#contact">contact us</a>.
     </p>
   </div>

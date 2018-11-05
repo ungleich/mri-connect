@@ -2,7 +2,7 @@
 
   <div class="help" style="margin:1em" hide={ results.items.length }>
     <p>
-      To search for a scientist, enter partial names of people (e.g. Jill), organizations (e.g. university), or positions (e.g. prof) in the first search bar or leave it blank to search by country, range, expertise, or taxon. Both the Range filter and the map below can be used to search by mountain range. For questions or comments, please <a href="#contact">contact us</a>.
+      To search for a scientist, enter partial names of people (e.g. Jill), organizations (e.g. university), or positions (e.g. prof) in the first search bar or leave it blank to search by country, range, expertise, or taxon. Both the Range filter and the map below can be used to search by mountain range. For questions or comments, please <a href="mailto:&#103;&#109;&#098;&#097;&#064;&#105;&#112;&#115;&#046;&#117;&#110;&#105;&#098;&#101;&#046;&#099;&#104;">contact us</a>.
     </p>
   </div>
 
@@ -234,7 +234,8 @@
         </div><!-- /person-tags -->
 
         <a name="contact"></a><h3>Contact</h3>
-        <form action="https://formspree.io/gmba@ips.unibe.ch" target="_blank" method="POST" class="contact-form">
+        <form action="https://formspree.io/&#103;&#109;&#098;&#097;&#064;&#105;&#112;&#115;&#046;&#117;&#110;&#105;&#098;&#101;&#046;&#099;&#104;"
+              target="_blank" method="POST" class="contact-form">
           <input type="hidden" name="subject" value="Contact request from GMBA Connect">
           <input type="hidden" name="person" value={ person.data.fullname }>
           <textarea name="message" cols="80" rows="3" placeholder="Enter a message" required></textarea><br>

@@ -109,7 +109,7 @@ def search_list():
         query = Person.query
     else:
         query = Person.query
-        clauses = [Person._indexer.like('%{0}%'.format(k)) for k in q.split(" ")]
+        clauses = [Person._indexer.ilike('%{0}%'.format(k)) for k in q.split(" ")]
         query = query.filter(*clauses)
 
     if ra.get('country') and len(ra.get('country')) > 2:

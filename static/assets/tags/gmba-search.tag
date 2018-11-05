@@ -3,6 +3,8 @@
   <div class="help" style="margin:1em" hide={ results.items.length }>
     <p>
       To search for a scientist, enter partial names (e.g. Jill), organization, position, or leave blank to search by country, range, expertise or taxa. Both the Range filter or the map below can be used to select a mountain range.
+
+      To search for a scientist, enter partial names of people (e.g. Jill), organizations (e.g. university), or positions (e.g. prof) in the first search bar or leave it blank to search by country, range, expertise, or taxon. Both the Range filter and the map below can be used to search by mountain range. For questions or comments, please <a href="#contact">contact us</a>.
     </p>
   </div>
 
@@ -164,42 +166,48 @@
       <footer class="c-card__footer">
         <div class="c-card c-card--accordion person-tags">
 
-          <button role="heading" aria-expanded="false" class="c-card__control" onclick={ toggleaccordion }>
+          <button role="heading" aria-expanded="false" class="c-card__control"
+                  onclick={ toggleaccordion } hide={ !person.fields.length }>
             Expertise
           </button>
           <section class="c-card__item c-card__item--pane fields">
             <span each={ f in person.fields }>{ f }</span>
           </section>
 
-          <button role="heading" aria-expanded="false" class="c-card__control" onclick={ toggleaccordion }>
+          <button role="heading" aria-expanded="false" class="c-card__control"
+                  onclick={ toggleaccordion } hide={ !person.methods.length }>
             Methods
           </button>
           <section class="c-card__item c-card__item--pane methods">
             <span each={ f in person.methods }>{ f }</span>
           </section>
 
-          <button role="heading" aria-expanded="false" class="c-card__control" onclick={ toggleaccordion }>
+          <button role="heading" aria-expanded="false" class="c-card__control"
+                  onclick={ toggleaccordion } hide={ !person.scales.length }>
             Scales
           </button>
           <section class="c-card__item c-card__item--pane scales">
             <span each={ f in person.scales }>{ f }</span>
           </section>
 
-          <button role="heading" aria-expanded="false" class="c-card__control" onclick={ toggleaccordion }>
+          <button role="heading" aria-expanded="false" class="c-card__control"
+                  onclick={ toggleaccordion } hide={ !person.taxa.length }>
             Taxa
           </button>
           <section class="c-card__item c-card__item--pane taxa">
             <span each={ f in person.taxa }>{ f }</span>
           </section>
 
-          <button role="heading" aria-expanded="false" class="c-card__control" onclick={ toggleaccordion }>
+          <button role="heading" aria-expanded="false" class="c-card__control"
+                  onclick={ toggleaccordion } hide={ !person.ranges.length }>
             Mountain ranges
           </button>
           <section class="c-card__item c-card__item--pane ranges">
             <span each={ f in person.ranges }>{ f.name }</span>
           </section>
 
-          <button role="heading" aria-expanded="false" class="c-card__control" onclick={ toggleaccordion }>
+          <button role="heading" aria-expanded="false" class="c-card__control"
+                  onclick={ toggleaccordion } hide={ !person.resources.length }>
             Resources
           </button>
           <section class="c-card__item c-card__item--pane resources">
@@ -221,7 +229,7 @@
 
         </div><!-- /c-card--accordion -->
 
-        <h3>Contact</h3>
+        <a name="contact"></a><h3>Contact</h3>
         <form action="https://formspree.io/gmba@ips.unibe.ch" target="_blank" method="POST" class="contact-form">
           <input type="hidden" name="subject" value="Contact request from GMBA Connect">
           <input type="hidden" name="person" value={ person.data.fullname }>

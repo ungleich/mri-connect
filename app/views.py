@@ -315,4 +315,4 @@ def home_offline():
 
 @app.route('/')
 def home_page():
-    return render_template('widget.html')
+    return render_template('index.html')

@@ -28,7 +28,17 @@ hide, .hide { display: none; }
 
 a { color: #444; }
 
-#map { height: 400px; margin-top: 1em; }
+#mymap { height: 400px; margin-top: 1em; }
+button.maphome {
+  position: absolute;
+  z-index: 1000;
+  font-size: 7px;
+  background: white;
+  border: 1px solid black;
+  color: black;
+  margin-top: 80px;
+  margin-left: 10px;
+}
 
 .help { font-size: 90%; line-height: 1.2em; }
 

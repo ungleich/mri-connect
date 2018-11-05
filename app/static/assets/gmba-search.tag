@@ -104,10 +104,6 @@
     </h5>
   </div>
 
-  <div class="mapview" hide={ detailview || results.items.length }>
-    <div id="map"></div>
-  </div>
-
   <div class="results" hide={ detailview }>
 
     <div class="result-count o-field" hide={ !results.items.length }>
@@ -211,23 +207,26 @@
             Resources
           </button>
           <section class="c-card__item c-card__item--pane resources">
-            <ul><li each={ res in person.resources }>
-              <div class="c-input-group c-input-group--rounded">
-                <a href="#" onclick={ openresource } class="c-button u-small c-button--brand" target="_blank">
-                  Details</a>
-                <a href={ res.url } class="c-button u-small c-button--info" target="_blank">
-                  Link</a>
-              </div>
-              <p class="title">{ res.title }</p>
-              <div class="resource-detail" style="display:none">
-                <div class="abstract">{ res.abstract }<div>
-                <div class="citation">{ res.citation }</div>
-              </div>
-              <br clear="all">
-            </li></ul>
+            <ul>
+              <li each={ res in person.resources }>
+                <div class="c-input-group c-input-group--rounded">
+                  <a href="#" onclick={ openresource } class="c-button u-small c-button--brand" target="_blank">
+                    Details</a>
+                  <a href={ res.url } class="c-button u-small c-button--info" target="_blank">
+                    Link</a>
+                </div>
+                <p class="title">{ res.title }</p>
+                <div class="resource-detail" style="display:none">
+                  <div class="abstract">{ res.abstract }</div>
+                  <div class="citation">{ res.citation }</div>
+                </div>
+
+                <br clear="all">
+              </li>
+            </ul>
           </section>
 
-        </div><!-- /c-card--accordion -->
+        </div><!-- /person-tags -->
 
         <a name="contact"></a><h3>Contact</h3>
         <form action="https://formspree.io/gmba@ips.unibe.ch" target="_blank" method="POST" class="contact-form">
@@ -242,11 +241,21 @@
         </form>
 
       </footer>
-    </div>
+    </div> <!-- /person -->
+  </div> <!-- /details -->
+
+  <div class="mapview" hide={ detailview }>
+    <button onclick={ resetmap } type="button" class="maphome c-button c-button-sm" title="Reset map view to globe">
+      <i class="material-icons">
+      home
+      </i>
+    </button>
+    <div id="mymap"></div>
   </div>
 
   <script>
     this.page = 1
+    this.map = null
     this.results = { 'items': [] }
     this.detailview = false
     this.person = { 'data': false, 'resources': [] }
@@ -309,7 +318,8 @@
       $('form').each(function() { this.reset() })
       self.clearfilter(e)
       self.results = { 'items': [] }
-      this.detailview = false
+      self.detailview = false
+      self.resetmap(e)
       location.hash = ""
     }
 
@@ -381,11 +391,16 @@
       window.prompt('Direct link to this profile:', url)
     }
 
+    resetmap(e) {
+      e.preventDefault()
+      this.map.setView([51.505, -0.09], 2)
+    }
+
     this.on('mount', function() {
       var self = this;
 
       /* Initialize map */
-			var mymap = L.map('map').setView([51.505, -0.09], 2)
+			self.map = mymap = L.map('mymap').setView([51.505, -0.09], 2)
 
 			L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
 				maxZoom: 18,
@@ -395,11 +410,28 @@
 				id: 'mapbox.streets'
 			}).addTo(mymap)
 
-			var mountain_ranges = new L.GeoJSON.AJAX("/geodata/gmba.geojson")
-      // TODO: reduce weight of line style
+      var ranges_style = {
+        "color": "#ff7800",
+        "weight": 1,
+        "fillOpacity": 0.2
+      }
+      var ranges_hover = function(feature, layer) {
+        layer.bindPopup(feature.properties.Name);
+        layer.on('mouseover', function (e) {
+          this.openPopup();
+        });
+        layer.on('mouseout', function (e) {
+          this.closePopup()
+        });
+      }
+			var mountain_ranges = new L.GeoJSON.AJAX("/geodata/gmba.geojson", {
+        style: ranges_style,
+        onEachFeature: ranges_hover
+      })
 			mountain_ranges.addTo(mymap)
       mountain_ranges.on('click', function(e) {
         $('input[name="filter-range"]').val(e.layer.feature.properties.Name)
+        mymap.fitBounds(e.layer.getBounds());
         self.runsearch()
       })
 

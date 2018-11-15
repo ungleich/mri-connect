@@ -91,6 +91,9 @@ def get_paginated(query):
        'field': sorted(set(filters['field'])),
        'taxon': sorted(set(filters['taxon'])),
     }
+    if len(query.all()) > len(ppp.items) and ppp.pages == 1:
+        ppp.items = query.all()
+        ppp.total = len(ppp.items)
     return {
         'items': [p.dict() for p in ppp.items],
         'filters': filters,

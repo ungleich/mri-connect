@@ -1,4 +1,5 @@
 import csv, json, re
+from app import app
 from os.path import isfile
 from .models import *
 from .formats import *
@@ -61,7 +62,9 @@ def refresh_data(filename, fmt=None):
     count = 0
     rowcount = 0
     if not isfile(filename):
-        yield("Missing data: %s  - refresh aborted." % fmt['filename'], "error")
+        msg = "Missing data: %s  - refresh aborted." % fmt['filename']
+        app.logger.warn(msg)
+        yield(msg, "error")
         return None
     if fmt['extension'] is 'csv':
         totalrows = get_total_rows_csv(filename)
@@ -79,7 +82,9 @@ def refresh_data(filename, fmt=None):
 
                 for r in fmt['required']:
                     if not r in row:
-                        yield("Missing attribute in %s (%s)" % (r, fmt['filename']), "error")
+                        msg = "Missing attribute in %s (%s)" % (r, fmt['filename'])
+                        app.logger.warn(msg)
+                        yield(msg, "error")
                         return None
 
                 if fmt['dataformat'] is DataFormat.PERSON_DETAIL:
@@ -149,6 +154,7 @@ def refresh_data(filename, fmt=None):
                         count = count + 1
 
     elif fmt['extension'] is 'geojson':
+        ranges_missing = []
         with open(filename, 'rt', encoding='utf-8', errors='ignore') as jsonfile:
             jsondata = json.load(jsonfile)
             if fmt['dataformat'] is DataFormat.RANGE_SHAPES:
@@ -160,12 +166,14 @@ def refresh_data(filename, fmt=None):
                     p = f['properties']
                     rge = Range.query.filter_by(gmba_id=p['GMBA_ID']).first()
                     if not rge:
-                        print("Warning: range not found (%s)" % p['GMBA_ID'])
+                        ranges_missing.append(p['GMBA_ID'])
                         continue
                     rge.name = p['Name']
                     for c in ['Country_1', 'Country_2_']:
                         if c in p: rge.countries = p[c]
                     db.session.add(rge)
+                app.logger.info("Warning: %d ranges not found" % len(ranges_missing))
+                app.logger.debug("[%s]" % ', '.join(ranges_missing))
 
     db.session.commit()
     yield None, None

@@ -4,11 +4,17 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import flask_admin as admin
 import click
+import logging
 
 # Create application
 app = FlaskAPI(__name__)
 from .config import Config
 app.logger.info('>>> {}'.format(Config.FLASK_ENV))
+
+gunicorn_logger = logging.getLogger('gunicorn.error')
+if gunicorn_logger:
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
 
 if Config.SQLALCHEMY_DATABASE_URI.startswith("sqlite"):
     app.logger.info('Warning: temporary database, changes will not persist.')

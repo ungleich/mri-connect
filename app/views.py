@@ -197,6 +197,7 @@ def upload_data():
         fs_name = secure_filename(fs.filename)
         fs_path = ospath.join(UPLOAD_PATH, fs_name)
         fs.save(fs_path)
+        app.logger.info('Uploading: %s' % fs_name)
 
         # Validation
         fmt = None
@@ -259,10 +260,12 @@ def refresh_all():
                     return
 
             stats.append({ 'format': fmt['dataformat'], 'count': c_counter })
+            app.logger.info("Refresh: %d counted at %s" % (c_counter, fmt['dataformat']))
             total = total + c_counter
 
         yield "done: %d objects updated" % total
-        print("done: %d objects updated" % total)
+        app.logger.info("Refresh: %d objects updated" % total)
+
         c_progress = 0
         c_filename = ""
     return Response(generate(), mimetype='text/html')
@@ -288,6 +291,7 @@ def reindex():
     c_filename = ""
     reindex_data()
     flash("Search engine refresh complete")
+    app.logger.info("Search engine reindexed")
     return redirect(url_for('config.index'))
 
 # Additional paths

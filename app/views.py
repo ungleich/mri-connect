@@ -280,7 +280,7 @@ def get_progress():
             p = str(100*c_progress)
             yield 'data: { "p":'+p+',"f":"'+c_filename+'"}\n\n'
             time.sleep(1.0)
-    return Response(generate(), mimetype='text/event-stream')
+    return Response(generate(), mimetype='text/event-stream', headers={'X-Accel-Buffering': 'no'})
 
 # Refresh search index
 @app.route('/reindex', methods=['POST'])

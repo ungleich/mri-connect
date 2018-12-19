@@ -1,8 +1,8 @@
 <gmba-search>
 
-  <button hide={ !(hidehelp) } onclick={ togglehelp } type="button" class="c-button c-button--close" title="Open help">&#10068; <span>help</span></button>
+  <button hide={ !(hidehelp) } onclick={ togglehelp } type="button" class="c-button c-button--close" title="Open help"><span>help</span> &#10068; </button>
   <br><div    hide={ hidehelp } class="help">
-    <button onclick={ togglehelp } type="button"class="c-button c-button--close" title="Close help">&times; <span>hide</span></button>
+    <button onclick={ togglehelp } type="button"class="c-button c-button--close" title="Close help"><span>hide</span> &times; </button>
     <p>
       To search for a scientist, enter partial names of people (e.g. <i>Jill</i>),
       organizations (e.g. <i>university</i>), or positions (e.g. <i>prof</i>) in the

@@ -106,6 +106,9 @@ button.maphome {
 .person-tags section span:last-child:after { content: "" }
 */
 
+.c-button--close {
+  overflow: visible;
+}
 .c-button--close span {
   font-size: 80%;
   font-weight: normal;

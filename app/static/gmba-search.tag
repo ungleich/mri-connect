@@ -2,10 +2,18 @@
 
   <div class="help" style="margin:1em" hide={ results.items.length }>
     <p>
-      To search for a scientist, enter partial names of people (e.g. Jill), organizations (e.g. university), or positions (e.g. prof) in the first search bar or leave it blank to search by country, range, expertise, or taxon. Both the Range filter and the map below can be used to search by mountain range.
-      More information on how to use this tool and how it works is
-      <a href="http://www.gmba.unibe.ch/resources/user_guide" target="_blank">available here</a>.
-      For questions or comments, please <a href="mailto:&#103;&#109;&#098;&#097;&#064;&#105;&#112;&#115;&#046;&#117;&#110;&#105;&#098;&#101;&#046;&#099;&#104;">contact us</a>.
+      To search for a scientist, enter partial names of people (e.g. <i>Jill</i>),
+      organizations (e.g. <i>university</i>), or positions (e.g. <i>prof</i>) in the
+      top search bar - or leave blank to search by country, range, expertise, or taxon.
+      Both the Range filter and the map can be used to search by mountain range.
+    </p><p>
+      You cannot find yourself, someone or something else?
+      <a href="http://www.gmba.unibe.ch/resources/user_guide" target="_blank">More information here</a>.
+      Not a GMBA member yet?
+      <a href="http://www.gmba.unibe.ch/about_us/contact/membership/" target="_blank">Join the network</a>!
+      For questions or comments, please
+      <a href="mailto:&#103;&#109;&#098;&#097;&#064;&#105;&#112;&#115;&#046;&#117;&#110;&#105;&#098;&#101;&#046;&#099;&#104;">
+        contact us</a>.
     </p>
   </div>
 

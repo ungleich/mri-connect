@@ -1,16 +1,19 @@
 <gmba-search>
 
-  <div class="help" style="margin:1em" hide={ results.items.length }>
+  <button hide={ !(hidehelp) } onclick={ togglehelp } type="button" class="c-button c-button--close" title="Open help">&#10068; <span>help</span></button>
+  <br><div    hide={ hidehelp } class="help">
+    <button onclick={ togglehelp } type="button"class="c-button c-button--close" title="Close help">&times; <span>hide</span></button>
     <p>
       To search for a scientist, enter partial names of people (e.g. <i>Jill</i>),
       organizations (e.g. <i>university</i>), or positions (e.g. <i>prof</i>) in the
-      top search bar - or leave blank to search by country, range, expertise, or taxon.
-      Both the Range filter and the map can be used to search by mountain range.
+      top search bar - or enter terms to search by country, range (by name, or with the map),
+      expertise and taxon.
     </p><p>
-      You cannot find yourself, someone or something else?
+      Cannot find yourself, someone, or something else?
       <a href="http://www.gmba.unibe.ch/resources/user_guide" target="_blank">More information here</a>.
       Not a GMBA member yet?
       <a href="http://www.gmba.unibe.ch/about_us/contact/membership/" target="_blank">Join the network</a>!
+    <br/>
       For questions or comments, please
       <a href="mailto:&#103;&#109;&#098;&#097;&#064;&#105;&#112;&#115;&#046;&#117;&#110;&#105;&#098;&#101;&#046;&#099;&#104;">
         contact us</a>.
@@ -274,8 +277,12 @@
     this.o = $('gmba-search')
     this.page = 1
     this.map = null
-    this.results = { 'items': [] }
+
     this.detailview = false
+    this.hidehelp = localStorage.getItem('hidehelp') || false
+
+    this.results = { 'items': [] }
+
     this.person = { 'data': false, 'resources': [] }
     const FILTER_BLANK = {
        'country': [], 'range': [], 'field': [], 'taxon': []
@@ -408,6 +415,11 @@
     closedetails(e) {
       this.detailview = false
       location.hash = ""
+    }
+
+    togglehelp(e) {
+      this.hidehelp = !this.hidehelp
+      localStorage.setItem("hidehelp", this.hidehelp)
     }
 
     sharelink(e) {

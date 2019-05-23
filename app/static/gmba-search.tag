@@ -437,6 +437,9 @@
     this.on('mount', function() {
       var self = this;
 
+      /* Remove content warning */
+      $('#block-warning').remove();
+
       /* Initialize map */
 			self.map = mymap = L.map('mymap').setView([51.505, -0.09], 2)
 

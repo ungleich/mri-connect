@@ -47,6 +47,9 @@ button.maphome {
   background: #ffe;
 }
 
+#block-warning { margin-top:1em; }
+#block-warning a { color: orange; }
+
 #content { clear: both; }
 
 .results { font-size: 90%; }

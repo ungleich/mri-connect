@@ -1,12 +1,14 @@
-## GMBA Connect
+## MRI Connect
 
-A search engine and members directory for the Global Mountain Biodiversity Assessment (GMBA) research network.
+A search engine and members directory for the Mountain Research Initiative.
+
+(Work in progress)
 
 ## Usage
 
 Get a hold of **Python 3** and [Pipenv](https://github.com/pypa/pipenv) on your machine.
 
-    $ git clone https://gitlab.com/datalets/gmba-connect.git
+    $ git clone https://gitlab.com/datalets/mri-connect.git
 
 To install and start the backend using Pipenv (Pip and Virtualenv should work fine too):
 

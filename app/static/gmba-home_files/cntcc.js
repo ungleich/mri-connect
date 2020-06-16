@@ -1,1 +1,0 @@
-document.cookie="_et_coid=7eb39d70586e592c740d92f01d2acbdd; expires=Saturday, 11-Jul-2020 05:34:31 GMT; domain=.unibe.ch; path=/";//

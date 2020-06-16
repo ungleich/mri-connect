@@ -1,1 +1,0 @@
-var et_seg1="no"

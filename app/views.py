@@ -18,7 +18,7 @@ from flask import (
     send_from_directory,
 )
 
-from werkzeug import secure_filename
+from werkzeug.utils import secure_filename
 from sqlalchemy import or_
 
 import csv, json, time, traceback
@@ -43,18 +43,19 @@ class PersonView(ModelView):
     column_list = ('first_name', 'last_name', 'organisation')
 admin.add_view(PersonView(Person, db.session))
 
+admin.add_view(ModelView(Expertise, db.session))
+
 class ResourceView(ModelView):
     column_list = ('title', 'url')
 admin.add_view(ResourceView(Resource, db.session))
 
-class RangeView(ModelView):
-    column_list = ('name', 'countries')
-admin.add_view(RangeView(Range, db.session))
+# class RangeView(ModelView):
+#     column_list = ('name', 'countries')
+# admin.add_view(RangeView(Range, db.session))
 
-admin.add_view(ModelView(Method, db.session))
-admin.add_view(ModelView(Scale, db.session))
-admin.add_view(ModelView(Taxon, db.session))
-admin.add_view(ModelView(Field, db.session))
+# admin.add_view(ModelView(Scale, db.session))
+# admin.add_view(ModelView(Taxon, db.session))
+# admin.add_view(ModelView(Field, db.session))
 
 # Custom view
 class ConfigurationView(BaseView):

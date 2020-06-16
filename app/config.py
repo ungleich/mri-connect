@@ -27,7 +27,7 @@ class Config(object):
     if 'DATABASE_URL' in os.environ:
         SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
     else:
-        tf = os.path.join(gettempdir(), 'gmbaconnect.sqlite3')
+        tf = os.path.join(gettempdir(), 'connect.sqlite3')
         SQLALCHEMY_DATABASE_URI = 'sqlite:///' + tf
 
     # Location of admin interface

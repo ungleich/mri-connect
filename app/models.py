@@ -8,31 +8,6 @@ resources_people = db.Table(
     db.Column('person_id', db.Integer(), db.ForeignKey('person.id')),
     db.Column('resource_id', db.Integer(), db.ForeignKey('resource.id'))
 )
-ranges_people = db.Table(
-    'ranges_people',
-    db.Column('person_id', db.Integer(), db.ForeignKey('person.id')),
-    db.Column('range_id', db.Integer(), db.ForeignKey('range.id'))
-)
-methods_people = db.Table(
-    'methods_people',
-    db.Column('person_id', db.Integer(), db.ForeignKey('person.id')),
-    db.Column('method_id', db.Integer(), db.ForeignKey('method.id'))
-)
-scales_people = db.Table(
-    'scales_people',
-    db.Column('person_id', db.Integer(), db.ForeignKey('person.id')),
-    db.Column('scale_id', db.Integer(), db.ForeignKey('scale.id'))
-)
-taxa_people = db.Table(
-    'taxa_people',
-    db.Column('person_id', db.Integer(), db.ForeignKey('person.id')),
-    db.Column('taxon_id', db.Integer(), db.ForeignKey('taxon.id'))
-)
-fields_people = db.Table(
-    'fields_people',
-    db.Column('person_id', db.Integer(), db.ForeignKey('person.id')),
-    db.Column('field_id', db.Integer(), db.ForeignKey('field.id'))
-)
 
 class Person(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -48,17 +23,6 @@ class Person(db.Model):
     biography = db.Column(db.UnicodeText)
 
     resources = db.relationship('Resource', secondary=resources_people,
-        backref=db.backref('people', lazy='dynamic'))
-    ranges = db.relationship('Range', secondary=ranges_people,
-        backref=db.backref('people', lazy='dynamic'))
-
-    research_methods = db.relationship('Method', secondary=methods_people,
-        backref=db.backref('people', lazy='dynamic'))
-    research_scales = db.relationship('Scale', secondary=scales_people,
-        backref=db.backref('people', lazy='dynamic'))
-    research_taxa = db.relationship('Taxon', secondary=taxa_people,
-        backref=db.backref('people', lazy='dynamic'))
-    research_fields = db.relationship('Field', secondary=fields_people,
         backref=db.backref('people', lazy='dynamic'))
 
     _indexer = db.Column(db.UnicodeText)
@@ -87,7 +51,7 @@ class Person(db.Model):
 
 class Resource(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    source_id = db.Column(db.Integer, unique=True)
+    orcid = db.Column(db.Integer, unique=True)
     title = db.Column(db.Unicode(2048))
     url = db.Column(db.Unicode(2048))
     citation = db.Column(db.UnicodeText)
@@ -103,46 +67,43 @@ class Resource(db.Model):
             'abstract': self.abstract or '',
         }
 
-class Range(db.Model):
+
+# class Topic(db.Model):
+#     # A short string describing this topic
+#     title = db.Column(db.String(100))
+#
+#     def __repr__(self):
+#         return self.title
+
+class Expertise(db.Model):
+    __tablename__ = "expertise"
     id = db.Column(db.Integer, primary_key=True)
-    source_id = db.Column(db.Integer, unique=True)
-    gmba_id = db.Column(db.Unicode(32))
-    name = db.Column(db.Unicode(255))
-    countries = db.Column(db.Unicode(255))
-    def __repr__(self):
-        return self.name
-    def dict(self):
+
+    # Topics or sub-topics that this expertise belongs to
+    # topic_id = db.Column(db.Integer, db.ForeignKey(Topic.id))
+    # topic = db.relationship(Topic)
+
+    # A short string with the name of this expertise
+    # Presented as Multiple choice, e.g.:
+    # Basic / Fundamental Research;
+    # Applied Research / Technologies /
+    # Engineering; Research Interface /
+    # Management;
+    # Interdisciplinary Research;
+    # Transdisciplinary Research
+    title = db.Column(db.String(100))
+    official_functions = db.Column(db.Text)
+
+    @property
+    def json(self):
         return {
-            'id': self.id,
-            'name': self.name,
-            'gmba_id': self.gmba_id,
-            'countries': self.countries,
+            'id':  self.id,
+            'key': self.key,
+            'filename': self.filename,
+            'seq': self.sequence_key,
+            'lat': self.latitude,
+            'lon': self.longitude
         }
 
-class Method(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Unicode(255))
-    def __repr__(self): return self.name
-    def dict(self):
-        return { 'id': self.id, 'name': self.name, 'people': self.people }
-
-class Scale(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Unicode(255))
-    def __repr__(self): return self.name
-    def dict(self):
-        return { 'id': self.id, 'name': self.name, 'people': self.people }
-
-class Taxon(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Unicode(255))
-    def __repr__(self): return self.name
-    def dict(self):
-        return { 'id': self.id, 'name': self.name, 'people': self.people }
-
-class Field(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Unicode(255))
-    def __repr__(self): return self.name
-    def dict(self):
-        return { 'id': self.id, 'name': self.name, 'people': self.people }
+    def __repr__(self):
+        return self.title

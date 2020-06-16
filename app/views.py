@@ -3,8 +3,6 @@
 
 from app import app, db, admin
 from .models import *
-from .formats import *
-from .convert import reindex_data, refresh_data
 
 from flask_admin.contrib.sqla import ModelView, filters
 from flask_admin.form import FileUploadField
@@ -44,30 +42,14 @@ class PersonView(ModelView):
 admin.add_view(PersonView(Person, db.session))
 
 admin.add_view(ModelView(Expertise, db.session))
+admin.add_view(ModelView(Organisation, db.session))
+admin.add_view(ModelView(Project, db.session))
 
 class ResourceView(ModelView):
     column_list = ('title', 'url')
 admin.add_view(ResourceView(Resource, db.session))
 
-# class RangeView(ModelView):
-#     column_list = ('name', 'countries')
-# admin.add_view(RangeView(Range, db.session))
-
-# admin.add_view(ModelView(Scale, db.session))
-# admin.add_view(ModelView(Taxon, db.session))
-# admin.add_view(ModelView(Field, db.session))
-
-# Custom view
-class ConfigurationView(BaseView):
-    @expose('/')
-    def index(self):
-        fmts = DATAFORMATS
-        for f in fmts: f['ready'] = ospath.isfile(get_datafile(f))
-        return self.render('admin/config.html', dataformats=fmts)
-
-admin.add_view(ConfigurationView(name='Configuration', endpoint='config'))
-
-
+# Utility for paginated queries
 def get_paginated(query):
     page = int(request.args.get('page', 1))
     per_page = int(request.args.get('per_page', 10))

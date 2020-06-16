@@ -1,4 +1,4 @@
-run.sh
+.flaskenv
 
 __pycache__
 env/

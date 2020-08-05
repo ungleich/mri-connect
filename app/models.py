@@ -30,7 +30,7 @@ class Person(db.Model):
     last_name = db.Column(db.Unicode(255))
     first_name = db.Column(db.Unicode(255))
     title = db.Column(db.Unicode(128))
-    gender = db.Column(db.Unicode(128))
+    gender = db.Column(db.Unicode(64))
     position = db.Column(db.UnicodeText)
     contact_email = db.Column(db.Unicode(255))
     personal_urls = db.Column(db.UnicodeText)

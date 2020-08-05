@@ -9,7 +9,7 @@ import logging
 # Create application
 app = FlaskAPI(__name__)
 from .config import Config
-app.logger.info('>>> {}'.format(Config.FLASK_ENV))
+app.logger.info('>>> hi {}'.format(Config.FLASK_ENV))
 
 gunicorn_logger = logging.getLogger('gunicorn.error')
 if gunicorn_logger:
@@ -17,8 +17,8 @@ if gunicorn_logger:
     app.logger.setLevel(gunicorn_logger.level)
 
 if Config.SQLALCHEMY_DATABASE_URI.startswith("sqlite"):
-    app.logger.info('Warning: temporary database, changes will not persist.')
-    app.logger.info('>>> {}'.format(Config.SQLALCHEMY_DATABASE_URI))
+    app.logger.warn('Warning: SQLite database, changes may not persist.')
+    app.logger.warn('>>> {}'.format(Config.SQLALCHEMY_DATABASE_URI))
 
 db = SQLAlchemy(app)
 

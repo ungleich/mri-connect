@@ -32,7 +32,7 @@ To start the backend:
 
 The frontend interface will now be available.
 
-Check the log for the port and URL to the admin interface, which will be newly generated on every app start.
+Check the log for the port and URL to the admin interface.
 
 ## Deployment
 

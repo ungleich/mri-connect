@@ -1,20 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
-from app import app, db, admin
-from .models import *
-
-from flask_admin.contrib.sqla import ModelView, filters
-from flask_admin.form import FileUploadField
-from flask_admin import (
-    BaseView, expose
-)
-from flask import (
-    url_for, redirect, Response,
-    request, flash,
-    render_template,
-    send_from_directory,
-)
 
 from werkzeug.utils import secure_filename
 from sqlalchemy import or_
@@ -36,18 +19,6 @@ def get_datafile(fmt):
         fmt['filename'] + '.' + fmt['extension']
     )
 
-# Administrative views
-class PersonView(ModelView):
-    column_list = ('first_name', 'last_name', 'organisation')
-admin.add_view(PersonView(Person, db.session))
-
-admin.add_view(ModelView(Expertise, db.session))
-admin.add_view(ModelView(Organisation, db.session))
-admin.add_view(ModelView(Project, db.session))
-
-class ResourceView(ModelView):
-    column_list = ('title', 'url')
-admin.add_view(ResourceView(Resource, db.session))
 
 # Utility for paginated queries
 def get_paginated(query):
@@ -276,27 +247,3 @@ def reindex():
     flash("Search engine refresh complete")
     app.logger.info("Search engine reindexed")
     return redirect(url_for('config.index'))
-
-# Additional paths
-
-@app.route('/data/<path:path>')
-def send_data(path):
-    return send_from_directory('../data', path)
-
-@app.route('/geodata/<path:path>')
-def send_geodata(path):
-    return send_from_directory('../geodata', path)
-
-# Home paths
-
-@app.route('/demo')
-def home_demo():
-    return render_template('demo.html')
-
-@app.route('/offline')
-def home_offline():
-    return render_template('offline.html')
-
-@app.route('/')
-def home_page():
-    return render_template('index.html')

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from app import app, db
+from . import db, Config
+from flask_admin.contrib.sqla import ModelView
 
 organisation_people = db.Table(
     'organisation_people',
@@ -23,6 +24,7 @@ resources_people = db.Table(
     db.Column('person_id', db.Integer(), db.ForeignKey('person.id')),
     db.Column('resource_id', db.Integer(), db.ForeignKey('resource.id'))
 )
+
 
 class Person(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -70,6 +72,10 @@ class Person(db.Model):
             'biography': self.biography or '',
         }
 
+class PersonView(ModelView):
+    column_list = ('first_name', 'last_name', 'organisation')
+
+
 class Resource(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     source_id = db.Column(db.Unicode(2048), unique=True)
@@ -90,6 +96,10 @@ class Resource(db.Model):
             'abstract': self.abstract or '',
         }
 
+class ResourceView(ModelView):
+    column_list = ('title', 'url')
+
+
 class Topic(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
@@ -98,6 +108,7 @@ class Topic(db.Model):
 
     def __repr__(self):
         return self.title
+
 
 class Expertise(db.Model):
     __tablename__ = "expertise"
@@ -132,6 +143,7 @@ class Expertise(db.Model):
     def __repr__(self):
         return self.title
 
+
 class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
@@ -147,6 +159,7 @@ class Project(db.Model):
 
     def __repr__(self):
         return self.name
+
 
 class Organisation(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -10,10 +10,11 @@ Get a hold of **Python 3** and [Pipenv](https://github.com/pypa/pipenv) on your 
 
     $ git clone https://gitlab.com/datalets/mri-connect.git
 
-To install and start the backend using Pipenv (Pip and Virtualenv should work fine too):
+To install and start the backend using Poetry:
 
-    $ pipenv --three
-    $ pipenv install
+    $ pip install -g poetry
+    $ poetry install
+    $ poetry shell
 
 To create a blank database or upgrade the configured one:
 

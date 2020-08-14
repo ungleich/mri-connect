@@ -18,6 +18,7 @@ flask-sslify = "^0.1.5"
 flask-admin = "^1.5.6"
 flask-api = "^2.0"
 werkzeug = "^1.0.1"
+django = "^3.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "5.3.5"

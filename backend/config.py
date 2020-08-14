@@ -1,11 +1,8 @@
 """
-Global Flask Application Setting
-
-set FLASK_CONFIG to 'development
- """
+Global Flask Application Settings
+"""
 
 import os
-from app import app
 from tempfile import gettempdir
 
 class Config(object):
@@ -16,6 +13,9 @@ class Config(object):
 
     APP_DIR = os.path.dirname(__file__)
     ROOT_DIR = os.path.dirname(APP_DIR)
+    DIST_DIR = os.path.join(ROOT_DIR, 'dist')
+
+    SSL_REDIRECT = os.getenv('SSL_REDIRECT', False)
 
     SECRET_KEY = 'This is an INSECURE secret!! DO NOT use this in production!!'
     if 'SECRET_KEY' in os.environ:
@@ -32,5 +32,4 @@ class Config(object):
 
     # Location of admin interface
     ADMIN_PATH = os.getenv('ADMIN_PATH', 'admin')
-
-app.config.from_object('app.config.Config')
+    FLASK_ADMIN_SWATCH = 'cerulean'

@@ -31,6 +31,10 @@ To start the backend:
     $ export FLASK_DEBUG=1
     $ python run.py
 
+To build the frontend
+
+    $ yarn
+
 The frontend interface will now be available.
 
 Check the log for the port and URL to the admin interface.

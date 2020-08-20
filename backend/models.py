@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 from . import db, Config
@@ -28,7 +27,7 @@ resources_people = db.Table(
 
 class Person(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    source_id = db.Column(db.Integer, unique=True)
+    source_id = db.Column(db.Unicode(64), unique=True)
     last_name = db.Column(db.Unicode(255))
     first_name = db.Column(db.Unicode(255))
     title = db.Column(db.Unicode(128))
@@ -73,7 +72,7 @@ class Person(db.Model):
         }
 
 class PersonView(ModelView):
-    column_list = ('first_name', 'last_name', 'organisation')
+    column_list = ('first_name', 'last_name', 'affiliation')
 
 
 class Resource(db.Model):

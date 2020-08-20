@@ -31,7 +31,7 @@ To start the backend:
     $ export FLASK_DEBUG=1
     $ python run.py
 
-To build the frontend
+To build the frontend:
 
     $ yarn
 

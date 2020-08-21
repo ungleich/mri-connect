@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import os
+import os, click
 from dotenv import load_dotenv
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '.flaskenv')
@@ -13,11 +13,12 @@ app = create_app()
 
 
 @app.cli.command()
-def people():
+@click.argument('filename')
+def people(filename):
     """ Import people database """
     from backend.loader.people import load_people
     with app.app_context():
-        load_people()
+        load_people(filename)
 
 
 if __name__ == '__main__':

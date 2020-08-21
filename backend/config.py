@@ -22,7 +22,7 @@ class Config(object):
         SECRET_KEY = os.environ['SECRET_KEY']
 
     # database connection
-    SQLALCHEMY_ECHO = (FLASK_ENV == 'development')
+    SQLALCHEMY_ECHO = False #(FLASK_ENV == 'development')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     if 'DATABASE_URL' in os.environ:
         SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']

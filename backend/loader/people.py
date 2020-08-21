@@ -95,9 +95,9 @@ def queue_refresh(filename, fmt):
             return
 
 
-def load_people():
+def load_people(fn):
     msg = queue_refresh(
-        "data/sample_29June2020.csv",
+        fn,
         ["Name", "FirstN"],
     )
     print(msg)

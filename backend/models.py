@@ -66,8 +66,7 @@ class Person(db.Model):
             'id': self.id,
             'fullname': self.fullname(),
             'position': self.position or '',
-            'country': self.country or '',
-            'personal_urls': (self.personal_url or '').split(';'),
+            'personal_urls': (self.personal_urls or '').split(';'),
             'biography': self.biography or '',
         }
 

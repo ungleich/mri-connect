@@ -2,7 +2,7 @@
   <div class="hello">
     <b style="text-transform: uppercase">Connect with the Mountain Research community</b>
     <h1>Find an expert</h1>
-    <form action="#" method="post" style="text-align:center">
+    <form action="/api/search/updated" method="post" style="text-align:center">
 <table border="0" cellspacing="0" cellpadding="2">
 <thead>
 	<tr>

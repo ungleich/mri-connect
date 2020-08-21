@@ -15,8 +15,8 @@ if os.environ.get('FLASK_COVERAGE'):
 import sys
 import click
 
-from streetwise import create_app, db
-from streetwise.models import *
+from backend import create_app, db
+from backend.models import *
 
 app = create_app()
 
@@ -24,7 +24,7 @@ app = create_app()
 @app.shell_context_processor
 def make_shell_context():
     return dict(db=db,
-        Image=Image, Session=Session, Vote=Vote, Campaign=Campaign)
+        Person=Person, Organisation=Organisation)
 
 
 @app.cli.command()
@@ -76,18 +76,6 @@ def deploy():
     # Generate some bytes to create entropy
     os.urandom(256)
 
-@app.cli.command()
-@click.option('--name', default="safety-1",
-              help='Name of the campaign to use for import.')
-@click.option('--src', default="data/ch_data.csv",
-              help='Filename of the CSV database to import.')
-@click.option('--update/--no-update', default=True,
-              help='Check to see if images are already in database.')
-def images(name, src, update):
-    """Import the images."""
-    from streetwise.admin import load_images
-    with app.app_context():
-        load_images(update, src, name)
 
 @app.cli.command()
 def profile():

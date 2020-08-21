@@ -52,7 +52,9 @@ class Person(db.Model):
     _indexer = db.Column(db.UnicodeText)
     def index(self):
         self._indexer = " ".join([
-            self.first_name, self.last_name, self.affiliation, self.position, self.biography
+            self.first_name, self.last_name,
+            self.position, self.biography,
+            # self.affiliation, 
         ])
         return True
 
@@ -66,9 +68,13 @@ class Person(db.Model):
             'id': self.id,
             'fullname': self.fullname(),
             'position': self.position or '',
-            'personal_urls': (self.personal_urls or '').split(';'),
-            'biography': self.biography or '',
         }
+
+    def dict_full(self):
+        d = self.dict()
+        d['personal_urls'] = (self.personal_urls or '').split(';')
+        d['biography'] = self.biography or ''
+        return d
 
 class PersonView(ModelView):
     column_list = ('first_name', 'last_name', 'affiliation')

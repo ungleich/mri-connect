@@ -22,8 +22,11 @@ $axios.interceptors.response.use(function (response) {
 })
 
 export default {
-  getPeopleCount () {
-    return $axios.get(`people/count`)
+  getPeopleSearch (query) {
+    return $axios.get(
+      `search/keyword`,
+      { params: { q: query } }
+    )
       .then(response => response.data)
   }
 }

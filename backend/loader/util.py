@@ -1,3 +1,7 @@
+import re
+
+from .. import db
+from ..models import Person, Organisation
 
 # Correct commas inside of a linked field
 def fix_bracketed_lists(data):
@@ -49,5 +53,5 @@ def reindex_data():
     for i, p in enumerate(Person.query.all()):
         p.index()
         db.session.add(p)
-        if i % 10 == 0: db.session.commit()
+        if i % 50 == 0: db.session.commit()
     db.session.commit()

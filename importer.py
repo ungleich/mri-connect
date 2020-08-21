@@ -17,8 +17,10 @@ app = create_app()
 def people(filename):
     """ Import people database """
     from backend.loader.people import load_people
+    from backend.loader.util import reindex_data
     with app.app_context():
         load_people(filename)
+        reindex_data()
 
 
 if __name__ == '__main__':

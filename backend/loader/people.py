@@ -12,7 +12,9 @@ def refresh_data(filename, required_cols=[]):
     count = 0
 
     with open(filename, 'rt', encoding='utf-8', errors='ignore') as csvfile:
-        datareader = csv.DictReader(csvfile, delimiter=';')
+        # dialect = csv.Sniffer().sniff(csvfile.read(2048), delimiters=";,")
+        # csvfile.seek(0)
+        datareader = csv.DictReader(csvfile, delimiter=";")
         rowcount = 0
 
         for row in datareader:
@@ -81,7 +83,7 @@ def queue_refresh(filename, fmt):
         try:
             c, p = next(rd)
         except Exception as e:
-            print('error: %s' % str(e))
+            print(str(e))
             return
         if isinstance(c, (int, float)):
             global c_progress
@@ -100,4 +102,5 @@ def load_people(fn):
         fn,
         ["Name", "FirstN"],
     )
-    print(msg)
+    if msg is not None:
+        print(msg)

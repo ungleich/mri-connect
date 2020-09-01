@@ -17,7 +17,7 @@
     "vue-awesome-swiper": "^4.1.1",
     "vue-feather-icons": "^5.0.0",
     "vue-router": "^3.0.1",
-    "vuesax": "^3.11.13",
+    "vuesax": "^4.0.1-alpha.24",
     "vuex": "^3.0.1"
   },
   "devDependencies": {

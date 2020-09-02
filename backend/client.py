@@ -12,6 +12,7 @@ client_bp = Blueprint('client_app', __name__,
                       )
 
 IMAGE_ROOT = path.join(Config.DIST_DIR, 'images')
+UPLOADS_ROOT = Config.UPLOAD_DIR
 
 @client_bp.route('/')
 def index_client():
@@ -24,3 +25,7 @@ def index_favicon():
 @client_bp.route('/images/<path:imagepath>')
 def index_images(imagepath):
     return send_from_directory(IMAGE_ROOT, imagepath)
+
+@client_bp.route('/uploads/<path:filename>')
+def index_uploads(filename):
+    return send_from_directory(UPLOADS_ROOT, filename)

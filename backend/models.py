@@ -2,6 +2,9 @@
 
 from . import db, Config
 from flask_admin.contrib.sqla import ModelView
+from flask_admin.form import ImageUploadField
+from werkzeug.utils import secure_filename
+import enum
 
 organisation_people = db.Table(
     'organisation_people',
@@ -24,18 +27,49 @@ resources_people = db.Table(
     db.Column('resource_id', db.Integer(), db.ForeignKey('resource.id'))
 )
 
+class CareerStage(enum.Enum):
+    UNDERGRAD = "Undergraduate student (e.g. BSc/BA)"
+    POSTGRAD = "Postgraduate student (Masters/PhD student)"
+    POSTDOC = "Postdoc/Junior Researcher"
+    ACADEMIC = "Academic (Senior Researcher, Professor)"
+    PUBLICSECTOR = "Practitioner in the public/government sector"
+    PRIVATESECTOR = "Practitioner or business in the private sector"
+    OTHER = "Other (short text)"
 
 class Person(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    orcid = db.Column(db.Unicode(128), unique=True, doc="ORCID is a persistent unique digital identifier that you own and control")
     source_id = db.Column(db.Unicode(64), unique=True)
+
     last_name = db.Column(db.Unicode(255))
     first_name = db.Column(db.Unicode(255))
     title = db.Column(db.Unicode(128))
     gender = db.Column(db.Unicode(64))
     position = db.Column(db.UnicodeText)
+    #affiliation -> organisation
     contact_email = db.Column(db.Unicode(255))
     personal_urls = db.Column(db.UnicodeText)
-    biography = db.Column(db.UnicodeText)
+    select_career_stage = db.Column(db.Unicode(64))
+    career_stage_note = db.Column(db.Unicode(255))
+    ecr_list = db.Column(db.Boolean(), doc="Would you like to be added to the ECR list of the MRI (applies for ECRs, <5 years from graduation)")
+    official_functions = db.Column(db.UnicodeText)
+
+    upload_photo = db.Column(db.String(512))
+
+    allow_public = db.Column(db.Boolean(), doc="I allow publishing my profile on the web")
+    allow_photo = db.Column(db.Boolean(), doc="I allow publishing my photo on the web")
+    allow_contact = db.Column(db.Boolean(), doc="I allow MRI to contact me regarding my profile, as listed on the database, to link to and promote in its communications channels (website, social media, newsletter article).")
+    allow_registry = db.Column(db.Boolean(), doc="I would like to be added to an experts registry for internal use by the MRI Coordination Office to identify and connect with external requests for consultancies, expertise, provide inputs for policy briefs/policy reviews, speaking role, or interviews (such as by thor parties, journalists or collaborators of the MRI).")
+    allow_newsletter = db.Column(db.Boolean(), doc="I would like to receive monthly MRI Global Newsletters and Newsflashes from the MRI")
+
+    def gravatar(self):
+        gr_size = 80
+        if self.email == "": return "/img/usericon.png"
+        email = self.email.lower().encode('utf-8')
+        gravatar_url = "https://www.gravatar.com/avatar/"
+        gravatar_url += hashlib.md5(email).hexdigest() + "?"
+        gravatar_url += urlencode({'s':str(gr_size)})
+        return gravatar_url
 
     affiliation = db.relationship('Organisation', secondary=organisation_people,
         backref=db.backref('people', lazy='dynamic'))
@@ -52,57 +86,77 @@ class Person(db.Model):
     _indexer = db.Column(db.UnicodeText)
     def index(self):
         self._indexer = " ".join([
-            self.first_name, self.last_name,
-            self.position, self.biography,
-            # self.affiliation, 
+            self.first_name,
+            self.last_name,
+            self.position,
+            # self.affiliation,
         ])
         return True
 
+    @property
     def fullname(self):
         return " ".join([ self.title, self.first_name, self.last_name ])
     def __repr__(self):
-        return self.fullname()
+        return self.fullname
 
-    def dict(self):
-        return {
-            'id': self.id,
-            'fullname': self.fullname(),
-            'position': self.position or '',
-        }
+    @property
+    def career_stage(self):
+        if self.select_career_stage == CareerStage.OTHER.name:
+            return self.career_stage_note
+        elif self.select_career_stage is not None:
+            return CareerStage[self.select_career_stage].value
+        return ''
 
-    def dict_full(self):
-        d = self.dict()
-        d['personal_urls'] = (self.personal_urls or '').split(';')
-        d['biography'] = self.biography or ''
-        return d
+    @property
+    def urls(self):
+        if not self.personal_urls: return []
+        if ';' in self.personal_urls:
+            return self.personal_urls.strip().split(';')
+        else:
+            return self.personal_urls.strip().split('\n')
 
-class PersonView(ModelView):
-    column_list = ('first_name', 'last_name', 'affiliation')
+    @property
+    def thumbnail(self): return self.get_photo(True)
 
+    @property
+    def photo(self): return self.get_photo()
+
+    def get_photo(self, as_thumbnail=False):
+        if not self.upload_photo: return Config.DEFAULT_THUMB
+        name, _ = ospath.splitext(self.upload_photo)
+        if as_thumbnail:
+            return '/uploads/' + secure_filename('%s_thumb.jpg' % name)
+        return '/uploads/' + secure_filename('%s.jpg' % name)
+
+
+class ResourceType(enum.Enum):
+    HOMEPAGE = "Link to personal homepage"
+    RESUME = "Link to online CV (e.g. LinkedIn)"
+    PROFILE = "Link to profile (e.g. ResearchGate)"
+    BOOK = "Publication (book)"
+    PAPER = "Publication (journal paper)"
+    ARTICLE = "Publication (online article)"
 
 class Resource(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    source_id = db.Column(db.Unicode(2048), unique=True)
     title = db.Column(db.Unicode(2048))
     url = db.Column(db.Unicode(2048))
     citation = db.Column(db.UnicodeText)
     abstract = db.Column(db.UnicodeText)
+    resource_type = db.Column(db.Enum(ResourceType))
 
     def __repr__(self):
         return self.title
-    def dict(self):
-        return {
-            'id': self.id,
-            'source_id': self.source_id,
-            'title': self.title or '',
-            'citation': self.citation or '',
-            'url': self.url or '',
-            'abstract': self.abstract or '',
-        }
+
+    @property
+    def of_type(self):
+        return self.resource_type.value
 
 class ResourceView(ModelView):
     column_list = ('title', 'url')
-
+    form_choices = {
+        'resource_type': [(d.name, d.value) for d in ResourceType],
+    }
 
 class Topic(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -131,7 +185,6 @@ class Expertise(db.Model):
     # Interdisciplinary Research;
     # Transdisciplinary Research
     title = db.Column(db.Unicode(255))
-    official_functions = db.Column(db.UnicodeText)
 
     @property
     def json(self):
@@ -170,6 +223,7 @@ class Organisation(db.Model):
 
     # A short string describing this institution
     name = db.Column(db.Unicode(255))
+    department = db.Column(db.Unicode(255))
     building = db.Column(db.UnicodeText)
     street = db.Column(db.UnicodeText)
     postcode = db.Column(db.Unicode(16))
@@ -178,3 +232,21 @@ class Organisation(db.Model):
 
     def __repr__(self):
         return self.name
+
+
+
+
+class PersonView(ModelView):
+    column_list = ('first_name', 'last_name', 'affiliation')
+    form_choices = {
+        'select_career_stage': [(d.name, d.value) for d in CareerStage],
+        'resource_type': [(d.name, d.value) for d in ResourceType],
+    }
+    form_extra_fields = {
+        'upload_photo': ImageUploadField('Photo',
+            base_path=Config.UPLOAD_DIR,
+            relative_path='photos/',
+            endpoint='client_app.index_uploads',
+            thumbnail_size=(256, 256, True))
+    }
+    inline_models = [Organisation, Expertise, Project, Resource]

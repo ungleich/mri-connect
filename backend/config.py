@@ -14,6 +14,8 @@ class Config(object):
     APP_DIR = os.path.dirname(__file__)
     ROOT_DIR = os.path.dirname(APP_DIR)
     DIST_DIR = os.path.join(ROOT_DIR, 'dist')
+    UPLOAD_DIR = os.path.join(ROOT_DIR, 'uploads')
+    DEFAULT_THUMB = '/images/avatar.jpg'
 
     SSL_REDIRECT = os.getenv('SSL_REDIRECT', False)
 

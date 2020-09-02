@@ -7,15 +7,17 @@ from flask_restplus import Resource
 from flask import request
 
 from . import db, api_rest
-from ..models import Person, Organisation
 from sqlalchemy.sql import and_, or_, not_
+
+from ..models import Person, Organisation
+from ..schema import PersonSchema, OrganisationSchema
+
+person_schema = PersonSchema()
+organisation_schema = OrganisationSchema()
 
 ns = api_rest.namespace('search',
   description = 'Search API'
 )
-
-def personModel(p):
-  return p.dict()
 
 @ns.route('/updated')
 class PeopleUpdated(Resource):
@@ -23,9 +25,8 @@ class PeopleUpdated(Resource):
 
   @ns.doc('latest_people')
   def get(self):
-    return [personModel(p) for p in Person.query
-        .limit(10)
-        .all()]
+    return [person_schema.dump(p) for p in Person.query
+        .limit(10).all()]
 
 @ns.route('/keyword')
 class PeopleByKeyword(Resource):
@@ -61,4 +62,4 @@ class PeopleByKeyword(Resource):
 
     query = query.order_by(Person.last_name.asc())
     query = query.limit(10)
-    return [personModel(p) for p in query.all()]
+    return [person_schema.dump(p) for p in query.all()]

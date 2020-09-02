@@ -1,5 +1,6 @@
 from flask import Flask, Markup
 from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
@@ -12,6 +13,7 @@ import werkzeug
 werkzeug.cached_property = werkzeug.utils.cached_property
 
 db = SQLAlchemy()
+ma = Marshmallow()
 migrate = Migrate()
 
 from .config import Config
@@ -33,6 +35,9 @@ def create_app():
 
     # Set up the database
     db.init_app(app)
+    ma.init_app(app)
+
+    # Migrate schema
     from .models import (
         Person, PersonView,
         Resource, ResourceView,
@@ -42,7 +47,6 @@ def create_app():
         Organisation,
     )
     migrate.init_app(app, db)
-
 
     # Register blueprints
     from .client import client_bp

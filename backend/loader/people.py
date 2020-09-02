@@ -60,7 +60,7 @@ def refresh_data(filename, required_cols=[]):
                         source_id  =row['PersonID'],
                         position   =row['Position'],
                         gender     =row['Sex'],
-                        biography  =row['Info1'],
+                        # biography  =row['Info1'],
                         contact_email=row['Email'],
                         personal_urls=fix_url(row['URL_Person']),
                     )

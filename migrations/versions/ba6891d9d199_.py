@@ -1,7 +1,7 @@
 """empty message
 
 Revision ID: ba6891d9d199
-Revises: 
+Revises:
 Create Date: 2020-08-21 11:43:17.660971
 
 """
@@ -21,6 +21,7 @@ def upgrade():
     op.create_table('organisation',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.Unicode(length=255), nullable=True),
+    sa.Column('department', sa.Unicode(length=255), nullable=True),
     sa.Column('building', sa.UnicodeText(), nullable=True),
     sa.Column('street', sa.UnicodeText(), nullable=True),
     sa.Column('postcode', sa.Unicode(length=16), nullable=True),
@@ -30,6 +31,7 @@ def upgrade():
     )
     op.create_table('person',
     sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('orcid', sa.Unicode(length=128), nullable=True),
     sa.Column('source_id', sa.Unicode(length=64), nullable=True),
     sa.Column('last_name', sa.Unicode(length=255), nullable=True),
     sa.Column('first_name', sa.Unicode(length=255), nullable=True),
@@ -38,9 +40,19 @@ def upgrade():
     sa.Column('position', sa.UnicodeText(), nullable=True),
     sa.Column('contact_email', sa.Unicode(length=255), nullable=True),
     sa.Column('personal_urls', sa.UnicodeText(), nullable=True),
-    sa.Column('biography', sa.UnicodeText(), nullable=True),
+    sa.Column('select_career_stage', sa.Unicode(length=64), nullable=True),
+    sa.Column('career_stage_note', sa.Unicode(length=255), nullable=True),
+    sa.Column('ecr_list', sa.Boolean(), nullable=True),
+    sa.Column('official_functions', sa.UnicodeText(), nullable=True),
+    sa.Column('upload_photo', sa.String(length=512), nullable=True),
+    sa.Column('allow_public', sa.Boolean(), nullable=True),
+    sa.Column('allow_photo', sa.Boolean(), nullable=True),
+    sa.Column('allow_contact', sa.Boolean(), nullable=True),
+    sa.Column('allow_registry', sa.Boolean(), nullable=True),
+    sa.Column('allow_newsletter', sa.Boolean(), nullable=True),
     sa.Column('_indexer', sa.UnicodeText(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('orcid'),
     sa.UniqueConstraint('source_id')
     )
     op.create_table('project',
@@ -57,13 +69,12 @@ def upgrade():
     )
     op.create_table('resource',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('source_id', sa.Unicode(length=2048), nullable=True),
     sa.Column('title', sa.Unicode(length=2048), nullable=True),
     sa.Column('url', sa.Unicode(length=2048), nullable=True),
     sa.Column('citation', sa.UnicodeText(), nullable=True),
     sa.Column('abstract', sa.UnicodeText(), nullable=True),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('source_id')
+    sa.Column('resource_type', sa.Enum('HOMEPAGE', 'RESUME', 'PROFILE', 'BOOK', 'PAPER', 'ARTICLE', name='resourcetype'), nullable=True),
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('topic',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -74,7 +85,6 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('topic_id', sa.Integer(), nullable=True),
     sa.Column('title', sa.Unicode(length=255), nullable=True),
-    sa.Column('official_functions', sa.UnicodeText(), nullable=True),
     sa.ForeignKeyConstraint(['topic_id'], ['topic.id'], ),
     sa.PrimaryKeyConstraint('id')
     )

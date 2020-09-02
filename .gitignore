@@ -1,3 +1,6 @@
+data/
+uploads/
+
 .flaskenv
 
 __pycache__
@@ -16,7 +19,6 @@ yarn-debug.log*
 yarn-error.log*
 selenium-debug.log
 
-data/
 node_modules
 npm-debug.log
 package-lock.json

@@ -1,20 +1,6 @@
 <template>
   <div class="hello">
-    <b style="text-transform: uppercase">Connect with the Mountain Research community</b>
-
-    <div class="quick-search">
-
-      <h1>Find an expert</h1>
-      <input v-model="query" placeholder="Quick search ...">
-
-      <ul class="search-result" v-show="results.length > 0">
-        <div>{{ results.length }} results</div>
-        <li v-for="result in results" v-bind:key="result.id">
-          {{ result.fullname }}
-        </li>
-      </ul>
-
-    </div>
+    <b style="text-transform: uppercase;margin-top: 1em;display:block">Connect with the Mountain Research community</b>
 
     <h2>Advanced search</h2>
     <form action="#" style="text-align:center">
@@ -122,8 +108,6 @@
 </template>
 
 <script>
-import $backend from '@/backend'
-
 export default {
   name: 'HelloWorld',
   props: {
@@ -133,17 +117,6 @@ export default {
     return {
       query: '',
       results: []
-    }
-  },
-  watch: {
-    query: function (val) {
-      if (val.length > 2) {
-        $backend.getPeopleSearch(val)
-          .then(responseData => {
-            this.results = responseData
-          })
-          // .catch((error) => this.promptNetworkError(error))
-      }
     }
   }
 }

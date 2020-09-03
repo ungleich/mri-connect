@@ -14,7 +14,7 @@ def refresh_data(filename, required_cols=[]):
     with open(filename, 'rt', encoding='utf-8', errors='ignore') as csvfile:
         # dialect = csv.Sniffer().sniff(csvfile.read(2048), delimiters=";,")
         # csvfile.seek(0)
-        datareader = csv.DictReader(csvfile, delimiter=";")
+        datareader = csv.DictReader(csvfile, delimiter=",")
         rowcount = 0
 
         for row in datareader:
@@ -29,7 +29,7 @@ def refresh_data(filename, required_cols=[]):
 
             for r in required_cols:
                 if not r in row:
-                    msg = "Missing attribute in %s (%s)" % (r, fmt['filename'])
+                    msg = "Missing attribute %s in schema." % r
                     # app.logger.warn(msg)
                     yield(msg, "error")
                     return None

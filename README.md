@@ -47,6 +47,10 @@ Use a WSGI server like Gunicorn to host the app in production mode, e.g.:
 
 The `Procfile` in this project folder makes it ready for deployment to Heroku.
 
+Note that you need to save changes to the poetry environment to `requirements.txt`:
+
+    poetry export -f requirements.txt > requirements.txt
+
 ## License
 
 MIT - details in [LICENSE](LICENSE) file.

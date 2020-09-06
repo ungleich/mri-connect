@@ -5,6 +5,7 @@ from flask_admin.contrib.sqla import ModelView
 from flask_admin.form import ImageUploadField
 from werkzeug.utils import secure_filename
 import enum
+import os.path as ospath
 
 organisation_people = db.Table(
     'organisation_people',
@@ -100,6 +101,17 @@ class Person(db.Model):
         return self.fullname
 
     @property
+    def city(self):
+        if len(self.affiliation) > 0:
+            return self.affiliation[0].city
+        return ''
+    @property
+    def country(self):
+        if len(self.affiliation) > 0:
+            return self.affiliation[0].country
+        return ''
+
+    @property
     def career_stage(self):
         if self.select_career_stage == CareerStage.OTHER.name:
             return self.career_stage_note
@@ -125,8 +137,9 @@ class Person(db.Model):
         if not self.upload_photo: return Config.DEFAULT_THUMB
         name, _ = ospath.splitext(self.upload_photo)
         if as_thumbnail:
-            return '/uploads/' + secure_filename('%s_thumb.jpg' % name)
-        return '/uploads/' + secure_filename('%s.jpg' % name)
+            return ('/uploads/%s_thumb.jpg' % name)
+        return ('/uploads/%s.jpg' % name)
+        # secure_filename() ! https://flask.palletsprojects.com/en/1.1.x/patterns/fileuploads/
 
 
 class ResourceType(enum.Enum):
@@ -229,6 +242,7 @@ class Organisation(db.Model):
     postcode = db.Column(db.Unicode(16))
     city = db.Column(db.Unicode(255))
     country = db.Column(db.Unicode(255))
+    url = db.Column(db.Unicode(255))
 
     def __repr__(self):
         return self.name

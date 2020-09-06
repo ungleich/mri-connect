@@ -28,5 +28,11 @@ export default {
       { params: { q: query } }
     )
       .then(response => response.data)
+  },
+  getPeopleData (id) {
+    return $axios.get(
+      `search/get/` + id.toString()
+    )
+      .then(response => response.data)
   }
 }

@@ -18,6 +18,10 @@ UPLOADS_ROOT = Config.UPLOAD_DIR
 def index_client():
     return send_file(path.join(Config.DIST_DIR, 'index.html'))
 
+@client_bp.route('/demo')
+def index_demo():
+    return send_file(path.join('..', 'public', 'demo.html'))
+
 @client_bp.route('/favicon.ico')
 def index_favicon():
     return send_file(path.join(IMAGE_ROOT, 'favicon.ico'))

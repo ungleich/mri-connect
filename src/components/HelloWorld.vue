@@ -87,6 +87,11 @@
       ">
     </form>
 
+    <h2>
+      <a href="mailto:info@datalets.ch" target="_blank">Contact</a> &bull;
+      <a href="https://github.com/datalets/mri-connect" target="_blank">Source</a>
+    </h2>
+
     <h3>Development</h3>
     <ul>
       <a href="https://github.com/vuejs/vue-cli/tree/dev/docs" target="_blank">vue-cli documentation</a>.

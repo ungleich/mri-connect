@@ -10,14 +10,23 @@ from . import db, api_rest
 from sqlalchemy.sql import and_, or_, not_
 
 from ..models import Person, Organisation
-from ..schema import PersonSchema, OrganisationSchema
+from ..schema import PersonSchema, PersonFullSchema, OrganisationSchema
 
 person_schema = PersonSchema()
+person_full_schema = PersonFullSchema()
 organisation_schema = OrganisationSchema()
 
 ns = api_rest.namespace('search',
   description = 'Search API'
 )
+
+@ns.route('/get/<int:person_id>')
+class PeopleSelect(Resource):
+  """ Get a person record """
+
+  @ns.doc('get_person')
+  def get(self, person_id):
+    return person_full_schema.dump(Person.query.get(person_id))
 
 @ns.route('/updated')
 class PeopleUpdated(Resource):

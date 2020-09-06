@@ -13,28 +13,24 @@ class PersonSchema(ma.SQLAlchemySchema):
             'id',
             'last_name',
             'first_name',
-            'title',
-            'gender',
-            'position',
-            'urls',
             'fullname',
-            'career_stage',
-            'thumbnail',
-            'photo',
+            'city',
+            'country',
         )
-
 
 class OrganisationSchema(ma.SQLAlchemySchema):
     class Meta:
         model = Organisation
-
-    name = ma.auto_field()
-    department = ma.auto_field()
-    building = ma.auto_field()
-    street = ma.auto_field()
-    postcode = ma.auto_field()
-    city = ma.auto_field()
-    country = ma.auto_field()
+        fields = (
+            'name',
+            'department',
+            'building',
+            'street',
+            'postcode',
+            'city',
+            'country',
+            'url',
+        )
 
 
 class ResourceSchema(ma.SQLAlchemySchema):
@@ -48,3 +44,20 @@ class ResourceSchema(ma.SQLAlchemySchema):
             'abstract',
             'of_type',
         )
+
+
+class PersonFullSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = Person
+
+    title = ma.auto_field()
+    fullname = fields.Str()
+    position = ma.auto_field()
+    urls = fields.List(fields.Str())
+    official_functions = fields.Str()
+    career_stage = fields.Str()
+    thumbnail = fields.Str()
+    photo = fields.Str()
+
+    affiliation = fields.List(fields.Nested(OrganisationSchema()))
+    resources = fields.List(fields.Nested(ResourceSchema()))

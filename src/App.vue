@@ -47,4 +47,8 @@ export default {
 #app .vs-button-light { color: black; }
 .together { white-space: nowrap; }
 
+.vs-dialog .vs-dialog__close {
+  top: 0px;
+  right: 0px;
+}
 </style>

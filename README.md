@@ -25,6 +25,10 @@ To initialize and/or migrate the database, if necessary:
     $ flask db init
     $ flask db migrate
 
+There is a convenience script with the above functions as well as profiling and testing routines:
+
+    $ python manage.py deploy
+
 To start the backend:
 
     $ export FLASK_ENV="development"
@@ -35,7 +39,7 @@ To build the frontend:
 
     $ yarn
 
-The frontend interface will now be available.
+The frontend interface will now be available. Use `yarn serve` in development.
 
 Check the log for the port and URL to the admin interface.
 

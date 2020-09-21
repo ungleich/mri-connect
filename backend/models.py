@@ -87,16 +87,20 @@ class Person(db.Model):
     _indexer = db.Column(db.UnicodeText)
     def index(self):
         self._indexer = " ".join([
-            self.first_name,
-            self.last_name,
-            self.position,
-            # self.affiliation,
+            self.first_name or " ",
+            self.last_name or " ",
+            self.position or " ",
+            # self.affiliation or " ",
         ])
         return True
 
     @property
     def fullname(self):
-        return " ".join([ self.title, self.first_name, self.last_name ])
+        namearray = []
+        if self.title: namearray.push(self.title)
+        if self.first_name: namearray.push(self.first_name)
+        if self.last_name: namearray.push(self.last_name)
+        return " ".join(namearray)
     def __repr__(self):
         return self.fullname
 
@@ -264,3 +268,7 @@ class PersonView(ModelView):
             thumbnail_size=(256, 256, True))
     }
     inline_models = [Organisation, Expertise, Project, Resource]
+    def on_model_change(self, form, model, is_created):
+        print("Reindexing on save")
+        from .loader.util import reindex_data
+        reindex_data(db, Person, model)

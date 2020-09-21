@@ -20,7 +20,7 @@ def people(filename):
     from backend.loader.util import reindex_data
     with app.app_context():
         load_people(filename)
-        reindex_data()
+        reindex_data(db, Person)
 
 
 if __name__ == '__main__':

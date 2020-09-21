@@ -1,8 +1,5 @@
 import re
 
-from .. import db
-from ..models import Person, Organisation
-
 # Correct commas inside of a linked field
 def fix_bracketed_lists(data):
     for fix in re.findall(r'\([^\s]*,[ ]*[^\s]*\)', data):
@@ -17,7 +14,7 @@ def fix_url(link):
     return link
 
 # Create linked objects
-def add_linked(person, field, obj, data):
+def add_linked(db, person, field, obj, data):
     # TODO: fuzzy matching instead of lower()
     items = fix_bracketed_lists(data).lower()
     items = items.replace(';',',').split(',')
@@ -49,9 +46,13 @@ def get_total_rows_csv(filename):
     return i + 1
 
 # Search index routine
-def reindex_data():
-    for i, p in enumerate(Person.query.all()):
-        p.index()
-        db.session.add(p)
-        if i % 50 == 0: db.session.commit()
+def reindex_data(db, model, object=None):
+    if object is None:
+        for i, p in enumerate(model.query.all()):
+            p.index()
+            db.session.add(p)
+            if i % 50 == 0: db.session.commit()
+    else:
+        object.index()
+        db.session.add(object)
     db.session.commit()

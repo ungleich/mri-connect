@@ -2,7 +2,7 @@
 
 A search engine and members directory for the Mountain Research Initiative.
 
-(Work in progress)
+[This diagram](dataflow.png) contains an overview of the architecture of the project.
 
 ## Usage
 
@@ -25,7 +25,7 @@ To initialize and/or migrate the database, if necessary:
     $ flask db init
     $ flask db migrate
 
-There is a convenience script with the above functions as well as profiling and testing routines:
+There is a convenience script (`deploy`) with the above functions as well as profiling (`profile`) and testing (`test`) routines, e.g.:
 
     $ python manage.py deploy
 
@@ -33,7 +33,7 @@ To start the backend:
 
     $ export FLASK_ENV="development"
     $ export FLASK_DEBUG=1
-    $ python run.py
+    $ flask run
 
 To build the frontend:
 

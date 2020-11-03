@@ -1,10 +1,8 @@
-from ra.admin.admin import ra_admin_site, EntityAdmin
-from django.contrib.admin import ModelAdmin
+from django.contrib import admin
+from .models import Person, Expertise, Topic, Affiliation
 
-from .models import Person, Expertise, Topic
-
-
-class PersonAdmin(ModelAdmin):
+@admin.register(Person)
+class PersonAdmin(admin.ModelAdmin):
     fieldsets = (
         ('Person', {
             'fields': ('last_name', 'first_name', 'title', 'gender')
@@ -33,12 +31,14 @@ class PersonAdmin(ModelAdmin):
     )
     # view_template = 'people/admin/preview.html'
 
-class ExpertiseAdmin(EntityAdmin):
+@admin.register(Expertise)
+class ExpertiseAdmin(admin.ModelAdmin):
     fields = ('title', 'topic')
 
-class TopicAdmin(EntityAdmin):
+@admin.register(Topic)
+class TopicAdmin(admin.ModelAdmin):
     pass
 
-ra_admin_site.register(Person, PersonAdmin)
-ra_admin_site.register(Expertise, ExpertiseAdmin)
-ra_admin_site.register(Topic, TopicAdmin)
+@admin.register(Affiliation)
+class AffiliationAdmin(admin.ModelAdmin):
+    pass

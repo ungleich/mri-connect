@@ -14,12 +14,27 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.urls import path
-from ra.admin.admin import ra_admin_site
+from django.urls import path, include
+from django.contrib import admin
+from django.contrib.auth import views as auth_views
+from django.views.generic import TemplateView
 
+# from ra.admin.admin import ra_admin_site
 # handler500 = 'ra.utils.views.server_error'
 # handler404 = 'ra.utils.views.not_found_error'
 
 urlpatterns = [
-    path('', ra_admin_site.urls),
+    path('datawizard/', include('data_wizard.urls')),
+    path('sw.js', (TemplateView.as_view(template_name="app/sw.js", content_type='application/javascript', )), name='sw.js'),
+    # password reset views
+    path('mriadmin/password_reset/',  auth_views.PasswordResetView.as_view(),  name='admin_password_reset',
+    ),
+    path('mriadmin/password_reset/done/',  auth_views.PasswordResetDoneView.as_view(),  name='password_reset_done',
+    ),
+    path('reset/<uidb64>/<token>/',  auth_views.PasswordResetConfirmView.as_view(),  name='password_reset_confirm',
+    ),
+    path('reset/done/',  auth_views.PasswordResetCompleteView.as_view(),  name='password_reset_complete',
+    ),
+    # path('', ra_admin_site.urls),
+    path('mriadmin/', admin.site.urls),
 ]

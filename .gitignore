@@ -1,3 +1,6 @@
+/data/
+/datawizard/
+
 .env
 *.pyc
 .sass-cache
@@ -16,5 +19,3 @@
 /Vagrantfile.local
 /docs/_build/
 /node_modules/
-/publichealth/static/libs
-publichealth.home.json

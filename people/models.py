@@ -1,14 +1,12 @@
 from django.db import models
 
-from ra.base.models import EntityModel, TransactionModel, TransactionItemModel, QuantitativeTransactionItemModel
-from ra.base.registry import register_doc_type
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import MinValueValidator, MaxValueValidator
-from multiselectfield import MultiSelectField
 from django_countries.fields import CountryField
 # from django.contrib.gis.db import PointField
+from multiselectfield import MultiSelectField
 
-class Affiliation(EntityModel):
+class Affiliation(models.Model):
     name = models.CharField(max_length=256)
     country = models.CharField(max_length=256)
     street = models.CharField(max_length=256)
@@ -16,7 +14,7 @@ class Affiliation(EntityModel):
     city = models.CharField(max_length=256)
     country = CountryField()
 
-class Project(EntityModel):
+class Project(models.Model):
     name = models.CharField(max_length=256)
     acronym = models.CharField(max_length=16)
     date_start = models.DateField()
@@ -29,13 +27,13 @@ class Project(EntityModel):
     # coordinates = PointField()
     country = CountryField()
 
-class Topic(EntityModel):
+class Topic(models.Model):
     title = models.CharField(max_length=256)
     class Meta:
         verbose_name = _('Topic')
         verbose_name_plural = _('Topics')
 
-class Expertise(EntityModel):
+class Expertise(models.Model):
     title = models.CharField(max_length=256)
     topic = models.ForeignKey(Topic, on_delete=models.PROTECT, null=True, blank=True)
     class Meta:
@@ -70,7 +68,10 @@ PEOPLE_PREFERENCES = (
     ('newsletter', _("I would like to receive monthly MRI Global Newsletters and Newsflashes from the MRI")),
 )
 
-class Person(EntityModel):
+class Person(models.Model):
+    date_added = models.DateField(auto_now_add=True)
+    date_edited = models.DateField(auto_now=True)
+
     # 1-4
     last_name = models.CharField(max_length=128)
     first_name = models.CharField(max_length=128)
@@ -90,11 +91,12 @@ class Person(EntityModel):
     # 8 I am..
     career_stage = models.CharField(max_length=16,
                                     choices=CareerStage.choices)
-    # 8 "Other"
-    career_stage_note = models.CharField(max_length=256)
+    # 8
+    career_stage_note = models.CharField(_("Other"), max_length=256)
 
-    # 9 Year of last degree graduation
+    # 9
     career_graduation = models.PositiveIntegerField(
+        _("Year of last degree graduation"),
         validators=[
             MinValueValidator(1900), MaxValueValidator(2100)
         ])
@@ -113,14 +115,19 @@ class Person(EntityModel):
 
     # 12-14
     url_personal = models.URLField(
+        _("Personal website"),
         help_text="Link to personal or professional homepage")
     url_cv = models.URLField(
-        help_text="Link to CV (e.g. LinkedIn)")
+        _("Curriculum Vitae"),
+        help_text="Link to CV, e.g. on LinkedIn")
     url_researchgate = models.URLField(
-        help_text="Link to ResearchGate")
+        _("ResearchGate link"),
+        help_text="Link to your profile")
 
     # 15 See https://members.orcid.org/api/workflow/RIM-systems
-    orcid = models.CharField(max_length=128, unique=True,
+    orcid = models.CharField(
+        _("ORCID"),
+        max_length=128, unique=True,
         help_text="ORCID is a persistent unique digital identifier that you own and control")
 
     # 16 Current Projects (note: max 5)
@@ -129,8 +136,12 @@ class Person(EntityModel):
     )
 
     # 17
-    url_publications = models.URLField()
-    list_publications = models.TextField()
+    url_publications = models.URLField(
+        _("Link to publications")
+    )
+    list_publications = models.TextField(
+        _("Free text list of publications")
+    )
 
     # 18-22
     allow_public = models.BooleanField(
@@ -157,5 +168,5 @@ class Person(EntityModel):
         return " ".join(namearray)
 
     class Meta:
-        verbose_name = _('Person')
-        verbose_name_plural = _('People')
+        verbose_name = _('Expert')
+        verbose_name_plural = _('Experts')

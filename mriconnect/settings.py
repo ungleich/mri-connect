@@ -40,16 +40,19 @@ INSTALLED_APPS = [
     'crispy_forms',
     'reversion',
     'tabular_permissions',
-    'ra',
-    'ra.admin',
-    'ra.activity',
-    'ra.reporting',
+    #'ra',
+    #'ra.admin',
+    #'ra.activity',
+    #'ra.reporting',
     'slick_reporting',
     'jazzmin',
 
     'django_countries',
     'multiselectfield',
     'people',
+
+    'data_wizard',
+    'data_wizard.sources',
 
     'django.contrib.admin', # comes at the end because the theme is replaced
 ]
@@ -147,11 +150,27 @@ STATICFILES_FINDERS = (
 )
 
 JAZZMIN_SETTINGS = {
-    'navigation_expanded': False,
+    "site_title": "MRI Connect: Experts Database",
+    "site_header": "Experts DB",
+    "welcome_sign": "Welcome to MRI Connect",
+    "copyright": "Mountain Research Initiative",
+    "search_model": "people.Person",
+
+    "topmenu_links": [
+        {"model": "people.Person"},
+        {"app": "data_wizard"},
+    ],
+
+    # Side menu
+    "hide_apps": ["data_wizard"],
+
     "changeform_format": "single",
+    "language_chooser": True,
+    "navigation_expanded": True,
 }
 
 JAZZMIN_UI_TWEAKS = {
+
     "navbar": "navbar-primary navbar-dark",
     "no_navbar_border": True,
     "body_small_text": False,

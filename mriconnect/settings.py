@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'slick_reporting',
     'jazzmin',
 
+    'django_countries',
+    'multiselectfield',
     'people',
 
     'django.contrib.admin', # comes at the end because the theme is replaced

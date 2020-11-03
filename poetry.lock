@@ -132,6 +132,19 @@ rjsmin = "1.1.0"
 
 [[package]]
 category = "main"
+description = "Provides a country field for Django models."
+name = "django-countries"
+optional = false
+python-versions = "*"
+version = "6.1.3"
+
+[package.extras]
+dev = ["tox", "black", "django", "pytest", "pytest-django", "djangorestframework", "graphene-django"]
+maintainer = ["transifex-client", "zest.releaser", "django"]
+test = ["pytest", "pytest-django", "pytest-cov", "graphene-django"]
+
+[[package]]
+category = "main"
 description = "Middleware that makes the current request available from anywhere."
 name = "django-crequest"
 optional = false
@@ -159,6 +172,17 @@ version = "2.3.11"
 
 [package.dependencies]
 django = ">=2"
+
+[[package]]
+category = "main"
+description = "Django multiple select field"
+name = "django-multiselectfield"
+optional = false
+python-versions = "*"
+version = "0.1.12"
+
+[package.dependencies]
+django = ">=1.4"
 
 [[package]]
 category = "main"
@@ -504,7 +528,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["pytest (>=3.5,<3.7.3 || >3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pytest-cov", "jaraco.test (>=3.2.0)", "jaraco.itertools", "func-timeout", "pytest-black (>=0.3.7)", "pytest-mypy"]
 
 [metadata]
-content-hash = "30ceec088e97f92b01effe53d7de3f6a94f05694a6982d95b3e817cea17230d5"
+content-hash = "ee7af41170408f043cdeef800233c0e0e781d785d319dc99cbbd7a2c923d8ef4"
 python-versions = ">=3.6"
 
 [metadata.files]
@@ -534,6 +558,7 @@ bumpversion = [
 ]
 colorama = [
     {file = "colorama-0.4.4-py2.py3-none-any.whl", hash = "sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2"},
+    {file = "colorama-0.4.4.tar.gz", hash = "sha256:5941b2b48a20143d2267e95b1c2a7603ce057ee39fd88e7329b0c292aa16869b"},
 ]
 coverage = [
     {file = "coverage-4.4.2-cp26-cp26m-macosx_10_10_x86_64.whl", hash = "sha256:d1ee76f560c3c3e8faada866a07a32485445e16ed2206ac8378bd90dadffb9f0"},
@@ -592,6 +617,10 @@ django-compressor = [
     {file = "django_compressor-2.3-py2.py3-none-any.whl", hash = "sha256:da9ee5ce4fc8b9211dcecd2229520514a4ba9ac3bcdc59b48092ec4d7f6b96b0"},
     {file = "django_compressor-2.3.tar.gz", hash = "sha256:47c86347f75c64954a06afbbfc820a750619e10c23a49272b865020a407b7edd"},
 ]
+django-countries = [
+    {file = "django-countries-6.1.3.tar.gz", hash = "sha256:64015977a5989bcb0e645007299b19fe8ac117466af375161b26bcfa32ae2808"},
+    {file = "django_countries-6.1.3-py3-none-any.whl", hash = "sha256:a0f77154ae08cb38a0d65530a399ead5f5837ebf6c74f7576e71bb7acdacca94"},
+]
 django-crequest = [
     {file = "django-crequest-2018.5.11.tar.gz", hash = "sha256:e623ec6b2933790717307d5a59cf9db39ff4928b53c506948e1d05776ef4a034"},
 ]
@@ -602,6 +631,10 @@ django-crispy-forms = [
 django-jazzmin = [
     {file = "django-jazzmin-2.3.11.tar.gz", hash = "sha256:7aaa25136133bde83533ceeeff447af816b110b7b9c60eae596350350985f63a"},
     {file = "django_jazzmin-2.3.11-py3-none-any.whl", hash = "sha256:dd827a95149fe7b6f6b4b168af2eba765ef1482ae346538dc6e9453022dc0348"},
+]
+django-multiselectfield = [
+    {file = "django-multiselectfield-0.1.12.tar.gz", hash = "sha256:d0a4c71568fb2332c71478ffac9f8708e01314a35cf923dfd7a191343452f9f9"},
+    {file = "django_multiselectfield-0.1.12-py3-none-any.whl", hash = "sha256:c270faa7f80588214c55f2d68cbddb2add525c2aa830c216b8a198de914eb470"},
 ]
 django-polymorphic = [
     {file = "django-polymorphic-3.0.0.tar.gz", hash = "sha256:9d886f19f031d26bb1391c055ed9be06fb226a04a4cec1842b372c58873b3caa"},
@@ -671,7 +704,6 @@ psycopg2-binary = [
     {file = "psycopg2_binary-2.8.6-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:2dac98e85565d5688e8ab7bdea5446674a83a3945a8f416ad0110018d1501b94"},
     {file = "psycopg2_binary-2.8.6-cp38-cp38-win32.whl", hash = "sha256:bd1be66dde2b82f80afb9459fc618216753f67109b859a361cf7def5c7968729"},
     {file = "psycopg2_binary-2.8.6-cp38-cp38-win_amd64.whl", hash = "sha256:8cd0fb36c7412996859cb4606a35969dd01f4ea34d9812a141cd920c3b18be77"},
-    {file = "psycopg2_binary-2.8.6-cp39-cp39-macosx_10_9_x86_64.macosx_10_9_intel.macosx_10_10_intel.macosx_10_10_x86_64.whl", hash = "sha256:89705f45ce07b2dfa806ee84439ec67c5d9a0ef20154e0e475e2b2ed392a5b83"},
     {file = "psycopg2_binary-2.8.6-cp39-cp39-manylinux1_i686.whl", hash = "sha256:42ec1035841b389e8cc3692277a0bd81cdfe0b65d575a2c8862cec7a80e62e52"},
     {file = "psycopg2_binary-2.8.6-cp39-cp39-manylinux1_x86_64.whl", hash = "sha256:7312e931b90fe14f925729cde58022f5d034241918a5c4f9797cac62f6b3a9dd"},
 ]

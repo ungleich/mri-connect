@@ -51,9 +51,6 @@ INSTALLED_APPS = [
     'multiselectfield',
     'people',
 
-    'data_wizard',
-    'data_wizard.sources',
-
     'django.contrib.admin', # comes at the end because the theme is replaced
 ]
 
@@ -154,7 +151,7 @@ JAZZMIN_SETTINGS = {
     "site_header": "Experts DB",
     "welcome_sign": "Welcome to MRI Connect",
     "copyright": "Mountain Research Initiative",
-    "search_model": "people.Person",
+    # "search_model": "people.Person",
 
     "topmenu_links": [
         {"model": "people.Person"},
@@ -186,12 +183,4 @@ JAZZMIN_UI_TWEAKS = {
     "sidebar_nav_legacy_style": False,
     "sidebar_nav_flat_style": False,
     "footer_small_text": False
-}
-
-DATA_WIZARD = {
-    'BACKEND': 'data_wizard.backends.threading',
-    'LOADER': 'data_wizard.loaders.FileLoader',
-    'IDMAP': 'data_wizard.idmap.never',   # 'data_wizard.idmap.existing' in 2.0
-    'AUTHENTICATION': 'rest_framework.authentication.SessionAuthentication',
-    'PERMISSION': 'rest_framework.permissions.IsAdminUser',
 }

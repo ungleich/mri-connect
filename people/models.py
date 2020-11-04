@@ -8,26 +8,26 @@ from multiselectfield import MultiSelectField
 
 class Affiliation(models.Model):
     name = models.CharField(max_length=256)
-    country = models.CharField(max_length=256)
-    street = models.CharField(max_length=256)
-    post_code = models.CharField(max_length=256)
-    city = models.CharField(max_length=256)
-    country = CountryField()
+    country = models.CharField(max_length=256, null=True, blank=True)
+    street = models.CharField(max_length=256, null=True, blank=True)
+    post_code = models.CharField(max_length=256, null=True, blank=True)
+    city = models.CharField(max_length=256, null=True, blank=True)
+    country = CountryField(null=True, blank=True)
     def __str__(self):
         return self.name
 
 class Project(models.Model):
     name = models.CharField(max_length=256)
-    acronym = models.CharField(max_length=16)
-    date_start = models.DateField()
-    date_ending = models.DateField()
-    funding = models.CharField(max_length=256)
-    role = models.CharField(max_length=256)
-    homepage = models.URLField()
-    location = models.TextField()
+    acronym = models.CharField(max_length=16, null=True, blank=True)
+    date_start = models.DateField(null=True, blank=True)
+    date_ending = models.DateField(null=True, blank=True)
+    funding = models.CharField(max_length=256, null=True, blank=True)
+    role = models.CharField(max_length=256, null=True, blank=True)
+    homepage = models.URLField(null=True, blank=True)
+    location = models.TextField(null=True, blank=True)
     # TODO: add GeoDjango support
     # coordinates = PointField()
-    country = CountryField()
+    country = CountryField(null=True, blank=True)
     def __str__(self):
         return self.name
 
@@ -149,6 +149,10 @@ class Person(models.Model):
         _("ORCID"),
         max_length=128, null=True, blank=True, unique=True,
         help_text="ORCID is a persistent unique digital identifier that you own and control")
+    proclimid = models.CharField(
+        _("ProClim ID"),
+        max_length=128, null=True, blank=True, unique=True,
+        help_text="Identifier from SCNAT database")
 
     # 16 Current Projects (note: max 5)
     projects = models.ManyToManyField(Project,
@@ -186,9 +190,9 @@ class Person(models.Model):
     @property
     def fullname(self):
         namearray = []
-        if self.title: namearray.push(self.title)
-        if self.first_name: namearray.push(self.first_name)
-        if self.last_name: namearray.push(self.last_name)
+        if self.title: namearray.append(self.title)
+        if self.first_name: namearray.append(self.first_name)
+        if self.last_name: namearray.append(self.last_name)
         return " ".join(namearray)
 
     def __str__(self):

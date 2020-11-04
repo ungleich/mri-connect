@@ -24,7 +24,6 @@ from django.views.generic import TemplateView
 # handler404 = 'ra.utils.views.not_found_error'
 
 urlpatterns = [
-    path('datawizard/', include('data_wizard.urls')),
     path('sw.js', (TemplateView.as_view(template_name="app/sw.js", content_type='application/javascript', )), name='sw.js'),
     # password reset views
     path('mriadmin/password_reset/',  auth_views.PasswordResetView.as_view(),  name='admin_password_reset',

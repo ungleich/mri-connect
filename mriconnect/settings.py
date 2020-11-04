@@ -187,3 +187,11 @@ JAZZMIN_UI_TWEAKS = {
     "sidebar_nav_flat_style": False,
     "footer_small_text": False
 }
+
+DATA_WIZARD = {
+    'BACKEND': 'data_wizard.backends.threading',
+    'LOADER': 'data_wizard.loaders.FileLoader',
+    'IDMAP': 'data_wizard.idmap.never',   # 'data_wizard.idmap.existing' in 2.0
+    'AUTHENTICATION': 'rest_framework.authentication.SessionAuthentication',
+    'PERMISSION': 'rest_framework.permissions.IsAdminUser',
+}

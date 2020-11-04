@@ -13,6 +13,8 @@ class Affiliation(models.Model):
     post_code = models.CharField(max_length=256)
     city = models.CharField(max_length=256)
     country = CountryField()
+    def __str__(self):
+        return self.name
 
 class Project(models.Model):
     name = models.CharField(max_length=256)
@@ -26,9 +28,13 @@ class Project(models.Model):
     # TODO: add GeoDjango support
     # coordinates = PointField()
     country = CountryField()
+    def __str__(self):
+        return self.name
 
 class Topic(models.Model):
     title = models.CharField(max_length=256)
+    def __str__(self):
+        return self.title
     class Meta:
         verbose_name = _('Topic')
         verbose_name_plural = _('Topics')
@@ -36,6 +42,8 @@ class Topic(models.Model):
 class Expertise(models.Model):
     title = models.CharField(max_length=256)
     topic = models.ForeignKey(Topic, on_delete=models.PROTECT, null=True, blank=True)
+    def __str__(self):
+        return self.title
     class Meta:
         verbose_name = _('Expertise')
         verbose_name_plural = _('Expertise')
@@ -68,85 +76,101 @@ PEOPLE_PREFERENCES = (
     ('newsletter', _("I would like to receive monthly MRI Global Newsletters and Newsflashes from the MRI")),
 )
 
+
+class PersonManager(models.Manager):
+    def get_by_natural_key(self, first_name, last_name):
+        return self.get(first_name=first_name, last_name=last_name)
+
 class Person(models.Model):
     date_added = models.DateField(auto_now_add=True)
     date_edited = models.DateField(auto_now=True)
 
     # 1-4
-    last_name = models.CharField(max_length=128)
-    first_name = models.CharField(max_length=128)
-    title = models.CharField(max_length=16)
-    gender = models.CharField(max_length=1,
+    last_name = models.CharField(max_length=128, null=True, blank=True)
+    first_name = models.CharField(max_length=128, null=True, blank=True)
+    title = models.CharField(max_length=16, null=True, blank=True)
+    gender = models.CharField(max_length=1, null=True, blank=True,
                               choices=Gender.choices)
 
     # 5
-    position = models.CharField(max_length=256)
+    position = models.CharField(max_length=256, null=True, blank=True)
 
     # 6
     affiliation = models.ForeignKey(Affiliation, on_delete=models.PROTECT, null=True, blank=True)
 
     # 7 Preferred email contact*
-    contact_email = models.CharField(max_length=256)
+    contact_email = models.CharField(max_length=256,
+                                    null=True, blank=True,
+                                    unique=True)
 
     # 8 I am..
     career_stage = models.CharField(max_length=16,
+                                    null=True, blank=True,
                                     choices=CareerStage.choices)
     # 8
-    career_stage_note = models.CharField(_("Other"), max_length=256)
+    career_stage_note = models.CharField(_("Other"),
+                                    null=True, blank=True,
+                                    max_length=256)
 
     # 9
     career_graduation = models.PositiveIntegerField(
         _("Year of last degree graduation"),
+        null=True, blank=True,
         validators=[
             MinValueValidator(1900), MaxValueValidator(2100)
         ])
 
     # 9.1
     preferences = MultiSelectField(
-        choices=PEOPLE_PREFERENCES
+        choices=PEOPLE_PREFERENCES, null=True, blank=True
     )
 
     # 10
     official_functions = models.TextField(
+        null=True, blank=True,
         help_text="Official functions that I hold in national and international programs, commissions, etc.")
 
     # 11
-    upload_photo = models.FileField()
+    upload_photo = models.FileField(null=True, blank=True)
 
     # 12-14
     url_personal = models.URLField(
-        _("Personal website"),
+        _("Personal website"), null=True, blank=True,
         help_text="Link to personal or professional homepage")
     url_cv = models.URLField(
-        _("Curriculum Vitae"),
+        _("Curriculum Vitae"), null=True, blank=True,
         help_text="Link to CV, e.g. on LinkedIn")
     url_researchgate = models.URLField(
-        _("ResearchGate link"),
+        _("ResearchGate link"), null=True, blank=True,
         help_text="Link to your profile")
 
     # 15 See https://members.orcid.org/api/workflow/RIM-systems
     orcid = models.CharField(
         _("ORCID"),
-        max_length=128, unique=True,
+        max_length=128, null=True, blank=True, unique=True,
         help_text="ORCID is a persistent unique digital identifier that you own and control")
 
     # 16 Current Projects (note: max 5)
     projects = models.ManyToManyField(Project,
-        related_name="experts",
+        related_name="experts"
     )
 
     # 17
     url_publications = models.URLField(
-        _("Link to publications")
+        _("Link to publications"),
+        null=True, blank=True
     )
     list_publications = models.TextField(
-        _("Free text list of publications")
+        _("Free text list of publications"),
+        null=True, blank=True
     )
 
     # 18-22
     allow_public = models.BooleanField(
+        null=True, blank=True,
         help_text="I allow publishing my profile on the web")
     allow_photo = models.BooleanField(
+        null=True, blank=True,
         help_text="I allow publishing my photo on the web")
 
     expertise = models.ManyToManyField(Expertise,
@@ -167,6 +191,15 @@ class Person(models.Model):
         if self.last_name: namearray.push(self.last_name)
         return " ".join(namearray)
 
+    def __str__(self):
+        return self.fullname
+
+    objects = PersonManager()
+
     class Meta:
         verbose_name = _('Expert')
         verbose_name_plural = _('Experts')
+        unique_together = [['first_name', 'last_name']]
+
+    def natural_key(self):
+        return (self.first_name, self.last_name)

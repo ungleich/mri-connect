@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     #'ra.activity',
     #'ra.reporting',
     'slick_reporting',
+    'rest_framework',
     'jazzmin',
 
     'django_countries',

@@ -62,14 +62,14 @@ def add_person(row):
     person.save()
     return True
 
-def refresh_data(filename, required_cols=[]):
+def refresh_data(filename, required_cols, delimiter):
     totalrows = get_total_rows_csv(filename)
     count = 0
 
     with open(filename, 'rt', encoding='utf-8', errors='ignore') as csvfile:
         # dialect = csv.Sniffer().sniff(csvfile.read(2048), delimiters=";,")
         # csvfile.seek(0)
-        datareader = csv.DictReader(csvfile, delimiter=",")
+        datareader = csv.DictReader(csvfile, delimiter=delimiter)
         rowcount = 0
 
         for row in datareader:
@@ -93,11 +93,11 @@ def refresh_data(filename, required_cols=[]):
 
     return("%d people imported" % count)
 
-def queue_refresh(filename, fmt):
+def queue_refresh(filename, required_cols=[], delimiter=";"):
     c = 1
     c_counter = 0
     print("Starting import ...")
-    rd = refresh_data(filename, fmt)
+    rd = refresh_data(filename, required_cols, delimiter)
     while c is not None:
         try:
             c, p = next(rd)
@@ -116,12 +116,3 @@ def queue_refresh(filename, fmt):
             # Error condition
             print(p + ": " + c)
             return
-
-
-def load_people(fn):
-    msg = queue_refresh(
-        fn,
-        ["Name", "FirstName"],
-    )
-    if msg is not None:
-        print(msg)

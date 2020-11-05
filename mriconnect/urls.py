@@ -26,14 +26,15 @@ from django.views.generic import TemplateView
 urlpatterns = [
     path('sw.js', (TemplateView.as_view(template_name="app/sw.js", content_type='application/javascript', )), name='sw.js'),
     # password reset views
-    path('mriadmin/password_reset/',  auth_views.PasswordResetView.as_view(),  name='admin_password_reset',
+    path('mri/password_reset/',  auth_views.PasswordResetView.as_view(),  name='admin_password_reset',
     ),
-    path('mriadmin/password_reset/done/',  auth_views.PasswordResetDoneView.as_view(),  name='password_reset_done',
+    path('mri/password_reset/done/',  auth_views.PasswordResetDoneView.as_view(),  name='password_reset_done',
     ),
     path('reset/<uidb64>/<token>/',  auth_views.PasswordResetConfirmView.as_view(),  name='password_reset_confirm',
     ),
     path('reset/done/',  auth_views.PasswordResetCompleteView.as_view(),  name='password_reset_complete',
     ),
     # path('', ra_admin_site.urls),
-    path('mriadmin/', admin.site.urls),
+    path('mri/', admin.site.urls),
+    path('api/', include('rest_framework.urls')),
 ]

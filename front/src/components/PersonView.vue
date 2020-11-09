@@ -10,47 +10,53 @@
     vs-button(border, blank, :disabled="!person.url_publications", :href="person.url_publications")
       | Publications
 
-  .photo(v-if="person.url_photo")
-    img(:src="person.url_photo")
+  .card
 
-  .position
-    | {{ person.position }}
+    .photo(v-if="person.url_photo")
+      img(:src="person.url_photo")
 
-  .institution
-    h5 Affiliation
-    b.name
-      | {{ person.affiliation.name }}
-    .department
-      | {{ person.affiliation.department }}
-    .address
-      | {{ person.affiliation.street }}
-    .city
-      | {{ person.affiliation.postcode }}
-      | {{ person.affiliation.city }}
-    .country
-      | {{ person.affiliation.country }}
+    .position
+      | {{ person.position }}
 
-  .functions(v-show="person.official_functions")
-    h5 Additional functions
-    div {{ person.official_functions }}
+    .institution
+      h5 Affiliation
+      b.name
+        | {{ person.affiliation.name }}
+      .department
+        | {{ person.affiliation.department }}
+      .address
+        | {{ person.affiliation.street }}
+      .city
+        | {{ person.affiliation.postcode }}
+        | {{ person.affiliation.city }}
+      .country
+        | {{ person.affiliation.country }}
 
-  .career(v-show="person.career")
-    h5 Career stage
-    div {{ person.career }}
-    div(v-show="person.career_graduation")
-      .graduation Graduation year:
-        date &nbsp;{{ person.career_graduation }}
+    .functions(v-show="person.official_functions")
+      h5 Additional functions
+      div {{ person.official_functions }}
 
-  .publications(v-show="person.list_publications")
-    h5 Key publications
-    div {{ person.list_publications }}
+    .career(v-show="person.career")
+      h5 Career stage
+      div {{ person.career }}
+      div(v-show="person.career_graduation")
+        .graduation Graduation year:
+          date &nbsp;{{ person.career_graduation }}
 
-  //- h5 Expertise
-  //- h5 Specialties
+    .publications(v-show="person.list_publications")
+      h5 Key publications
+      div {{ person.list_publications }}
+
+    //- h5 Expertise
+    //- h5 Specialties
 
   .meta
     small Last updated:
       date &nbsp;{{ person.date_edited }}
+  .update-me
+    vs-button(icon, flat, @click='update_me')
+      box-icon(name='edit')
+      | Edit
 </template>
 
 <script>
@@ -67,6 +73,9 @@ export default {
 
   },
   methods: {
+    update_me: function () {
+      alert('Under construction ...')
+    }
   },
   mounted () {
 
@@ -79,6 +88,9 @@ export default {
   text-align: left;
   min-width: 34em;
   overflow-x: auto;
+}
+.card {
+  margin: 2em 0.5em;
 }
 .links {
   margin-bottom: 1em;

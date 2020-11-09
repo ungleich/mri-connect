@@ -32,8 +32,7 @@
     PersonView(:person='selectedPerson')
     template(#footer='')
       .footer-dialog
-        vs-button.update-btn(flat='', size='small', color='info', type='border', style='float:right') Update this data
-        vs-button.back-btn(flat='', size='large', color='dark', type='border', @click='popup=false') Close
+        vs-button(block, gradient, size='large', @click='popup=false') Close
 </template>
 
 <script>

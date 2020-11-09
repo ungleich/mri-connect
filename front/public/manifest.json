@@ -1,0 +1,11 @@
+{
+  "name": "MRI Connect",
+  "short_name": "MRI",
+  "description": "Research database",
+  "icons": [],
+  "start_url": "/",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#288e46"
+}

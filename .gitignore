@@ -18,4 +18,6 @@
 /.vagrant/
 /Vagrantfile.local
 /docs/_build/
-/node_modules/
+
+/front/node_modules/
+/front/dist/

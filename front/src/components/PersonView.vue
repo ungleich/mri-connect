@@ -10,22 +10,20 @@
     .position
       | {{ person.position }}
     .career_stage
-      | {{ person.career_stage }}
+      | {{ person.career }}
 
-  .institutions
-    .org(v-for="org in person.affiliation")
-      a.name(:href="org.url", target="_blank")
-        | {{ org.name }}
-      .department
-        | {{ org.department }}
-      .address
-        | {{ org.building }}
-        | {{ org.street }}
-      .city
-        | {{ org.postcode }}
-        | {{ org.city }}
-      .country
-        | {{ org.country }}
+  .institution
+    b.name
+      | {{ affiliation.name }}
+    .department
+      | {{ affiliation.department }}
+    .address
+      | {{ affiliation.street }}
+    .city
+      | {{ affiliation.postcode }}
+      | {{ affiliation.city }}
+    .country
+      | {{ affiliation.country }}
 
   ul.personal_urls
     li(v-for="url in person.urls", v-bind:key="url")

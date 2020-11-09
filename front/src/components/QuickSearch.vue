@@ -18,15 +18,15 @@
           td
             .first_name {{ result.first_name }}
           td
-            .city {{ result.city }}
+            .city {{ result.affiliation.city }}
           td
-            .country {{ result.country }}
+            .country {{ result.affiliation.country }}
       .summary
         | {{ results.length }} results
   vs-dialog(v-model='popup')
     template(#header='')
       h4.not-margin
-        | {{ selectedPerson.first_name }} {{ selectedPerson.last_name }}
+        | {{ selectedPerson.fullname }}
     PersonView(:person='selectedPerson')
     template(#footer='')
       .footer-dialog

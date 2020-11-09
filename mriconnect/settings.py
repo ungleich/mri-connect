@@ -150,8 +150,10 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-
 )
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 
 JAZZMIN_SETTINGS = {
     "site_title": "MRI Connect: Experts Database",

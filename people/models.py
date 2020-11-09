@@ -8,6 +8,7 @@ from multiselectfield import MultiSelectField
 
 class Affiliation(models.Model):
     name = models.CharField(max_length=256)
+    department = models.CharField(max_length=256, null=True, blank=True)
     country = models.CharField(max_length=256, null=True, blank=True)
     street = models.CharField(max_length=256, null=True, blank=True)
     post_code = models.CharField(max_length=256, null=True, blank=True)
@@ -15,6 +16,8 @@ class Affiliation(models.Model):
     country = CountryField(null=True, blank=True)
     def __str__(self):
         return self.name
+    class Meta:
+        unique_together = [['name', 'department']]
 
 class Project(models.Model):
     name = models.CharField(max_length=256)
@@ -131,7 +134,7 @@ class Person(models.Model):
         help_text="Official functions that I hold in national and international programs, commissions, etc.")
 
     # 11
-    upload_photo = models.FileField(null=True, blank=True)
+    upload_photo = models.ImageField(upload_to='static/people', null=True, blank=True)
 
     # 12-14
     url_personal = models.URLField(
@@ -156,7 +159,7 @@ class Person(models.Model):
 
     # 16 Current Projects (note: max 5)
     projects = models.ManyToManyField(Project,
-        related_name="experts"
+        related_name="experts", blank=True
     )
 
     # 17
@@ -178,12 +181,12 @@ class Person(models.Model):
         help_text="I allow publishing my photo on the web")
 
     expertise = models.ManyToManyField(Expertise,
-        related_name="experts",
+        related_name="experts", blank=True,
         help_text="Research expertise"
     )
 
     disciplines = models.ManyToManyField(Topic,
-        related_name="experts",
+        related_name="experts", blank=True,
         help_text="Disciplinary expertise topics"
     )
 
@@ -194,6 +197,12 @@ class Person(models.Model):
         if self.first_name: namearray.append(self.first_name)
         if self.last_name: namearray.append(self.last_name)
         return " ".join(namearray)
+
+    @property
+    def career(self):
+        if self.career_stage == 'OTHER':
+            return self.career_stage_note
+        return self.get_career_stage_display()
 
     def __str__(self):
         return self.fullname

@@ -1,46 +1,56 @@
 <template lang="pug">
 .person-view
-  p.card
-    //- .fullname
-    //-   | {{ person.title }}
-    //-   | {{ person.first_name }}
-    //-   | {{ person.last_name }}
-    .photo
-      img(:src="person.photo", height="100")
-    .position
-      | {{ person.position }}
-    .career_stage
-      | {{ person.career }}
+  vs-button-group.links
+    vs-button(border, blank, :disabled="!person.url_personal", :href="person.url_personal")
+      | Website
+    vs-button(border, blank, :disabled="!person.url_cv", :href="person.url_cv")
+      | CV
+    vs-button(border, blank, :disabled="!person.url_researchgate", :href="person.url_researchgate")
+      | ResearchGate
+    vs-button(border, blank, :disabled="!person.url_publications", :href="person.url_publications")
+      | Publications
+
+  .photo(v-if="person.url_photo")
+    img(:src="person.url_photo")
+
+  .position
+    | {{ person.position }}
 
   .institution
+    h5 Affiliation
     b.name
-      | {{ affiliation.name }}
+      | {{ person.affiliation.name }}
     .department
-      | {{ affiliation.department }}
+      | {{ person.affiliation.department }}
     .address
-      | {{ affiliation.street }}
+      | {{ person.affiliation.street }}
     .city
-      | {{ affiliation.postcode }}
-      | {{ affiliation.city }}
+      | {{ person.affiliation.postcode }}
+      | {{ person.affiliation.city }}
     .country
-      | {{ affiliation.country }}
-
-  ul.personal_urls
-    li(v-for="url in person.urls", v-bind:key="url")
-      a(:href="url", target="_blank") {{ url }}
+      | {{ person.affiliation.country }}
 
   .functions(v-show="person.official_functions")
     h5 Additional functions
     div {{ person.official_functions }}
 
-  h5 Key publications
-  .publications
-    .item(v-for="res in person.resources")
-      a(:href="res.url" target="_blank") {{ res.title }}
-      .citation {{ res.citation }}
-      .abstract {{ res.abstract }}
+  .career(v-show="person.career")
+    h5 Career stage
+    div {{ person.career }}
+    div(v-show="person.career_graduation")
+      .graduation Graduation year:
+        date &nbsp;{{ person.career_graduation }}
+
+  .publications(v-show="person.list_publications")
+    h5 Key publications
+    div {{ person.list_publications }}
+
   //- h5 Expertise
   //- h5 Specialties
+
+  .meta
+    small Last updated:
+      date &nbsp;{{ person.date_edited }}
 </template>
 
 <script>
@@ -67,9 +77,29 @@ export default {
 <style scoped lang="scss">
 .person-view {
   text-align: left;
-  margin: 1em;
+  min-width: 34em;
+  overflow-x: auto;
+}
+.links {
+  margin-bottom: 1em;
 }
 .abstract {
   font-style: italic;
+}
+.photo img {
+  width: 140px;
+  float: right;
+  margin-left: 10px;
+}
+h5 {
+  color: #aaa;
+  margin: 0px;
+  border-bottom: 1px solid #ddd;
+  clear: both;
+}
+.meta {
+  float: right;
+  color: #999;
+  margin: 0px;
 }
 </style>

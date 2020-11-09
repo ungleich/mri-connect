@@ -3,6 +3,7 @@
   .quick-search
     h1 Find an expert
     input(v-model='query', placeholder='Quick search ...')
+
   .search-result
     table(v-show='results.length > 0')
       thead
@@ -23,9 +24,10 @@
             .country {{ result.affiliation.country }}
       .summary
         | {{ results.length }} results
+
   vs-dialog(v-model='popup')
     template(#header='')
-      h4.not-margin
+      .not-margin.person-title
         | {{ selectedPerson.fullname }}
     PersonView(:person='selectedPerson')
     template(#footer='')
@@ -108,6 +110,12 @@ form {
 }
 a {
   color: #42b983;
+}
+
+.person-title {
+  font-size: 140%;
+  font-weight: bolder;
+  color: #0067b2;
 }
 
 .quick-search {

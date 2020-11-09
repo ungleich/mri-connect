@@ -6,13 +6,13 @@
         class="navbar"
     >
       <vs-navbar-item>
-        <router-link to="/search">
+        <router-link to="/">
           Full text search
         </router-link>
       </vs-navbar-item>
       <vs-navbar-item>
-        <router-link to="/">
-          Search by person
+        <router-link to="/advanced">
+          Advanced search
         </router-link>
       </vs-navbar-item>
       <vs-navbar-item>

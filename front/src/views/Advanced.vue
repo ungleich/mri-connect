@@ -1,12 +1,12 @@
 <template lang="pug">
-.start
+.advanced
   AdvancedSearch
 </template>
 
 <script>
 import AdvancedSearch from '@/components/AdvancedSearch.vue'
 export default {
-  name: 'Start',
+  name: 'Advanced',
   components: {
     AdvancedSearch
   },

@@ -15,25 +15,21 @@ class PersonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Person
         fields = (
-            'date_edited',
-            'last_name',
-            'first_name',
-            'fullname',
-            'position',
-            'career',
-            'career_graduation',
-            'official_functions',
+            'id', 'date_edited',
+            'fullname', 'last_name', 'first_name',
+
+            'career', 'career_graduation',
+            'position', 'official_functions',
+
             'url_photo',
-            'url_cv',
-            'url_personal',
-            'url_publications',
-            'url_researchgate',
-            'list_publications',
+            'url_cv', 'url_personal', 'url_researchgate',
+            'url_publications', 'list_publications',
 
             'affiliation',
         )
 
     def get_url_photo(self, person):
         request = self.context.get('request')
+        if not person.upload_photo: return None
         url_photo = person.upload_photo.url
         return request.build_absolute_uri(url_photo)

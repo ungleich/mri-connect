@@ -18,6 +18,17 @@
     .position
       | {{ person.position }}
 
+    .expertise
+      h5 Expertise
+      ul
+        li(v-for="exp in person.expertise")
+          | {{ exp.title }}
+
+      h5 Discipline
+      ul
+        li(v-for="topic in person.disciplines")
+          | {{ topic.title }}
+
     .institution
       h5 Affiliation
       b.name
@@ -41,18 +52,18 @@
       div {{ person.career }}
       div(v-show="person.career_graduation")
         .graduation Graduation year:
-          date &nbsp;{{ person.career_graduation }}
+          span.date &nbsp;{{ person.career_graduation }}
 
     .publications(v-show="person.list_publications")
       h5 Key publications
-      div {{ person.list_publications }}
+      div(v-html="person.list_publications")
 
     //- h5 Expertise
     //- h5 Specialties
 
   .meta
     small Last updated:
-      date &nbsp;{{ person.date_edited }}
+      span.date &nbsp;{{ person.date_edited }}
   .update-me
     vs-button(icon, flat, @click='update_me')
       box-icon(name='edit')

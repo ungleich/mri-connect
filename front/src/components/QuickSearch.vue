@@ -4,26 +4,40 @@
     h1 Find an expert
     input(v-model='query', placeholder='Quick search ...')
 
-  .search-result
-    table(v-show='results.length > 0')
-      thead
-        tr
-          td Last name
-          td First name
-          td City
-          td Country
-      tbody
-        tr(v-for='result in results', v-bind:key='result.id', @click="selectItem(result)")
-          td
-            .last_name {{ result.last_name }}
-          td
-            .first_name {{ result.first_name }}
-          td
-            .city {{ result.affiliation.city }}
-          td
-            .country {{ result.affiliation.country }}
-      .summary
-        | {{ results.length }} results
+  template
+    .search-result
+      vs-table(v-show='results.length > 0')
+        template(#thead)
+          vs-tr
+            vs-th Last name
+            vs-th First name
+            vs-th Location
+            vs-th Details
+        template(#tbody)
+          vs-tr(v-for='result in results', v-bind:key='result.id', :data='result')
+            vs-td
+              .last_name {{ result.last_name }}
+            vs-td
+              .first_name {{ result.first_name }}
+            vs-td
+              .location
+                | {{ result.affiliation.city }}, {{ result.affiliation.country }}
+            vs-td
+              vs-button(flat, icon, @click="selectItem(result.id)")
+                box-icon(name='expand-alt')
+                | Open
+            //template(#expand)
+              .con-content
+                .left
+                  vs-avatar
+                    img(:src="result.url_image")
+                  span {{ result.fullname }}
+                .right
+                  vs-button(flat, icon, @click="selectItem(result.id)")
+                    box-icon(name='expand-alt')
+                    | Open
+        template(#footer).summary
+          | {{ results.length }} results
 
   vs-dialog(v-model='popup')
     template(#header='')
@@ -67,14 +81,15 @@ export default {
     }
   },
   methods: {
-    selectItem (result) {
+    selectItem (pid) {
       let self = this
-      $backend.getPeopleData(result.id)
+      $backend.getPeopleData(pid)
         .then(responseData => {
+          let result = {}
           Object.keys(responseData).forEach((key) => {
             result[key] = responseData[key]
           })
-          console.log(result)
+          // console.log(result)
           self.selectedPerson = result
           self.popup = true
         })

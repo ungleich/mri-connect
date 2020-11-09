@@ -187,7 +187,7 @@ class Person(models.Model):
 
     disciplines = models.ManyToManyField(Topic,
         related_name="experts", blank=True,
-        help_text="Disciplinary expertise topics"
+        help_text="Disciplinary topics"
     )
 
     @property

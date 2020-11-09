@@ -19,6 +19,8 @@ class Command(BaseCommand):
             required_cols = options['cols'].split(',')
         else:
             required_cols = ["Name", "FirstName"]
+            
         msg = queue_refresh(fn, required_cols, delimiter)
         if msg is not None: print(msg)
+
         self.stdout.write(self.style.SUCCESS('Successfully imported from %s' % fn))

@@ -19,6 +19,8 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView
 
+from people import urls as people_urls
+
 # from ra.admin.admin import ra_admin_site
 # handler500 = 'ra.utils.views.server_error'
 # handler404 = 'ra.utils.views.not_found_error'
@@ -36,5 +38,5 @@ urlpatterns = [
     ),
     # path('', ra_admin_site.urls),
     path('mri/', admin.site.urls),
-    path('api/', include('rest_framework.urls')),
+    path('api/', include(people_urls)),
 ]

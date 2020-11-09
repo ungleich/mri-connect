@@ -24,14 +24,21 @@ $axios.interceptors.response.use(function (response) {
 export default {
   getPeopleSearch (query) {
     return $axios.get(
-      `search/keyword`,
-      { params: { q: query } }
+      `people/`,
+      { params: { search: query } }
+    )
+      .then(response => response.data)
+  },
+  getAdvancedSearch (query) {
+    return $axios.get(
+      `advanced/`,
+      { params: { search: query, fields: ['last_name'] } }
     )
       .then(response => response.data)
   },
   getPeopleData (id) {
     return $axios.get(
-      `search/get/` + id.toString()
+      `people/` + id.toString() + `/`
     )
       .then(response => response.data)
   }

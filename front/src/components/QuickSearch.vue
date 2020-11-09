@@ -26,7 +26,7 @@
   vs-dialog(v-model='popup')
     template(#header='')
       h4.not-margin
-        | {{ selectedPerson.fullname }}
+        | {{ selectedPerson.first_name }} {{ selectedPerson.last_name }}
     PersonView(:person='selectedPerson')
     template(#footer='')
       .footer-dialog

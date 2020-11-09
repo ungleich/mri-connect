@@ -3,4 +3,4 @@ from django.apps import AppConfig
 
 class PeopleConfig(AppConfig):
     name = 'people'
-    verbose_name = "MRI Connect: People"
+    verbose_name = "MRI Connect - Find an Expert"

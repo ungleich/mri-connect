@@ -1,14 +1,14 @@
 <template lang="pug">
 .start
-  HelloWorld
+  AdvancedSearch
 </template>
 
 <script>
-import HelloWorld from '@/components/HelloWorld.vue'
+import AdvancedSearch from '@/components/AdvancedSearch.vue'
 export default {
   name: 'Start',
   components: {
-    HelloWorld
+    AdvancedSearch
   },
   mounted () {
   }

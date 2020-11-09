@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     #'ra.reporting',
     'slick_reporting',
     'rest_framework',
+    'corsheaders',
     'jazzmin',
 
     'django_countries',
@@ -56,6 +57,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -138,6 +141,9 @@ DATABASES = {
     }
 }
 
+# This should be changed once we put this in production.
+CORS_ORIGIN_ALLOW_ALL = True
+
 STATIC_ROOT = os.path.join(BASE_DIR, '..', 'collected_static')
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
@@ -149,8 +155,8 @@ STATICFILES_FINDERS = (
 
 JAZZMIN_SETTINGS = {
     "site_title": "MRI Connect: Experts Database",
-    "site_header": "Experts DB",
-    "welcome_sign": "Welcome to MRI Connect",
+    "site_header": "Find an Expert",
+    "welcome_sign": "Welcome to the MRI backend",
     "copyright": "Mountain Research Initiative",
     # "search_model": "people.Person",
 

@@ -114,7 +114,7 @@
 
 <script>
 export default {
-  name: 'HelloWorld',
+  name: 'AdvancedSearch',
   props: {
     msg: String
   },

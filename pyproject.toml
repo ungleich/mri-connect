@@ -16,6 +16,7 @@ djangorestframework = "^3.12.1"
 markdown = "^3.3.3"
 django-filter = "^2.4.0"
 rapidfuzz = "^0.12.5"
+django-cors-headers = "^3.5.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "5.3.5"

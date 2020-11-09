@@ -201,8 +201,8 @@ class Person(models.Model):
     objects = PersonManager()
 
     class Meta:
-        verbose_name = _('Expert')
-        verbose_name_plural = _('Experts')
+        verbose_name = _('Person')
+        verbose_name_plural = _('People')
         unique_together = [['first_name', 'last_name']]
 
     def natural_key(self):

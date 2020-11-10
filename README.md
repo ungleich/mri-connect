@@ -1,57 +1,54 @@
 ## MRI Connect
 
-A search engine and members directory for the Mountain Research Initiative.
+An open source search engine and members directory for the [Mountain Research Initiative](https://mountainresearchinitiative.org/).
 
-(Work in progress)
+Currently under development.
+
+If you have any questions, please contact us via (info@) [datalets.ch](https://datalets.ch)
 
 ## Usage
 
-Get a hold of **Python 3** and [Pipenv](https://github.com/pypa/pipenv) on your machine.
+This project is based on the [Django] and Vue.js web application platforms.
+
+To install, get a hold of **Python 3** and [Pipenv](https://github.com/pypa/pipenv) on your machine.
 
     $ git clone https://gitlab.com/datalets/mri-connect.git
 
-To install and start the backend using Poetry:
+You can use `pip install -r requirements.txt`, but in development we use Poetry:
 
     $ pip install -g poetry
     $ poetry install
     $ poetry shell
 
-To create a blank database or upgrade the configured one:
+1. To create a blank database or upgrade the configured one:
 
-    $ flask db upgrade
+    $ ./manage.py migrate
 
-To initialize and/or migrate the database, if necessary:
+2. Create an admin account using:
 
-    $ flask db init
-    $ flask db migrate
+    $ ./manage.py createsuperuser
 
-There is a convenience script with the above functions as well as profiling and testing routines:
+3. Check for any new changes from the People application
 
-    $ python manage.py deploy
+    $ ./manage.py makemigrations people
 
-To start the backend:
+4. To start the backend:
 
-    $ export FLASK_ENV="development"
-    $ export FLASK_DEBUG=1
-    $ python run.py
+    $ ./manage.py runserver
 
-To build the frontend:
+5. To build the frontend, install nodejs npm and [yarn](https://yarnpkg.com/), then:
 
     $ yarn
 
-The frontend interface will now be available. Use `yarn serve` in development.
+The frontend interface will be available in `dist`. Use `yarn serve` in development for live reloading.
 
 Check the log for the port and URL to the admin interface.
 
 ## Deployment
 
-Use a WSGI server like Gunicorn to host the app in production mode, e.g.:
+Use a WSGI server like uwsgi to host the app in production mode.
 
-`gunicorn app:app`
-
-The `Procfile` in this project folder makes it ready for deployment to Heroku.
-
-Note that you need to save changes to the poetry environment to `requirements.txt`:
+To save changes from the poetry environment to `requirements.txt`:
 
     poetry export -f requirements.txt > requirements.txt
 

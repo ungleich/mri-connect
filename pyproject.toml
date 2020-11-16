@@ -5,7 +5,7 @@ description = ""
 authors = ["Oleg Lavrovsky <oleg@datalets.ch>"]
 
 [tool.poetry.dependencies]
-python = ">=3.6"
+python = ">=3.6, <4"
 gunicorn = "*"
 python-dotenv = "*"
 django-ra-erp = "^1.1.1"
@@ -18,9 +18,10 @@ django-filter = "^2.4.0"
 rapidfuzz = "^0.12.5"
 django-cors-headers = "^3.5.0"
 Pillow = "^8.0.1"
+urllib3 = "^1.26.2"
 
 [tool.poetry.dev-dependencies]
-pytest = "5.3.5"
+pytest = "*"
 bumpversion = "*"
 pytest-sugar = "*"
 pytest-cov = "*"

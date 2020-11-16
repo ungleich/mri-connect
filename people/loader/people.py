@@ -76,7 +76,7 @@ def add_person(row, m_top, m_exp):
                     )
                     person.expertise.add(expertise)
                 break
-                
+
     person.save()
     return True
 
@@ -200,7 +200,7 @@ def queue_refresh(filename, required_cols=[], delimiter=";"):
             c_counter = c
             if isinstance(p, (int, float)):
                 c_progress = p
-            if int(c) % 10 == 0:
+            if int(c) % 100 == 0:
                 # Print message every N lines
                 print(str(c))
         elif isinstance(p, str) and isinstance(c, str):

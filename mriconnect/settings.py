@@ -193,3 +193,10 @@ JAZZMIN_UI_TWEAKS = {
     "sidebar_nav_flat_style": False,
     "footer_small_text": False
 }
+
+REST_FRAMEWORK = {
+
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+
+}

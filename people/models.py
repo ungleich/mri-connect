@@ -9,11 +9,20 @@ from multiselectfield import MultiSelectField
 class Affiliation(models.Model):
     name = models.CharField(max_length=256)
     department = models.CharField(max_length=256, null=True, blank=True)
-    country = models.CharField(max_length=256, null=True, blank=True)
     street = models.CharField(max_length=256, null=True, blank=True)
     post_code = models.CharField(max_length=256, null=True, blank=True)
     city = models.CharField(max_length=256, null=True, blank=True)
     country = CountryField(null=True, blank=True)
+
+    @property
+    def location(self):
+        if not self.city: return self.country.name or ""
+        if not self.country: return self.city or ""
+        return ", ".join([
+            self.city.strip(),
+            self.country.name
+        ])
+
     def __str__(self):
         return self.name
     class Meta:
@@ -193,6 +202,13 @@ class Person(models.Model):
         if self.first_name: namearray.append(self.first_name)
         if self.last_name: namearray.append(self.last_name)
         return " ".join(namearray)
+
+    @property
+    def location(self):
+        if self.affiliation:
+            return self.affiliation.location
+        else:
+            return ""
 
     @property
     def career(self):

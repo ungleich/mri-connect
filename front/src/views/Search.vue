@@ -9,8 +9,6 @@ export default {
   name: 'Search',
   components: {
     QuickSearch
-  },
-  mounted () {
   }
 }
 </script>

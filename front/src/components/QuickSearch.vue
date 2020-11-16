@@ -20,8 +20,7 @@
             vs-td
               .first_name {{ result.first_name }}
             vs-td
-              .location
-                | {{ result.affiliation.city }}, {{ result.affiliation.country }}
+              .location {{ result.location }}
             vs-td
               vs-button(flat, icon, @click="selectItem(result.id)")
                 box-icon(name='expand-alt')
@@ -37,13 +36,13 @@
                     box-icon(name='expand-alt')
                     | Open
         template(#footer).summary
-          | {{ results.length }} results
+          | {{ counts }} results
 
   vs-dialog(v-model='popup')
     template(#header='')
       .not-margin.person-title
         | {{ selectedPerson.fullname }}
-    PersonView(:person='selectedPerson')
+    PersonView(:person='selectedPerson', :topics='topics')
     template(#footer='')
       .footer-dialog
         vs-button(block, gradient, size='large', @click='popup=false') Close
@@ -64,21 +63,17 @@ export default {
   data () {
     return {
       query: '',
+      topics: null,
+      topiclookup: null,
+      nextpage: null,
       results: [],
+      counts: 0,
       popup: false,
       selectedPerson: {}
     }
   },
   watch: {
-    query: function (val) {
-      if (val.length > 2) {
-        $backend.getPeopleSearch(val)
-          .then(responseData => {
-            this.results = responseData
-          })
-          // .catch((error) => this.promptNetworkError(error))
-      }
-    }
+    query (val) { this.runQuery(val) }
   },
   methods: {
     selectItem (pid) {
@@ -90,11 +85,48 @@ export default {
             result[key] = responseData[key]
           })
           // console.log(result)
+          self.topics = []
+          result.expertise.forEach((e) => {
+            topic = {
+              'id': e.topic.id,
+              'title': self.topiclookup[e.topic.id]
+            }
+            if (self.topics.indexOf(topic)<0)
+              self.topics.push(topic)
+          })
           self.selectedPerson = result
           self.popup = true
         })
         .catch((error) => console.error(error))
+    },
+    runQuery (val) {
+      let self = this
+      if (val.length < 3) return
+      $backend.getPeopleSearch(val)
+        .then(responseData => {
+          self.nextpage = responseData['next']
+          self.results = responseData['results']
+          self.counts = responseData['count']
+        })
+        // .catch((error) => this.promptNetworkError(error))
+    },
+    fetchTopics () {
+      let self = this
+      return $backend.getExpertiseTopics()
+        .then(responseData => {
+          self.topiclookup = {}
+          responseData.forEach((t) => {
+            self.topiclookup[t.id] = t.title
+          })
+        })
+        .catch((error) => alert(error))
     }
+  },
+  mounted () {
+    let self = this
+    this.fetchTopics().then(() => {
+      self.runQuery('latest')
+    })
   }
 }
 </script>

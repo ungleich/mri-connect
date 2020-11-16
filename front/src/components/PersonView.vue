@@ -19,13 +19,13 @@
       | {{ person.position }}
 
     .expertise
-      .topic(v-for="topic in person.topics")
-        h5 {{ topic.title }}
+      .topic(v-for="topic in topics")
+        h5 {{ topic }}
         ul
           li(v-for="exp in topic.expertise")
             span {{ exp.title }}
 
-    .institution
+    .institution(v-if="person.affiliation")
       h5 Affiliation
       b.name
         | {{ person.affiliation.name }}
@@ -70,7 +70,8 @@
 export default {
   name: 'PersonView',
   props: {
-    person: Object
+    person: Object,
+    topics: Array
   },
   data () {
     return {

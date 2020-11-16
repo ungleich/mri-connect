@@ -7,7 +7,7 @@ class ExpertiseSerializer(serializers.ModelSerializer):
         model = Expertise
         fields = '__all__'
 
-class ExpertisebyTopicSerializer(serializers.ModelSerializer):
+class TopicSerializer(serializers.ModelSerializer):
     class Meta:
         model = Topic
         fields = '__all__'
@@ -17,12 +17,15 @@ class AffiliationSerializer(serializers.ModelSerializer):
         model = Affiliation
         fields = '__all__'
 
+class SearchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Person
+        fields = ('id', 'last_name', 'first_name', 'location')
 
 class PersonSerializer(serializers.ModelSerializer):
     url_photo = serializers.SerializerMethodField()
     affiliation = AffiliationSerializer(read_only=True)
     expertise = ExpertiseSerializer(many=True, read_only=True)
-    topics = ExpertisebyTopicSerializer(many=True, read_only=True)
 
     class Meta:
         model = Person
@@ -39,7 +42,6 @@ class PersonSerializer(serializers.ModelSerializer):
 
             'affiliation',
             'expertise',
-            'topics',
         )
 
     def get_url_photo(self, person):

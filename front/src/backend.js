@@ -22,10 +22,20 @@ $axios.interceptors.response.use(function (response) {
 })
 
 export default {
+  getExpertiseTopics () {
+    return $axios.get(
+      `topics/`
+    )
+      .then(response => response.data)
+  },
   getPeopleSearch (query) {
+    let params = { search: query }
+    if (query === 'latest') {
+      params = {}
+    }
     return $axios.get(
       `people/`,
-      { params: { search: query } }
+      { params: params }
     )
       .then(response => response.data)
   },

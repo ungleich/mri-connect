@@ -34,7 +34,7 @@ export default {
       params = {}
     }
     return $axios.get(
-      `people/`,
+      `search/`,
       { params: params }
     )
       .then(response => response.data)

@@ -42,7 +42,7 @@
     template(#header='')
       .not-margin.person-title
         | {{ selectedPerson.fullname }}
-    PersonView(:person='selectedPerson', :topics='topics')
+    PersonView(:person='selectedPerson')
     template(#footer='')
       .footer-dialog
         vs-button(block, gradient, size='large', @click='popup=false') Close
@@ -63,8 +63,6 @@ export default {
   data () {
     return {
       query: '',
-      topics: null,
-      topiclookup: null,
       nextpage: null,
       results: [],
       counts: 0,
@@ -81,19 +79,11 @@ export default {
       $backend.getPeopleData(pid)
         .then(responseData => {
           let result = {}
+          // Map keyed results
           Object.keys(responseData).forEach((key) => {
             result[key] = responseData[key]
           })
-          // console.log(result)
-          self.topics = []
-          result.expertise.forEach((e) => {
-            topic = {
-              'id': e.topic.id,
-              'title': self.topiclookup[e.topic.id]
-            }
-            if (self.topics.indexOf(topic)<0)
-              self.topics.push(topic)
-          })
+          // Open result view
           self.selectedPerson = result
           self.popup = true
         })
@@ -109,24 +99,11 @@ export default {
           self.counts = responseData['count']
         })
         // .catch((error) => this.promptNetworkError(error))
-    },
-    fetchTopics () {
-      let self = this
-      return $backend.getExpertiseTopics()
-        .then(responseData => {
-          self.topiclookup = {}
-          responseData.forEach((t) => {
-            self.topiclookup[t.id] = t.title
-          })
-        })
-        .catch((error) => alert(error))
     }
   },
   mounted () {
-    let self = this
-    this.fetchTopics().then(() => {
-      self.runQuery('latest')
-    })
+    // Default search
+    this.runQuery('latest')
   }
 }
 </script>

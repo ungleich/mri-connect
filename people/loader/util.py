@@ -13,6 +13,10 @@ def fix_url(link):
     # link = link.split(';')[0]
     return link
 
+# Correct publication lists
+def fix_pub(text):
+    return text.replace('¶', '\n')
+
 # Create linked objects
 def add_linked(person, field, obj, data):
     # TODO: fuzzy matching instead of lower()

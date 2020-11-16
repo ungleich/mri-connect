@@ -36,9 +36,9 @@ def add_person(row, m_top, m_exp):
         position     =row['PPosition'],
         gender       =row['Sex'],
         contact_email=row['EMailAddress'] or row['EMailAddress2'],
-        list_publications=row['KeyPublications'],
         url_personal =fix_url(row['URL_site']),
         url_cv       =fix_url(row['URL_CurrVitae']),
+        list_publications=fix_pub(row['KeyPublications']),
     )
     person.save()
 

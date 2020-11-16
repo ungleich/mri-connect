@@ -204,6 +204,11 @@ class Person(models.Model):
         return " ".join(namearray)
 
     @property
+    def publications(self):
+        pub = self.list_publications
+        return pub.replace('\n', '<br>').replace('¶', '<br>')
+
+    @property
     def location(self):
         if self.affiliation:
             return self.affiliation.location

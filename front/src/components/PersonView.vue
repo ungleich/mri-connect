@@ -18,16 +18,16 @@
     .position
       | {{ person.position }}
 
-    .expertise
-      .topic(v-for="topic in topics")
-        h5 {{ topic }}
-        ul
+    .topics
+      .t(v-for="topic in person.topics")
+        h5 {{ topic.title }}
+        ul.expertise
           li(v-for="exp in topic.expertise")
-            span {{ exp.title }}
+            | {{ exp.title }}
 
-    .institution(v-if="person.affiliation")
+    .affiliation(v-if="person.affiliation")
       h5 Affiliation
-      b.name
+      .name
         | {{ person.affiliation.name }}
       .department
         | {{ person.affiliation.department }}
@@ -52,7 +52,7 @@
 
     .publications(v-show="person.list_publications")
       h5 Key publications
-      div(v-html="person.list_publications")
+      p(v-html="person.publications")
 
     //- h5 Expertise
     //- h5 Specialties
@@ -121,5 +121,16 @@ h5 {
   float: right;
   color: #999;
   margin: 0px;
+}
+.affiliation {
+  .name {
+    margin: 1em 0;
+    font-weight: bold;
+  }
+  margin-bottom: 1em;
+}
+.publications > p {
+  padding: 1em;
+  background: #eee;
 }
 </style>

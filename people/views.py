@@ -1,5 +1,5 @@
 from rest_framework import viewsets, filters
-from .models import Person, Topic
+from .models import Person
 from .serializers import *
 
 class PeopleViewSet(viewsets.ModelViewSet):
@@ -19,7 +19,7 @@ class SearchViewSet(viewsets.ModelViewSet):
     serializer_class = SearchSerializer
 
 
-class TopicViewSet(viewsets.ModelViewSet):
-    pagination_class = None
-    queryset = Topic.objects.all()
-    serializer_class = TopicSerializer
+# class TopicViewSet(viewsets.ModelViewSet):
+#     pagination_class = None
+#     queryset = Topic.objects.all()
+#     serializer_class = TopicSerializer

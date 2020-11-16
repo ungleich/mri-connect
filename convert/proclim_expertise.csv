@@ -1,0 +1,73 @@
+Topic,Expertise,Old_Class,Old_Expertise
+Research expertise,Basic Research; ,Expert Type,Scientific / Fundamental Research
+Research expertise,Applied Research,Expert Type,Applied Sciences / Technologies / Engineering
+Research expertise,Research Interface and Management;,Expert Type,Research Interface / Management
+Research expertise,Interdisciplinary Research;,,
+Research expertise,Transdisciplinary Research,,
+Atmospheric Sciences,Meteorology; ,Topic Atmosphere,Meteorology
+Atmospheric Sciences,Climatology;,Topic Atmosphere,Climate
+Atmospheric Sciences,Atmospheric Physics or Chemistry; ,,
+Atmospheric Sciences,Pollution,Topic Atmosphere,Air Pollution
+Hydrospheric Sciences,Fresh Water Systems; ,Topic Hydrosphere,Fresh Water Systems / Rivers / Lakes
+Hydrospheric Sciences,Precipitation and Runoff; ,Topic Hydrosphere,Precipitation / Runoff
+Hydrospheric Sciences,Hydrogeology,,
+Cryospheric Sciences,Glaciology;,Topic  Cryosphere,Glaciers
+Cryospheric Sciences,Snow Sciences; ,,
+Cryospheric Sciences,Permafrost and Solifluction; ,Topic  Cryosphere,Permafrost / Solifluction
+Earth Sciences,Soil Science/Pedology,,
+Earth Sciences,Geomorphology; ,,
+Earth Sciences,Geochemistry;,Topic  Lithosphere,Geochemical Processes
+Earth Sciences,Geology;,Topic  Pedosphere,Geology / Sediments
+Earth Sciences,Physical Geography;,,
+Earth Sciences,Geophysics;,,
+Biological Sciences,Botany; ,Topic  Biosphere,Plants
+Biological Sciences,Zoology,Topic  Biosphere,Animals
+Biological Sciences,Ecology; ,,
+Biological Sciences,Terrestrial Ecosystems;,Topic  Ecosystems,Terrestrial Ecosystems
+Biological Sciences,Aquatic Ecosystems; ,Topic  Ecosystems, Marine Ecosystems
+Biological Sciences,Soil organisms; ,,
+Biological Sciences,Forestry; ,,
+Biological Sciences,Ecosystem functioning;,,
+Biological Sciences,Ecosystem services;,,
+Biological Sciences,Biodiversity; ,Topic  Biosphere,Biodiversity
+Social Sciences and Humanities,"History, classical studies, archaeology, prehistory and early history; ",,
+Social Sciences and Humanities,"Linguistics and literature, philosophy;",Topic Culture/History,Philosophy / Religion
+Social Sciences and Humanities,"Art studies, musicology, theatre and film studies, architecture;",Topic Culture/History,Art / Folklore / Symbols / Language
+Social Sciences and Humanities,"Ethnology, social and human geography; ",Topic Culture/History,Ethics / Cultural Values
+Social Sciences and Humanities,Psychology;,,
+Social Sciences and Humanities,Educational studies;,Topic Society,Education / Communication / Participation
+Social Sciences and Humanities,"Sociology, social work; ",,
+Social Sciences and Humanities,Political sciences;,Topic Politics/ Law,
+Social Sciences and Humanities,Media and communication studies; ,Topic Society,Education / Communication / Participation
+Social Sciences and Humanities,Public health,Topic Health,
+Social Sciences and Humanities,Economics;,Topic  Integrated Systems,Economic Cycle
+Social Sciences and Humanities,Law,Topic Politics/ Law,
+Integrated Systems,Carbon Cycle;,Topic  Integrated Systems,Carbon Cycle
+Integrated Systems,Other Biogeochemical Cycles;,Topic  Integrated Systems,Biogeochemical Cycles except Carbon
+Integrated Systems,Hydrogeochemical Cycle;,Topic  Integrated Systems,Hydrogeochemical Cycle
+Integrated Systems,Nutrient Cycle;,Topic  Integrated Systems,Nutrient Cycle / Food Chain
+Integrated Systems,Social-ecological Systems; ,,
+Spatial scale of expertise,Global / Hemispheric;,Spatial Scale, Global / Hemispheric
+Spatial scale of expertise,Continental;,Spatial Scale,Continental
+Spatial scale of expertise,Regional;,Spatial Scale,Regional
+Spatial scale of expertise,National / Cultural;,Spatial Scale,National / Cultural
+Spatial scale of expertise,Local / Community;,Spatial Scale,Local / Community
+Statistical Focus,Extremes;,Statistical Focus,Extreme Events
+Statistical Focus,Mean Change / Trends;,Statistical Focus, Mean Change / Trends
+Statistical Focus,Variability;,Statistical Focus,Variability
+Time Scales,Seasonal / Annual;,,
+Time Scales,Decadal / Centennial;,,
+Time Scales,Millenial;,,
+Time Scales,100 kyr;,,
+Time Scales,Billenial (Mio yrs);,,
+Methods,Earth Observations;,,
+Methods,Remote sensing;,,
+Methods,Field observations;,,
+Methods,Field Experiments;,,
+Methods,Modeling;,Methods,Modeling
+Methods,Spatial analyses;,,
+Methods,Policy Analysis and Formation;,Methods,Policy Analysis and Formation
+Methods,Qualitative social science methods;,Methods," Data Collection - Interviews, Questionnaires"
+Methods,Integrative assessments;,Methods,Integrated Assessment
+Methods,Synthesis and meta-analyses;,,
+

@@ -75,19 +75,8 @@ def add_person(row, m_top, m_exp):
                         title = new_exp
                     )
                     person.expertise.add(expertise)
-                    if expertise.topic:
-                        if expertise.topic not in person.disciplines.all():
-                            person.disciplines.add(expertise.topic)
                 break
-
-        # Match discipline
-        for old_top in m_top:
-            if fuzz.ratio(exp.lower(), old_top.lower()) > 90:
-                topic = Topic.objects.get(
-                    title = m_top[old_top]
-                )
-                person.disciplines.add(topic)
-
+                
     person.save()
     return True
 
@@ -184,7 +173,7 @@ def refresh_data(filename, required_cols, delimiter, m_top, m_exp):
     return("%d people imported" % count)
 
 def queue_refresh(filename, required_cols=[], delimiter=";"):
-    m_top, m_exp = load_expertise_match('data/expertise_matching.csv')
+    m_top, m_exp = load_expertise_match('convert/proclim_expertise.csv')
     print("Class - Topic mapping")
     print("---------------------")
     pprint(m_top)

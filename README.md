@@ -44,6 +44,14 @@ The frontend interface will be available in `dist`. Use `yarn serve` in developm
 
 Check the log for the port and URL to the admin interface.
 
+## Data migration
+
+To import data from the legacy database (`filename` = CSV export), use:
+
+    $ ./manage.py mriload <filename>
+
+Check the `convert` folder for supplementary conversion datafiles.
+
 ## Deployment
 
 Use a WSGI server like uwsgi to host the app in production mode.

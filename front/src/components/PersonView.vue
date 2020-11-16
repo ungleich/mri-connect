@@ -19,15 +19,11 @@
       | {{ person.position }}
 
     .expertise
-      h5 Expertise
-      ul
-        li(v-for="exp in person.expertise")
-          | {{ exp.title }}
-
-      h5 Discipline
-      ul
-        li(v-for="topic in person.disciplines")
-          | {{ topic.title }}
+      .topic(v-for="topic in person.topics")
+        h5 {{ topic.title }}
+        ul
+          li(v-for="exp in topic.expertise")
+            span {{ exp.title }}
 
     .institution
       h5 Affiliation

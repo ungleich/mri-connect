@@ -180,14 +180,10 @@ class Person(models.Model):
         null=True, blank=True,
         help_text="I allow publishing my photo on the web")
 
+    # 2 EXPERTISE
     expertise = models.ManyToManyField(Expertise,
         related_name="experts", blank=True,
         help_text="Research expertise"
-    )
-
-    disciplines = models.ManyToManyField(Topic,
-        related_name="experts", blank=True,
-        help_text="Disciplinary topics"
     )
 
     @property

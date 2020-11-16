@@ -26,7 +26,7 @@ class PersonAdmin(admin.ModelAdmin):
             'fields': ('allow_public', 'allow_photo')
         }),
         ('Expertise', {
-            'fields': ('expertise', 'disciplines')
+            'fields': ('expertise', )
         }),
     )
     # view_template = 'people/admin/preview.html'

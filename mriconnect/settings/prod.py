@@ -51,7 +51,7 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': env.get('PGDATABASE', APP_NAME),
+            'NAME': env.get('PGDATABASE', 'app' or APP_NAME),
             'CONN_MAX_AGE': 600,  # number of seconds database connections should persist for
 
             # User, host and port can be configured by the PGUSER, PGHOST and

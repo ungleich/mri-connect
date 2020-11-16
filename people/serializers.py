@@ -1,16 +1,24 @@
 from rest_framework import serializers
 from .models import Person, Affiliation, Topic, Expertise
-
+from .util import expertiseByTopic
 
 class ExpertiseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Expertise
         fields = '__all__'
 
-# class TopicSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Topic
-#         fields = '__all__'
+class TopicSerializer(serializers.ModelSerializer):
+    expertise = serializers.SerializerMethodField()
+
+    def get_expertise(self, topic):
+        """ Collapse expertise topics """
+        return expertiseByTopic(
+            Expertise.objects.filter(topic_id=topic.id).all()
+        )[0]['expertise']
+
+    class Meta:
+        model = Topic
+        fields = '__all__'
 
 class AffiliationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -57,16 +65,4 @@ class PersonSerializer(serializers.ModelSerializer):
 
     def get_topics(self, person):
         """ Collapse expertise topics """
-        topics = {}
-        for exp in person.expertise.order_by('topic_id').all():
-            if not exp.topic.id in topics:
-                topics[exp.topic.id] = {
-                    'id': exp.topic.id,
-                    'title': exp.topic.title,
-                    'expertise': []
-                }
-            topics[exp.topic.id]['expertise'].append({
-                'id': exp.id,
-                'title': exp.title,
-            })
-        return [ v for k,v in topics.items() ]
+        return expertiseByTopic(person.expertise.order_by('topic_id').all())

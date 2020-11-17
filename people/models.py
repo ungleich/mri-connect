@@ -101,14 +101,16 @@ class Person(models.Model):
     last_name = models.CharField(max_length=128, null=True, blank=True)
     first_name = models.CharField(max_length=128, null=True, blank=True)
     title = models.CharField(max_length=16, null=True, blank=True)
-    gender = models.CharField(max_length=1, null=True, blank=True,
+    gender = models.CharField(max_length=16, null=True, blank=True,
                               choices=Gender.choices)
 
     # 5
     position = models.CharField(max_length=256, null=True, blank=True)
 
     # 6
-    affiliation = models.ForeignKey(Affiliation, on_delete=models.PROTECT, null=True, blank=True)
+    affiliation = models.ForeignKey(Affiliation,
+                                    null=True, blank=True,
+                                    on_delete=models.PROTECT)
 
     # 7 Preferred email contact*
     contact_email = models.CharField(max_length=256,

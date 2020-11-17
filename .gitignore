@@ -1,10 +1,13 @@
+*.pyc
+
 /data
 /data/
 /datawizard/
 /static/
 
 .env
-*.pyc
+/mriconnect/settings/local.py
+
 .sass-cache
 .DS_Store
 *.swp

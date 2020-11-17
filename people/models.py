@@ -143,7 +143,7 @@ class Person(models.Model):
         help_text="Official functions that I hold in national and international programs, commissions, etc.")
 
     # 11
-    upload_photo = models.ImageField(upload_to='static/people', null=True, blank=True)
+    upload_photo = models.ImageField(upload_to='media/people', null=True, blank=True)
 
     # 12-14
     url_personal = models.URLField(_("Personal website"),

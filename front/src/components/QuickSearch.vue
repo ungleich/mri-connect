@@ -2,48 +2,36 @@
 .search
   .quick-search
     input(v-model='query', placeholder='Quick search ...')
-  template
+  section
     .search-result
-      vs-table(v-show='results.length > 0')
-        template(#thead)
-          vs-tr
-            vs-th Last name
-            vs-th First name
-            vs-th Location
-            vs-th Details
-        template(#tbody)
-          vs-tr(v-for='result in results', v-bind:key='result.id', :data='result')
-            vs-td
-              .last_name {{ result.last_name }}
-            vs-td
-              .first_name {{ result.first_name }}
-            vs-td
-              .location {{ result.location }}
-            vs-td
-              vs-button(flat, icon, @click="selectItem(result.id)")
-                box-icon(name='expand-alt')
-                | Open
-            //template(#expand)
-              .con-content
-                .left
-                  vs-avatar
-                    img(:src="result.url_image")
-                  span {{ result.fullname }}
-                .right
-                  vs-button(flat, icon, @click="selectItem(result.id)")
-                    box-icon(name='expand-alt')
-                    | Open
-        template(#footer).summary
+      b-table(
+        :data='results'
+        :columns='columns'
+        :selected.sync="selected"
+        @click="popup = true"
+        focusable
+        v-show='results.length > 0'
+        style='width:auto'
+      )
+      template(slot='footer')
+        .summary
           | {{ counts }} results
-
-  vs-dialog(v-model='popup')
-    template(#header='')
-      .not-margin.person-title
-        | {{ selectedPerson.fullname }}
-    PersonView(:person='selectedPerson')
-    template(#footer='')
-      .footer-dialog
-        vs-button(block, gradient, size='large', @click='popup=false') Close
+  b-modal(
+    :active.sync='popup'
+    has-modal-card
+    trap-focus
+    :destroy-on-hide='false'
+    aria-role='dialog'
+    aria-modal
+  )
+    .modal-card(style='width: auto')
+      header.modal-card-head
+        p.modal-card-title
+          | {{ selected.fullname }}
+      section.modal-card-body
+        PersonView(:person='selectedPerson')
+      footer.modal-card-foot
+        button.button(type='button' @click='popup=false') Close
 </template>
 
 <script>
@@ -65,11 +53,18 @@ export default {
       results: [],
       counts: 0,
       popup: false,
-      selectedPerson: {}
+      selected: {},
+      selectedPerson: {},
+      columns: [
+        { 'field': 'last_name', 'label': 'Last name' },
+        { 'field': 'first_name', 'label': 'First name' },
+        { 'field': 'location', 'label': 'Location' }
+      ]
     }
   },
   watch: {
-    query (val) { this.runQuery(val) }
+    query (val) { this.runQuery(val) },
+    selected (val) { this.selectItem(val.id) }
   },
   methods: {
     selectItem (pid) {
@@ -106,11 +101,20 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss">
+<style lang="scss">
 .quick-search {
   input {
     font-size: 200%;
+  }
+}
+.search-result {
+  padding: 0 1em;
+  text-align: center;
+  .b-table .table { width: auto; }
+}
+@media (min-width: 1000px) {
+  .search-result {
+    padding: 0 10%;
   }
 }
 </style>

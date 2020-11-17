@@ -29,7 +29,10 @@ class PersonAdmin(admin.ModelAdmin):
             'fields': ('expertise', )
         }),
     )
+    list_display = ('fullname', 'allow_public')
     # view_template = 'people/admin/preview.html'
+    class Media:
+        css = { 'all': ('admin.css', )}
 
 @admin.register(Expertise)
 class ExpertiseAdmin(admin.ModelAdmin):

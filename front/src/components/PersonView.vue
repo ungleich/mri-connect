@@ -1,16 +1,18 @@
 <template lang="pug">
 .person-view
-  vs-button-group.links
-    vs-button(border, blank, :disabled="!person.url_personal", :href="person.url_personal")
+  .links
+    b-button(outlined, :disabled="!person.url_personal", :href="person.url_personal")
       | Website
-    vs-button(border, blank, :disabled="!person.url_cv", :href="person.url_cv")
+    b-button(outlined, :disabled="!person.url_cv", :href="person.url_cv")
       | CV
-    vs-button(border, blank, :disabled="!person.url_researchgate", :href="person.url_researchgate")
+    b-button(outlined, :disabled="!person.url_researchgate", :href="person.url_researchgate")
       | ResearchGate
-    vs-button(border, blank, :disabled="!person.url_publications", :href="person.url_publications")
+    b-button(outlined, :disabled="!person.url_publications", :href="person.url_publications")
       | Publications
 
   .card
+
+    //- pre {{ person }}
 
     .photo(v-if="person.url_photo")
       img(:src="person.url_photo")
@@ -61,9 +63,9 @@
     small Last updated:
       span.date &nbsp;{{ person.date_edited }}
   .update-me
-    vs-button(icon, flat, @click='update_me')
-      box-icon(name='edit')
-      | Edit
+    button.button.is-dark(@click='update_me')
+      b-icon(icon='pencil')
+      span Edit
 </template>
 
 <script>
@@ -98,7 +100,8 @@ export default {
   overflow-x: auto;
 }
 .card {
-  margin: 2em 0.5em;
+  margin: 2em 0em;
+  padding: 1em;
 }
 .links {
   margin-bottom: 1em;

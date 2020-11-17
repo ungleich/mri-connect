@@ -1,10 +1,5 @@
 *.pyc
 
-/data
-/data/
-/datawizard/
-/static/
-
 .env
 /mriconnect/settings/local.py
 
@@ -15,10 +10,14 @@
 /docker-compose.yml
 /env/
 /venv/
+
+/data
+/data/
+/datawizard/
 /static/
-/assets/
 /media/
 /tmp/
+
 /.keys/
 /.vagrant/
 /Vagrantfile.local

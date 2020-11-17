@@ -7,17 +7,17 @@
     >
       <vs-navbar-item>
         <router-link to="/">
-          Full text search
+          Find An Expert
         </router-link>
       </vs-navbar-item>
-      <vs-navbar-item>
-        <router-link to="/advanced">
-          Advanced search
+      <vs-navbar-item disabled>
+        <router-link to="#advanced">
+          Advanced Search
         </router-link>
       </vs-navbar-item>
       <vs-navbar-item>
         <router-link to="/expertise">
-          Search by expertise
+          Search by Expertise
         </router-link>
       </vs-navbar-item>
     </vs-navbar>
@@ -52,7 +52,7 @@ a {
   padding: 20px 25px;
   font-family: 'Lato', sans-serif;
   font-weight: 400;
-  font-size: 16px;
+  font-size: 20px;
   text-decoration: none;
   u {
     border-bottom: 2px solid blue;

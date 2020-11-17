@@ -54,9 +54,21 @@ Check the `convert` folder for supplementary conversion datafiles.
 
 ## Deployment
 
-Use a WSGI server like uwsgi to host the app in production mode.
+`DJANGO_SETTINGS_MODULE="mriconnect.settings.prod"` in the environment ensures that production settings, loaded from the environment in `prod.py`, should be used.
 
-To save changes from the poetry environment to `requirements.txt`:
+Use a WSGI server like uwsgi to host the app in production mode. Environment settings are set in the `app.ini`, e.g.:
+
+```
+env = DJANGO_SETTINGS_MODULE=mriconnect.settings.prod
+env = ALLOWED_HOSTS=mri.django-hosting.ch
+env = LOG_DIR=/home/app/logs/
+```
+
+Settings can also be provided using `mriconnect/settings/local.py`
+
+## Releases
+
+To save dependency changes from the poetry environment to `requirements.txt`:
 
     poetry export -f requirements.txt > requirements.txt
 

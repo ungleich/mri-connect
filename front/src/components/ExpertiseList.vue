@@ -1,11 +1,10 @@
 <template lang="pug">
 .expertise-list
-  h1 Connect with the community
-
-  .topics
-    .t(v-for='topic in topics', v-bind:key='topic.id')
-      input(type='checkbox', :id='"t"+topic.id')
-      label.topic(:for='"t"+topic.id') {{ topic.title }}
+  vs-collapse.topics
+    vs-collapse-item(v-for='topic in topics', v-bind:key='topic.id')
+      .t(slot="header")
+        input(type='checkbox', :id='"t"+topic.id')
+        label.topic(:for='"t"+topic.id') {{ topic.title }}
       .e(v-for='expertise in topic.expertise', v-bind:key='expertise.id')
         input(type='checkbox', :id='"e"+expertise.id')
         label.expertise(:for='"e"+expertise.id') {{ expertise.title }}
@@ -52,6 +51,8 @@ export default {
 <style scoped lang="scss">
 .topics {
   text-align: left;
+}
+.expertise-list {
   margin-left: 25%;
 }
 .t, .e {

@@ -35,7 +35,7 @@ class Project(models.Model):
     date_ending = models.DateField(null=True, blank=True)
     funding = models.CharField(max_length=256, null=True, blank=True)
     role = models.CharField(max_length=256, null=True, blank=True)
-    homepage = models.URLField(null=True, blank=True)
+    homepage = models.URLField(null=True, blank=True, max_length=1024)
     location = models.TextField(null=True, blank=True)
     # TODO: add GeoDjango support
     # coordinates = PointField()
@@ -146,14 +146,14 @@ class Person(models.Model):
     upload_photo = models.ImageField(upload_to='static/people', null=True, blank=True)
 
     # 12-14
-    url_personal = models.URLField(
-        _("Personal website"), null=True, blank=True,
+    url_personal = models.URLField(_("Personal website"),
+        null=True, blank=True, max_length=1024,
         help_text="Link to personal or professional homepage")
-    url_cv = models.URLField(
-        _("Curriculum Vitae"), null=True, blank=True,
+    url_cv = models.URLField(_("Curriculum Vitae"),
+        null=True, blank=True, max_length=1024,
         help_text="Link to CV, e.g. on LinkedIn")
-    url_researchgate = models.URLField(
-        _("ResearchGate link"), null=True, blank=True,
+    url_researchgate = models.URLField(_("ResearchGate link"),
+        null=True, blank=True, max_length=1024,
         help_text="Link to your profile")
 
     # 15 See https://members.orcid.org/api/workflow/RIM-systems
@@ -174,7 +174,7 @@ class Person(models.Model):
     # 17
     url_publications = models.URLField(
         _("Link to publications"),
-        null=True, blank=True
+        null=True, blank=True, max_length=1024
     )
     list_publications = models.TextField(
         _("Free text list of publications"),

@@ -1,27 +1,12 @@
-<template>
-  <div class="header">
-    <vs-navbar
-        color="secondary"
-        text-color="rgba(255,255,255,1)"
-        class="navbar"
-    >
-      <vs-navbar-item>
-        <router-link to="/">
-          Find An Expert
-        </router-link>
-      </vs-navbar-item>
-      <vs-navbar-item disabled>
-        <router-link to="#advanced">
-          Advanced Search
-        </router-link>
-      </vs-navbar-item>
-      <vs-navbar-item>
-        <router-link to="/expertise">
-          Search by Expertise
-        </router-link>
-      </vs-navbar-item>
-    </vs-navbar>
-  </div>
+<template lang="pug">
+  b-navbar.header
+    template(slot='start')
+      b-navbar-item(tag='router-link' :to="{ path: '/search' }")
+        | Find An Expert
+      b-navbar-item(tag='router-link' :to="{ path: '/advanced' }")
+        |  Advanced Search
+      b-navbar-item(tag='router-link' :to="{ path: '/expertise' }")
+        |  Search by Expertise
 </template>
 
 <script>
@@ -37,15 +22,13 @@ export default {
   margin-bottom: 80px;
 }
 
-.vs-navbar--title {
-  img {
-    height: 80px;
-  }
-}
-
 button { margin: 0; padding: 0; }
 
-a {
+nav {
+  background: black;
+}
+
+a.navbar-item {
   color: #66a4d1;
   background: #000;
   text-decoration: none;
@@ -57,7 +40,7 @@ a {
   u {
     border-bottom: 2px solid blue;
   }
-  &.router-link-exact-active {
+  &.router-link-exact-active, &:hover {
     color: #fff;
     background: #0067b2;
   }

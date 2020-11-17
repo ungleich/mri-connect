@@ -1,13 +1,16 @@
 <template lang="pug">
-.expertise-list
-  vs-collapse.topics
-    vs-collapse-item(v-for='topic in topics', v-bind:key='topic.id')
-      .t(slot="header")
-        input(type='checkbox', :id='"t"+topic.id')
-        label.topic(:for='"t"+topic.id') {{ topic.title }}
-      .e(v-for='expertise in topic.expertise', v-bind:key='expertise.id')
-        input(type='checkbox', :id='"e"+expertise.id')
-        label.expertise(:for='"e"+expertise.id') {{ expertise.title }}
+section.expertise-list
+  b-collapse.card(animation='slide' v-for='topic in topics' :key='topic.id' :open='isOpen == index' @open='isOpen = index')
+      .card-header(slot='trigger' slot-scope='props' role='button')
+        p.card-header-title
+          //- input(type='checkbox', :id='"t"+topic.id')
+          label.topic(:for='"t"+topic.id') {{ topic.title }}
+        a.card-header-icon
+          b-icon(:icon="props.open ? 'menu-down' : 'menu-up'")
+      .card-content
+        .content(v-for='expertise in topic.expertise', v-bind:key='expertise.id')
+          input(type='checkbox', :id='"e"+expertise.id')
+          label.expertise(:for='"e"+expertise.id') {{ expertise.title }}
 </template>
 
 <script>
@@ -21,6 +24,7 @@ export default {
   },
   data () {
     return {
+      isOpen: 0,
       topics: []
     }
   },
@@ -49,21 +53,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-.topics {
-  text-align: left;
-}
-.expertise-list {
-  margin-left: 25%;
-}
-.t, .e {
-  margin: 1em;
-}
-.t {
-  margin-bottom: 2em;
-}
-.topic {
-  font-weight: bold;
-}
 input {
   transform: scale(1.5);
 }

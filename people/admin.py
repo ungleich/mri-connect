@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Person, Expertise, Topic, Affiliation
+from .models import Person, Expertise, Topic, Affiliation, Project
 
 @admin.register(Person)
 class PersonAdmin(admin.ModelAdmin):
@@ -48,3 +48,7 @@ class TopicAdmin(admin.ModelAdmin):
 @admin.register(Affiliation)
 class AffiliationAdmin(admin.ModelAdmin):
     ordering = ('name',)
+
+@admin.register(Project)
+class ProjectAdmin(admin.ModelAdmin):
+    ordering = ('-date_ending',)

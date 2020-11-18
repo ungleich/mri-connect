@@ -48,7 +48,11 @@ class TopicAdmin(admin.ModelAdmin):
 @admin.register(Affiliation)
 class AffiliationAdmin(admin.ModelAdmin):
     ordering = ('name',)
+    search_fields = ('name', 'city',)
+    list_display = ('name', 'city', 'country')
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
     ordering = ('-date_ending',)
+    search_fields = ('name', 'location',)
+    list_display = ('name', 'date_ending', 'location')

@@ -36,7 +36,7 @@ class Project(models.Model):
     funding = models.CharField(max_length=256, null=True, blank=True)
     role = models.CharField(max_length=256, null=True, blank=True)
     homepage = models.URLField(null=True, blank=True, max_length=1024)
-    location = models.TextField(null=True, blank=True)
+    location = models.CharField(max_length=256, null=True, blank=True)
     # TODO: add GeoDjango support
     # coordinates = PointField()
     country = CountryField(null=True, blank=True)

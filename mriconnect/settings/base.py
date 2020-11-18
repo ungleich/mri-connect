@@ -153,8 +153,8 @@ STATICFILES_DIRS = [
 ]
 
 JAZZMIN_SETTINGS = {
-    "site_title": "MRI Connect: Experts Database",
-    "site_header": "Find an Expert",
+    "site_title": "Mountain Research Initiative",
+    "site_header": "MRI Connect",
     "welcome_sign": "Welcome to the MRI backend",
     "copyright": "Mountain Research Initiative",
     # "search_model": "people.Person",

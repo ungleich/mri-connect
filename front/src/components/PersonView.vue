@@ -62,10 +62,6 @@
   .meta
     small Last updated:
       span.date &nbsp;{{ person.date_edited }}
-  .update-me
-    button.button.is-dark(@click='update_me')
-      b-icon(icon='pencil')
-      span Edit
 </template>
 
 <script>
@@ -83,9 +79,6 @@ export default {
 
   },
   methods: {
-    update_me: function () {
-      alert('Under construction ...')
-    }
   },
   mounted () {
 

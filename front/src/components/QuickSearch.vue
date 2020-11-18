@@ -16,6 +16,7 @@
       template(slot='footer')
         .summary
           | {{ counts }} results
+
   b-modal(
     :active.sync='popup'
     has-modal-card
@@ -32,6 +33,33 @@
         PersonView(:person='selectedPerson')
       footer.modal-card-foot
         button.button(type='button' @click='popup=false') Close
+        button.button(type='button' @click='updateme=true')
+          b-icon(icon='pencil')
+          span Update
+
+  b-modal(
+    :active.sync='updateme'
+    has-modal-card
+    trap-focus
+    :destroy-on-hide='false'
+    aria-role='dialog'
+    aria-modal
+  )
+    .modal-card(style='width: auto')
+      header.modal-card-head
+        p.modal-card-title
+          | Update profile
+      section.modal-card-body
+        p Option 1) Self-service
+        button.button(type='button' @click='requestAccess')
+          span I am this person and would like to receive access to update my profile
+        hr
+        p Option 2) Recommend corrections
+        textarea.corrections
+        button.button(type='button' @click='requestAccess')
+          span Send this note to the MRI administration
+      footer.modal-card-foot
+        button.button(type='button' @click='updateme=false') Close
 </template>
 
 <script>
@@ -53,6 +81,7 @@ export default {
       results: [],
       counts: 0,
       popup: false,
+      updateme: false,
       selected: {},
       selectedPerson: {},
       columns: [
@@ -92,6 +121,10 @@ export default {
           self.counts = responseData['count']
         })
         // .catch((error) => this.promptNetworkError(error))
+    },
+    requestAccess () {
+      this.updateme = false
+      alert('You should receive an e-mail shortly. If you do not within 1 hour, please contact us at info@mountainresearch.org')
     }
   },
   mounted () {
@@ -116,5 +149,10 @@ export default {
   .search-result {
     padding: 0 10%;
   }
+}
+.corrections {
+  width:100%; height:4em;
+  padding: 0.5em 1em;
+  font-size: 125%;
 }
 </style>

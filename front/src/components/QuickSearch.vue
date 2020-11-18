@@ -124,7 +124,7 @@ export default {
     },
     requestAccess () {
       this.updateme = false
-      alert('You should receive an e-mail shortly. If you do not within 1 hour, please contact us at info@mountainresearch.org')
+      alert('You should receive an e-mail shortly. If you do not within 1 hour, please contact us at mri@mountainresearchinitiative.org')
     }
   },
   mounted () {

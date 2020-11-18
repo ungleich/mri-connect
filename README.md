@@ -2,9 +2,9 @@
 
 An open source search engine and members directory for the [Mountain Research Initiative](https://mountainresearchinitiative.org/).
 
-Currently under development.
+If you have any questions, please contact us via mri@mountainresearchinitiative.org
 
-If you have any questions, please contact us via (info@) [datalets.ch](https://datalets.ch)
+Currently under development by Oleg Lavrovsky, [datalets.ch](https://datalets.ch)
 
 ## Usage
 

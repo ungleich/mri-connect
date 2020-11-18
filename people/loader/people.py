@@ -10,41 +10,58 @@ from rapidfuzz import fuzz
 from ..models import Person, Affiliation, Expertise, Topic
 from .util import *
 
+errfilename = 'import.log'
+
 def add_person(row, m_top, m_exp):
+    # Validate email
+    EMailAddress = row['EMailAddress'] or row['EMailAddress2']
+    if EMailAddress is None or not '@' in EMailAddress:
+        return '%s;%s;;No e-mail' % (row['Name'], row['FirstName'])
     try:
-        person = Person.objects.get(
+        Person.objects.get(
+            contact_email=row['EMailAddress'] or row['EMailAddress2']
+        )
+        return ';;%s;Duplicate e-mail' % EMailAddress
+    except Person.DoesNotExist:
+        pass
+
+    # Validate name
+    FullName = row['FirstName'] or row['Name']
+    if FullName is None or not len(FullName.strip())>2:
+        return ';;%s;No name' % EMailAddress
+    try:
+        Person.objects.get(
             first_name=row['FirstName'],
             last_name=row['Name']
         )
-        return False
-    except Person.DoesNotExist:
-        pass
-    try:
-        person = Person.objects.get(
-            contact_email=row['EMailAddress'] or row['EMailAddress2']
-        )
-        return False
+        return '%s;%s;;Duplicate name' % (row['Name'], row['FirstName'])
     except Person.DoesNotExist:
         pass
 
     # Import person object
-    person = Person(
-        first_name   =row['FirstName'],
-        last_name    =row['Name'],
-        title        =row['Title'],
-        proclimid    =row['PersonID'],
-        position     =row['PPosition'],
-        gender       =row['Sex'],
-        contact_email=row['EMailAddress'] or row['EMailAddress2'],
-        url_personal =fix_url(row['URL_site']),
-        url_cv       =fix_url(row['URL_CurrVitae']),
-        list_publications=fix_pub(row['KeyPublications']),
-    )
-    person.save()
+    try:
+        person = Person(
+            first_name   =row['FirstName'],
+            last_name    =row['Name'],
+            title        =row['Title'],
+            proclimid    =row['PersonID'],
+            position     =row['PPosition'],
+            gender       =row['Sex'],
+            contact_email=EMailAddress,
+            url_personal =fix_url(row['URL_site']),
+            url_cv       =fix_url(row['URL_CurrVitae']),
+            list_publications=fix_pub(row['KeyPublications']),
+        )
+        person.save(force_insert=True)
+    except Person.ValidationError as e:
+        return '%s;%s;%s;Validation error (%s)' % (
+                    row['Name'], row['FirstName'], EMailAddress,
+                    getattr(e, 'message', repr(e))
+                )
 
     # Match institution
-    if len(row['UnivCompAbbr']) > 2:
-        org_name = row['UnivCompAbbr'].strip()
+    org_name = row['UnivCompAbbr'].strip()
+    if len(org_name) > 2:
         try:
             org = Affiliation.objects.get(
                 name= org_name
@@ -145,32 +162,35 @@ def refresh_data(filename, required_cols, delimiter, m_top, m_exp):
     totalrows = get_total_rows_csv(filename)
     count = 0
 
-    with open(filename, 'rt', encoding='utf-8', errors='ignore') as csvfile:
-        # dialect = csv.Sniffer().sniff(csvfile.read(2048), delimiters=";,")
-        # csvfile.seek(0)
-        datareader = csv.DictReader(csvfile, delimiter=delimiter)
-        rowcount = 0
+    with open(errfilename, 'w', encoding='utf-8', errors='ignore') as errorfile:
+        with open(filename, 'rt', encoding='utf-8', errors='ignore') as csvfile:
+            # dialect = csv.Sniffer().sniff(csvfile.read(2048), delimiters=";,")
+            # csvfile.seek(0)
+            datareader = csv.DictReader(csvfile, delimiter=delimiter)
+            rowcount = 0
 
-        for row in datareader:
+            for row in datareader:
 
-            rowcount += 1
-            if row is None: continue
-            yield rowcount, rowcount/totalrows
+                rowcount += 1
+                if row is None: continue
+                yield rowcount, rowcount/totalrows
 
-            for r in required_cols:
-                if not r in row:
-                    msg = "Missing attribute %s in schema." % r
-                    # app.logger.warn(msg)
-                    yield(msg, "error")
-                    return None
+                for r in required_cols:
+                    if not r in row:
+                        msg = "Missing attribute %s in schema." % r
+                        # app.logger.warn(msg)
+                        yield(msg, "error")
+                        return None
 
-            if add_person(row, m_top, m_exp):
-                count = count + 1
-            else:
-                # Skipping this person
-                pass
+                result = add_person(row, m_top, m_exp)
+                if result == True:
+                    count = count + 1
+                elif type(result) == str:
+                    # Skipping this person
+                    errorfile.write(result + '\n')
 
-    return("%d people imported" % count)
+    print("%d people imported" % count)
+    yield None, None
 
 def queue_refresh(filename, required_cols=[], delimiter=";"):
     m_top, m_exp = load_expertise_match('convert/proclim_expertise.csv')
@@ -190,11 +210,7 @@ def queue_refresh(filename, required_cols=[], delimiter=";"):
     print("-------------------")
     rd = refresh_data(filename, required_cols, delimiter, m_top, m_exp)
     while c is not None:
-        try:
-            c, p = next(rd)
-        except Exception as e:
-            print(str(e))
-            return
+        c, p = next(rd)
         if isinstance(c, (int, float)):
             global c_progress
             c_counter = c

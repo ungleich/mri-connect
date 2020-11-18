@@ -29,7 +29,8 @@ class PersonAdmin(admin.ModelAdmin):
             'fields': ('expertise', )
         }),
     )
-    list_display = ('fullname', 'allow_public')
+    search_fields = ('last_name', 'first_name', 'contact_email')
+    list_display = ('fullname', 'allow_public', 'date_edited')
     # view_template = 'people/admin/preview.html'
     class Media:
         css = { 'all': ('admin.css', )}

@@ -14,12 +14,13 @@ errfilename = 'import.log'
 
 def add_person(row, m_top, m_exp):
     # Validate email
-    EMailAddress = row['EMailAddress'] or row['EMailAddress2']
-    if EMailAddress is None or not '@' in EMailAddress:
+    EMailAddress = row['EMailAddress'] or row['EMailAddress2'] or ''
+    EMailAddress = EMailAddress.strip()
+    if not '@' in EMailAddress:
         return '%s;%s;;No e-mail' % (row['Name'], row['FirstName'])
     try:
         Person.objects.get(
-            contact_email=row['EMailAddress'] or row['EMailAddress2']
+            contact_email=EMailAddress
         )
         return ';;%s;Duplicate e-mail' % EMailAddress
     except Person.DoesNotExist:
@@ -41,15 +42,15 @@ def add_person(row, m_top, m_exp):
     # Import person object
     try:
         person = Person(
-            first_name   =row['FirstName'],
-            last_name    =row['Name'],
-            title        =row['Title'],
+            first_name   =row['FirstName'].strip(),
+            last_name    =row['Name'].strip(),
+            title        =row['Title'].strip(),
             proclimid    =row['PersonID'],
-            position     =row['PPosition'],
-            gender       =row['Sex'],
+            position     =row['PPosition'].strip(),
+            gender       =row['Sex'].strip(),
             contact_email=EMailAddress,
-            url_personal =fix_url(row['URL_site']),
-            url_cv       =fix_url(row['URL_CurrVitae']),
+            url_personal =fix_url(row['URL_site']).strip(),
+            url_cv       =fix_url(row['URL_CurrVitae']).strip(),
             list_publications=fix_pub(row['KeyPublications']),
         )
         person.save(force_insert=True)

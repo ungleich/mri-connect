@@ -31,6 +31,7 @@ class PersonAdmin(admin.ModelAdmin):
     )
     search_fields = ('last_name', 'first_name', 'contact_email')
     list_display = ('fullname', 'allow_public', 'date_edited')
+    ordering = ('-date_edited',)
     # view_template = 'people/admin/preview.html'
     class Media:
         css = { 'all': ('admin.css', )}
@@ -38,11 +39,12 @@ class PersonAdmin(admin.ModelAdmin):
 @admin.register(Expertise)
 class ExpertiseAdmin(admin.ModelAdmin):
     fields = ('title', 'topic')
+    ordering = ('id',)
 
 @admin.register(Topic)
 class TopicAdmin(admin.ModelAdmin):
-    pass
+    ordering = ('id',)
 
 @admin.register(Affiliation)
 class AffiliationAdmin(admin.ModelAdmin):
-    pass
+    ordering = ('name',)

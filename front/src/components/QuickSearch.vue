@@ -143,7 +143,20 @@ export default {
 .search-result {
   padding: 0 1em;
   text-align: center;
-  .b-table .table { width: auto; }
+  .b-table {
+    border: none;
+    box-shadow: none;
+    outline: none;
+  }
+  .b-table .table {
+    width: auto;
+    outline: none;
+    &:focus {
+      border-color: transparent;
+      -webkit-box-shadow: none;
+      box-shadow: none;
+    }
+  }
 }
 @media (min-width: 1000px) {
   .search-result {

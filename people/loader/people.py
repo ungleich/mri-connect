@@ -5,19 +5,31 @@ import csv
 
 from pprint import pprint
 from django_countries import countries
+from django.core.exceptions import ValidationError
+
 from rapidfuzz import fuzz
 
 from ..models import Person, Affiliation, Expertise, Topic
 from .util import *
 
+# TODO: -> config or option
 errfilename = 'import.log'
+expertisematchfile = 'convert/proclim_expertise.csv'
+
+def fuzzymatch(what, o1, o2, min=90, warn=99):
+    matcher = fuzz.ratio(o1.lower(), o2.lower())
+    if matcher > min:
+        if matcher < warn:
+            print("Warning: %s [%s] uncertain match to [%s] %d" % (what, o1, o2, matcher))
+        return True
+    return False
 
 def add_person(row, m_top, m_exp):
     # Validate email
     EMailAddress = row['EMailAddress'] or row['EMailAddress2'] or ''
     EMailAddress = EMailAddress.strip()
     if not '@' in EMailAddress:
-        return '%s;%s;;No e-mail' % (row['Name'], row['FirstName'])
+        return '%s;%s;;%s;No e-mail' % (row['Name'], row['FirstName'], row['PersonID'])
     try:
         Person.objects.get(
             contact_email=EMailAddress
@@ -29,13 +41,13 @@ def add_person(row, m_top, m_exp):
     # Validate name
     FullName = row['FirstName'] or row['Name']
     if FullName is None or not len(FullName.strip())>2:
-        return ';;%s;No name' % EMailAddress
+        return ';;%s;%s;No name' % (EMailAddress, row['PersonID'])
     try:
         Person.objects.get(
             first_name=row['FirstName'],
             last_name=row['Name']
         )
-        return '%s;%s;;Duplicate name' % (row['Name'], row['FirstName'])
+        return '%s;%s;;%s;Duplicate name' % (row['Name'], row['FirstName'], row['PersonID'])
     except Person.DoesNotExist:
         pass
 
@@ -47,26 +59,29 @@ def add_person(row, m_top, m_exp):
             title        =row['Title'].strip(),
             proclimid    =row['PersonID'],
             position     =row['PPosition'].strip(),
-            gender       =row['Sex'].strip(),
+            gender       =row['Sex'].strip().upper(),
             contact_email=EMailAddress,
             url_personal =fix_url(row['URL_site']).strip(),
             url_cv       =fix_url(row['URL_CurrVitae']).strip(),
             list_publications=fix_pub(row['KeyPublications']),
         )
+        person.full_clean()
         person.save(force_insert=True)
-    except Person.ValidationError as e:
-        return '%s;%s;%s;Validation error (%s)' % (
-                    row['Name'], row['FirstName'], EMailAddress,
-                    getattr(e, 'message', repr(e))
-                )
+    except ValidationError as e:
+        return ';;%s;%s;%s' % (EMailAddress, row['PersonID'], repr(e))
 
     # Match institution
     org_name = row['UnivCompAbbr'].strip()
+    org_country = row['CountryName'].strip()
     if len(org_name) > 2:
+        org = None
         try:
-            org = Affiliation.objects.get(
-                name= org_name
-            )
+            for a in Affiliation.objects.filter(name=org_name).all():
+                if fuzzymatch('country seek', a.country.name, org_country):
+                    org = a
+                    break
+            if org is None:
+                raise Affiliation.DoesNotExist
         except Affiliation.DoesNotExist:
             org = Affiliation(
                 name     =org_name,
@@ -75,7 +90,7 @@ def add_person(row, m_top, m_exp):
                 city     =row['City'],
             )
             for code, name in list(countries):
-                if fuzz.ratio(name.lower(), row['CountryName'].lower()) > 90:
+                if fuzzymatch('country add', name, row['CountryName']):
                     org.country = code
                     break
             org.save()
@@ -87,7 +102,7 @@ def add_person(row, m_top, m_exp):
 
         # Match expertise
         for old_exp in m_exp:
-            if fuzz.ratio(exp.lower(), old_exp.lower()) > 90:
+            if fuzzymatch('expertise', exp, old_exp, warn=93):
                 for new_exp in m_exp[old_exp]:
                     expertise = Expertise.objects.get(
                         title = new_exp
@@ -164,6 +179,7 @@ def refresh_data(filename, required_cols, delimiter, m_top, m_exp):
     count = 0
 
     with open(errfilename, 'w', encoding='utf-8', errors='ignore') as errorfile:
+        errorfile.write('Name;FirstName;EMailAddress;PersonID;Message\n')
         with open(filename, 'rt', encoding='utf-8', errors='ignore') as csvfile:
             # dialect = csv.Sniffer().sniff(csvfile.read(2048), delimiters=";,")
             # csvfile.seek(0)
@@ -190,11 +206,12 @@ def refresh_data(filename, required_cols, delimiter, m_top, m_exp):
                     # Skipping this person
                     errorfile.write(result + '\n')
 
+    print("%d rows processed" % rowcount)
     print("%d people imported" % count)
     yield None, None
 
 def queue_refresh(filename, required_cols=[], delimiter=";"):
-    m_top, m_exp = load_expertise_match('convert/proclim_expertise.csv')
+    m_top, m_exp = load_expertise_match(expertisematchfile)
     print("Class - Topic mapping")
     print("---------------------")
     pprint(m_top)
@@ -202,9 +219,6 @@ def queue_refresh(filename, required_cols=[], delimiter=";"):
     print("-------------------------")
     pprint(m_exp)
     print("-------------------------")
-    print("Deleting existing ...")
-    print("---------------------")
-    Person.objects.all().delete()
     c = 1
     c_counter = 0
     print("Starting import ...")

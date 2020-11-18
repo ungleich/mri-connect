@@ -54,15 +54,15 @@ def add_person(row, m_top, m_exp):
     # Import person object
     try:
         person = Person(
+            proclimid    =row['PersonID'],
             first_name   =row['FirstName'].strip(),
             last_name    =row['Name'].strip(),
             title        =row['Title'].strip(),
-            proclimid    =row['PersonID'],
             position     =row['PPosition'].strip(),
             gender       =row['Sex'].strip().upper(),
             contact_email=EMailAddress,
-            url_personal =fix_url(row['URL_site']).strip(),
-            url_cv       =fix_url(row['URL_CurrVitae']).strip(),
+            url_personal =fix_url(row['URL_site']),
+            url_cv       =fix_url(row['URL_CurrVitae']),
             list_publications=fix_pub(row['KeyPublications']),
         )
         person.full_clean(exclude=['url_personal', 'url_cv'])

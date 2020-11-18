@@ -8,8 +8,11 @@ def fix_bracketed_lists(data):
 
 # Check for valid link
 def fix_url(link):
+    link = link.strip()
     if len(link) > 3 and not link.startswith('http'):
         link = 'http://' + link
+    if len(link) > 1000:
+        link = link[0:1000]
     # link = link.split(';')[0]
     return link
 

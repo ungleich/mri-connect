@@ -113,6 +113,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGIN_URL = '/mri/login/'
+
+LOGIN_REDIRECT_URL = '/mri/'
+
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 

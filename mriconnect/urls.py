@@ -54,7 +54,4 @@ urlpatterns = [
 
     # Redirect home page
     path('', RedirectView.as_view(url='https://mountainresearchinitiative.org/find-an-expert', permanent=False),),
-
-    # RA Admin paths (currently not used)
-    # path('', ra_admin_site.urls),
 ]

@@ -9,4 +9,5 @@ router.register(r'search', SearchViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    # url(r'activate/', 'people.views.')
 ]

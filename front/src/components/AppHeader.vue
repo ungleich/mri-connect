@@ -1,12 +1,11 @@
 <template lang="pug">
-  b-navbar.header
-    template(slot='start')
-      b-navbar-item(tag='router-link' :to="{ path: '/search' }")
-        | Find An Expert
-      b-navbar-item(tag='router-link' :to="{ path: '/advanced' }")
-        |  Advanced Search
-      b-navbar-item(tag='router-link' :to="{ path: '/expertise' }")
-        |  Search by Expertise
+  .header
+    router-link.item(:to="{ path: '/search' }")
+      | Find An Expert
+    router-link.item(:to="{ path: '/advanced' }")
+      |  Advanced Search
+    router-link.item(:to="{ path: '/expertise' }")
+      |  Search by Expertise
 </template>
 
 <script>
@@ -19,16 +18,18 @@ export default {
 
 <style scoped lang="scss">
 .header {
+  background: black;
   margin-bottom: 80px;
+  min-height: 3.25rem;
+  position: relative;
+  z-index: 30;
+  text-align: center;
 }
 
 button { margin: 0; padding: 0; }
 
-nav {
-  background: black;
-}
-
-a.navbar-item {
+a.item {
+  display: inline-block;
   color: #66a4d1;
   background: #000;
   text-decoration: none;

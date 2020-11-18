@@ -65,7 +65,7 @@ def add_person(row, m_top, m_exp):
             url_cv       =fix_url(row['URL_CurrVitae']).strip(),
             list_publications=fix_pub(row['KeyPublications']),
         )
-        person.full_clean()
+        person.full_clean(exclude=['url_personal', 'url_cv'])
         person.save(force_insert=True)
     except ValidationError as e:
         return ';;%s;%s;%s' % (EMailAddress, row['PersonID'], repr(e))

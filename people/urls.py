@@ -6,6 +6,7 @@ router = DefaultRouter()
 router.register(r'topics', TopicViewSet)
 router.register(r'people', PeopleViewSet)
 router.register(r'search', SearchViewSet)
+router.register(r'advanced', AdvancedViewSet)
 router.register(r'expertise', ExpertiseViewSet)
 
 urlpatterns = [

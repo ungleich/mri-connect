@@ -21,12 +21,26 @@ class SearchViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Person.objects.filter(allow_public=True).order_by('-date_edited').all()
     serializer_class = SearchSerializer
 
-# class AdvancedSearchFilter(filters.SearchFilter):
-#     def get_search_fields(self, view, request):
-#         return request.GET.getlist('fields', [])
-
 class ExpertiseViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Person.objects.filter(allow_public=True).order_by('last_name').all()
     serializer_class = SearchSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['expertise']
+
+# class AdvancedSearchFilter(filters.SearchFilter):
+#     def get_search_fields(self, view, request):
+#         return request.GET.getlist('ukeys[]')
+
+class AdvancedViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Person.objects.filter(allow_public=True).order_by('last_name').all()
+    serializer_class = SearchSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = {
+        'last_name': ['icontains'],
+        'first_name': ['icontains'],
+        'position': ['icontains'],
+        'official_functions': ['icontains'],
+        'list_publications': ['icontains'],
+        # 'affiliation.city',
+        # 'affiliation.country',
+    }

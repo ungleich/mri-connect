@@ -53,8 +53,9 @@ export default {
   },
   getAdvancedSearch (query) {
     return $axios.get(
-      `advanced/`,
-      { params: { search: query, fields: ['last_name'] } }
+      `advanced/`, {
+        params: query
+      }
     )
       .then(response => response.data)
   },

@@ -2,6 +2,7 @@
 
 .env
 /mriconnect/settings/local.py
+import.log
 
 .sass-cache
 .DS_Store

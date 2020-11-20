@@ -64,7 +64,7 @@ export default {
     runSearch () {
       if (this.selectExpertise.length === 0) return
       this.selection = Array.from(this.selectExpertise.values())
-      console.log(this.selection);
+      // console.log(this.selection);
       this.activeTab = 1
     }
   },

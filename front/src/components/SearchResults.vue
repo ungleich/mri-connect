@@ -13,6 +13,11 @@
     .summary
       | {{ counts }} results
 
+  b-message(
+    type="is-info" has-icon
+    v-show='results.length === 0')
+    | No results found, please try again.
+
   b-modal(
     :active.sync='popup'
     has-modal-card
@@ -69,7 +74,8 @@ export default {
   props: {
     recent: Boolean,
     query: String,
-    expertise: Array
+    expertise: Array,
+    advanced: Object
   },
   data () {
     return {
@@ -91,6 +97,7 @@ export default {
   watch: {
     query (val) { this.runSearchQuery(val) },
     expertise (val) { this.runExpertiseQuery(val) },
+    advanced (val) { this.runAdvancedQuery(val) },
     selected (val) { this.selectItem(val.id) }
   },
   methods: {
@@ -124,6 +131,17 @@ export default {
       let self = this
       if (val.length === 0) return
       $backend.getExpertiseSearch(val)
+        .then(responseData => {
+          self.nextpage = responseData['next']
+          self.results = responseData['results']
+          self.counts = responseData['count']
+        })
+        // .catch((error) => this.promptNetworkError(error))
+    },
+    runAdvancedQuery (val) {
+      let self = this
+      if (val === {}) return
+      $backend.getAdvancedSearch(val)
         .then(responseData => {
           self.nextpage = responseData['next']
           self.results = responseData['results']

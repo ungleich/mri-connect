@@ -1,15 +1,22 @@
 <template lang="pug">
 section.expertise-list
-  b-collapse.card(animation='slide' v-for='topic in topics' :key='topic.id' :open='isOpen == index' @open='isOpen = index')
+  b-button.search-button(type='is-primary' size='is-medium'
+      :disabled='selectExpertise.length == 0' @click='runSearch')
+    b-icon(icon='magnify')
+    span Search
+  p.search-tip
+    i Select one or more kinds of expertise below, and click Search for results.
+  b-collapse.card(animation='slide' v-for='(topic, index) in topics' :key='topic.id' :open='isOpen == index' @open='isOpen = index')
     .card-header(slot='trigger' slot-scope='props' role='button')
       p.card-header-title
+        | {{ parseInt(index) + 1 }}
         //- input(type='checkbox', :id='"t"+topic.id')
         label.topic(:for='"t"+topic.id') {{ topic.title }}
       a.card-header-icon
         b-icon(:icon="props.open ? 'menu-down' : 'menu-up'")
     .card-content
       .content(v-for='expertise in topic.expertise', v-bind:key='expertise.id')
-        input(type='checkbox', :id='"e"+expertise.id')
+        input(type='checkbox' :id='"e"+expertise.id' v-model="selectExpertise" :value='expertise.id')
         label.expertise(:for='"e"+expertise.id') {{ expertise.title }}
 </template>
 
@@ -24,6 +31,7 @@ export default {
   },
   data () {
     return {
+      selectExpertise: [],
       isOpen: -1,
       topics: []
     }
@@ -43,10 +51,17 @@ export default {
           self.topics = result
         })
         .catch((error) => console.error(error))
+    },
+    runSearch () {
+      if (this.selectExpertise.length == 0) return
+      console.log(this.selectExpertise)
     }
   },
   mounted () {
-    this.fetchTopics()
+    // TODO: caching
+    if (this.topics.length == 0) {
+      this.fetchTopics()
+    }
   }
 }
 </script>
@@ -62,5 +77,11 @@ label {
   &:hover {
     text-shadow: 3px 3px 3px yellow;
   }
+}
+.search-tip {
+  margin-top: 1em;
+}
+.content {
+  text-align: left;
 }
 </style>

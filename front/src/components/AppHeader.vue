@@ -19,7 +19,7 @@ export default {
 <style scoped lang="scss">
 .header {
   background: black;
-  margin-bottom: 80px;
+  margin-bottom: 2rem;
   min-height: 3.25rem;
   position: relative;
   z-index: 30;

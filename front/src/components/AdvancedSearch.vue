@@ -21,7 +21,7 @@
             tag="input" native-type="submit"
             size='is-medium' value="Search")
 
-    b-tab-item(label='Search Results' :visible='searchQuery!=={}')
+    b-tab-item(label='Search Results' :visible='showResults')
       SearchResults(:advanced='searchQuery')
 </template>
 
@@ -37,6 +37,7 @@ export default {
   data () {
     return {
       activeTab: 0,
+      showResults: false,
       searchQuery: {},
       fields: [
         {
@@ -82,6 +83,7 @@ export default {
       if (Object.keys(query).length === 0) return;
       this.searchQuery = query
       this.activeTab = 1
+      this.showResults = true
     }
   }
 }

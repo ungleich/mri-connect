@@ -67,8 +67,9 @@ export default {
     PersonView
   },
   props: {
+    recent: Boolean,
     query: String,
-    recent: Boolean
+    expertise: Array
   },
   data () {
     return {
@@ -88,7 +89,8 @@ export default {
     }
   },
   watch: {
-    query (val) { this.runsearchQuery(val) },
+    query (val) { this.runSearchQuery(val) },
+    expertise (val) { this.runExpertiseQuery(val) },
     selected (val) { this.selectItem(val.id) }
   },
   methods: {
@@ -107,10 +109,21 @@ export default {
         })
         .catch((error) => console.error(error))
     },
-    runsearchQuery (val) {
+    runSearchQuery (val) {
       let self = this
       if (val.length < 3) return
       $backend.getPeopleSearch(val)
+        .then(responseData => {
+          self.nextpage = responseData['next']
+          self.results = responseData['results']
+          self.counts = responseData['count']
+        })
+        // .catch((error) => this.promptNetworkError(error))
+    },
+    runExpertiseQuery (val) {
+      let self = this
+      if (val.length === 0) return
+      $backend.getExpertiseSearch(val)
         .then(responseData => {
           self.nextpage = responseData['next']
           self.results = responseData['results']
@@ -127,7 +140,7 @@ export default {
     // Default search
     if (this.recent) {
       this.searchQuery = 'latest'
-      this.runsearchQuery(this.searchQuery)
+      this.runSearchQuery(this.searchQuery)
     } else {
       this.searchQuery = this.query
     }
@@ -145,7 +158,7 @@ export default {
     outline: none;
   }
   .b-table .table {
-    width: auto;
+    width: 100%;
     outline: none;
     &:focus {
       border-color: transparent;

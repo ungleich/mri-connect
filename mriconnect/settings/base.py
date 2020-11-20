@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'jazzmin',
 
+    'django_filters',
     'django_countries',
     'multiselectfield',
     'people',
@@ -149,7 +150,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
-    # 'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
@@ -199,6 +200,7 @@ JAZZMIN_UI_TWEAKS = {
 REST_FRAMEWORK = {
 
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'PAGE_SIZE': 10
 
 }

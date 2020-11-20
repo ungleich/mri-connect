@@ -1,4 +1,5 @@
 import axios from 'axios'
+const Qs = require('qs');
 
 let $axios = axios.create({
   baseURL: '/api/',
@@ -36,6 +37,17 @@ export default {
     return $axios.get(
       `search/`,
       { params: params }
+    )
+      .then(response => response.data)
+  },
+  getExpertiseSearch (query) {
+    return $axios.get(
+      `expertise/`, {
+        params: { expertise: query },
+        paramsSerializer: function(params) {
+          return Qs.stringify(params, {arrayFormat: 'repeat'})
+        }
+      }
     )
       .then(response => response.data)
   },

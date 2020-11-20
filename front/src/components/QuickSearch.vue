@@ -27,8 +27,7 @@
   )
     .modal-card(style='width: auto')
       header.modal-card-head
-        p.modal-card-title
-          | {{ selected.fullname }}
+        .modal-card-title Member profile
       section.modal-card-body
         PersonView(:person='selectedPerson')
       footer.modal-card-foot

@@ -11,11 +11,13 @@
       | Publications
 
   .card
-
     //- pre {{ person }}
 
     .photo(v-if="person.url_photo")
       img(:src="person.url_photo")
+
+    h3.fullname
+      | {{ person.fullname }}
 
     .position
       | {{ person.position }}
@@ -95,6 +97,14 @@ export default {
 .card {
   margin: 2em 0em;
   padding: 1em;
+
+  & > div {
+    margin-bottom: 1em;
+  }
+}
+.fullname {
+  font-weight: bold;
+  font-size: 125%;
 }
 .links {
   margin-bottom: 1em;
@@ -102,10 +112,13 @@ export default {
 .abstract {
   font-style: italic;
 }
-.photo img {
-  width: 140px;
-  float: right;
-  margin-left: 10px;
+.card .photo {
+  margin: 0px;
+  img {
+    width: 140px;
+    float: right;
+    margin-left: 10px;
+  }
 }
 h5 {
   color: #aaa;
@@ -118,12 +131,15 @@ h5 {
   color: #999;
   margin: 0px;
 }
-.affiliation {
-  .name {
-    margin: 1em 0;
-    font-weight: bold;
+.expertise {
+  li {
+    margin-right: 0.5em;
+    padding: 0.2em 0.5em;
+    background: #eee;
   }
-  margin-bottom: 1em;
+}
+.affiliation {
+  .name { font-weight: bold; }
 }
 .publications > p {
   padding: 1em;

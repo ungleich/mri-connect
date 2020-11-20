@@ -149,11 +149,12 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    # 'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
-    os.path.join(BASE_DIR, "assets"),
+    ("media", os.path.join(BASE_DIR, "media")),
+    ("assets", os.path.join(BASE_DIR, "assets")),
 ]
 
 JAZZMIN_SETTINGS = {

@@ -60,7 +60,7 @@ class PersonSerializer(serializers.ModelSerializer):
         """ Fetch full link to a photo """
         request = self.context.get('request')
         if not person.upload_photo: return None
-        url_photo = person.upload_photo.url
+        url_photo = '/static/' + person.upload_photo.url
         return request.build_absolute_uri(url_photo)
 
     def get_topics(self, person):

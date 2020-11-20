@@ -178,6 +178,7 @@ export default {
   .b-table .table {
     width: 100%;
     outline: none;
+    text-align: left;
     &:focus {
       border-color: transparent;
       -webkit-box-shadow: none;

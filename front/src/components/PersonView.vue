@@ -107,6 +107,7 @@ export default {
   font-size: 125%;
 }
 .links {
+  text-align: center;
   margin-bottom: 1em;
 }
 .abstract {
@@ -115,7 +116,8 @@ export default {
 .card .photo {
   margin: 0px;
   img {
-    width: 140px;
+    width: 150px;
+    max-height: 300px;
     float: right;
     margin-left: 10px;
   }

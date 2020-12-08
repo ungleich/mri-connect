@@ -1,28 +1,28 @@
 from rest_framework import viewsets, filters, generics
 from django_filters.rest_framework import DjangoFilterBackend
 
-from .models import Person, Topic
+from .models import Expert
 from .serializers import *
 
 
-class TopicViewSet(viewsets.ReadOnlyModelViewSet):
-    pagination_class = None
-    queryset = Topic.objects.all()
-    serializer_class = TopicSerializer
+# class TopicViewSet(viewsets.ReadOnlyModelViewSet):
+#     pagination_class = None
+#     queryset = Topic.objects.all()
+#     serializer_class = TopicSerializer
 
-class PeopleViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Person.objects.filter(allow_public=True).all()
-    serializer_class = PersonSerializer
+class ExpertViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Expert.objects.filter(allow_public=True).all()
+    serializer_class = ExpertSerializer
 
 class SearchViewSet(viewsets.ReadOnlyModelViewSet):
     search_fields = ['last_name', 'first_name', 'position', 'official_functions']
     filter_backends = (filters.SearchFilter,)
     # filter_backends = (AdvancedSearchFilter,)
-    queryset = Person.objects.filter(allow_public=True).order_by('-date_edited').all()
+    queryset = Expert.objects.filter(allow_public=True).order_by('-date_edited').all()
     serializer_class = SearchSerializer
 
 class ExpertiseViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Person.objects.filter(allow_public=True).order_by('last_name').all()
+    queryset = Expert.objects.filter(allow_public=True).order_by('last_name').all()
     serializer_class = SearchSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['expertise']
@@ -32,7 +32,7 @@ class ExpertiseViewSet(viewsets.ReadOnlyModelViewSet):
 #         return request.GET.getlist('ukeys[]')
 
 class AdvancedViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Person.objects.filter(allow_public=True).order_by('last_name').all()
+    queryset = Expert.objects.filter(allow_public=True).order_by('last_name').all()
     serializer_class = SearchSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = {

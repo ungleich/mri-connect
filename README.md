@@ -14,6 +14,8 @@ To install, get a hold of **Python 3** and [Pipenv](https://github.com/pypa/pipe
 
     $ git clone https://gitlab.com/datalets/mri-connect.git
 
+You also need to install the `libspatialite` (or `postgis` for production) and `gdal` to enable support for spatial computation.
+
 You can use `pip install -r requirements.txt`, but in development we use Poetry:
 
     $ pip install -g poetry
@@ -28,9 +30,9 @@ You can use `pip install -r requirements.txt`, but in development we use Poetry:
 
     $ ./manage.py createsuperuser
 
-3. Check for any new changes from the People application
+3. Check for any new changes from the expert_management application
 
-    $ ./manage.py makemigrations people
+    $ ./manage.py makemigrations expert_management
 
 4. To start the backend:
 

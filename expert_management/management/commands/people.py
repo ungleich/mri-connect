@@ -1,14 +1,14 @@
 from django.core.management.base import BaseCommand, CommandError
-from people.models import Person, Affiliation, Project, Topic, Expertise
+from expert_management.models import Expert, Affiliation, Project, Topic, Expertise
 
 class Command(BaseCommand):
-    help = 'Manages the Persons database'
+    help = 'Manages the Experts database'
 
     actions = ['activate', 'delete']
 
     def add_arguments(self, parser):
-        parser.add_argument('action', help='An action to run on the Persons database: %s' % ', '.join(self.actions))
-        parser.add_argument('--emails', nargs='?', default='', help='A list of Person addresses, separated by commas')
+        parser.add_argument('action', help='An action to run on the Experts database: %s' % ', '.join(self.actions))
+        parser.add_argument('--emails', nargs='?', default='', help='A list of Expert addresses, separated by commas')
         parser.add_argument('--full', action='store_true', help='When deleting, include all related objects')
 
     def handle(self, *args, **options):
@@ -23,21 +23,20 @@ class Command(BaseCommand):
             for email in emails:
                 if not '@' in email.strip(): continue
                 try:
-                    person = Person.objects.get(
+                    expert = Expert.objects.get(
                         contact_email = email.strip()
                     )
-                    person.allow_public = True
-                    person.save()
-                    print(person)
+                    expert.allow_public = True
+                    expert.save()
                     c += 1
-                except Person.DoesNotExist:
+                except Expert.DoesNotExist:
                     continue
             self.stdout.write(self.style.SUCCESS('Activated %d users' % c))
 
         elif action == 'delete':
             if not input("Confirm with Y deletion of all imported (ProClim) profiles? ").lower() == 'y':
                 return
-            query = Person.objects.exclude(proclimid__isnull=True).exclude(proclimid__exact='')
+            query = Expert.objects.exclude(proclimid__isnull=True).exclude(proclimid__exact='')
             count = query.count()
             query.delete()
             self.stdout.write(self.style.SUCCESS('Deleted %d users' % count))

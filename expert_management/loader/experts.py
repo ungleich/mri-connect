@@ -9,7 +9,7 @@ from django.core.exceptions import ValidationError
 
 from rapidfuzz import fuzz
 
-from ..models import Person, Affiliation, Expertise, Topic
+from ..models import Expert, Affiliation, Expertise, Topic
 from .util import *
 
 # TODO: -> config or option
@@ -24,18 +24,18 @@ def fuzzymatch(what, o1, o2, min=90, warn=99):
         return True
     return False
 
-def add_person(row, m_top, m_exp):
+def add_expert(row, m_top, m_exp):
     # Validate email
     EMailAddress = row['EMailAddress'] or row['EMailAddress2'] or ''
     EMailAddress = EMailAddress.strip()
     if not '@' in EMailAddress:
         return '%s;%s;;%s;No e-mail' % (row['Name'], row['FirstName'], row['PersonID'])
     try:
-        Person.objects.get(
+        Expert.objects.get(
             contact_email=EMailAddress
         )
         return ';;%s;Duplicate e-mail' % EMailAddress
-    except Person.DoesNotExist:
+    except Expert.DoesNotExist:
         pass
 
     # Validate name
@@ -43,17 +43,17 @@ def add_person(row, m_top, m_exp):
     if FullName is None or not len(FullName.strip())>2:
         return ';;%s;%s;No name' % (EMailAddress, row['PersonID'])
     try:
-        Person.objects.get(
+        Expert.objects.get(
             first_name=row['FirstName'],
             last_name=row['Name']
         )
         return '%s;%s;;%s;Duplicate name' % (row['Name'], row['FirstName'], row['PersonID'])
-    except Person.DoesNotExist:
+    except Expert.DoesNotExist:
         pass
 
-    # Import person object
+    # Import expert object
     try:
-        person = Person(
+        expert = Expert(
             proclimid    =row['PersonID'],
             first_name   =row['FirstName'].strip(),
             last_name    =row['Name'].strip(),
@@ -65,8 +65,8 @@ def add_person(row, m_top, m_exp):
             url_cv       =fix_url(row['URL_CurrVitae']),
             list_publications=fix_pub(row['KeyPublications']),
         )
-        person.full_clean(exclude=['url_personal', 'url_cv'])
-        person.save(force_insert=True)
+        expert.full_clean(exclude=['url_personal', 'url_cv'])
+        expert.save(force_insert=True)
     except ValidationError as e:
         return ';;%s;%s;%s' % (EMailAddress, row['PersonID'], repr(e))
 
@@ -95,7 +95,7 @@ def add_person(row, m_top, m_exp):
                     break
             org.save()
         if org is not None:
-            person.affiliation = org
+            expert.affiliation = org
 
     for exp in row['Expertise'].split(';'):
         exp = exp.strip()
@@ -107,10 +107,10 @@ def add_person(row, m_top, m_exp):
                     expertise = Expertise.objects.get(
                         title = new_exp
                     )
-                    person.expertise.add(expertise)
+                    expert.expertise.add(expertise)
                 break
 
-    person.save()
+    expert.save()
     return True
 
 
@@ -199,15 +199,15 @@ def refresh_data(filename, required_cols, delimiter, m_top, m_exp):
                         yield(msg, "error")
                         return None
 
-                result = add_person(row, m_top, m_exp)
+                result = add_expert(row, m_top, m_exp)
                 if result == True:
                     count = count + 1
                 elif type(result) == str:
-                    # Skipping this person
+                    # Skipping this expert
                     errorfile.write(result + '\n')
 
     print("%d rows processed" % rowcount)
-    print("%d people imported" % count)
+    print("%d experts imported" % count)
     yield None, None
 
 def queue_refresh(filename, required_cols=[], delimiter=";"):

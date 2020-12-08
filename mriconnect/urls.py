@@ -18,7 +18,7 @@ from django.urls import path, include
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView, RedirectView
-from people import urls as people_urls
+from expert_management import urls as expert_management_url
 
 # from ra.admin.admin import ra_admin_site
 # handler500 = 'ra.utils.views.server_error'
@@ -50,7 +50,7 @@ urlpatterns = [
     path('mri/', admin.site.urls),
 
     # REST API paths
-    path('api/', include(people_urls)),
+    path('api/', include(expert_management_url)),
 
     # Redirect home page
     path('', RedirectView.as_view(url='https://mountainresearchinitiative.org/find-an-expert', permanent=False),),

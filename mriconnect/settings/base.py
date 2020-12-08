@@ -52,9 +52,10 @@ INSTALLED_APPS = [
     'django_filters',
     'django_countries',
     'multiselectfield',
-    'people',
-
+    'django.contrib.gis',
     'django.contrib.admin', # comes at the end because the theme is replaced
+    'mapwidgets',
+    'expert_management.apps.ExpertManagementConfig'
 ]
 
 MIDDLEWARE = [
@@ -160,13 +161,12 @@ STATICFILES_DIRS = [
 
 JAZZMIN_SETTINGS = {
     "site_title": "Mountain Research Initiative",
-    "site_header": "MRI Connect",
+    "site_header": "MRI Expert Database",
     "welcome_sign": "Welcome to the MRI backend",
     "copyright": "Mountain Research Initiative",
-    # "search_model": "people.Person",
 
     "topmenu_links": [
-        {"model": "people.Person"},
+        {"model": "expert_management.Expert"},
         {"app": "data_wizard"},
     ],
 

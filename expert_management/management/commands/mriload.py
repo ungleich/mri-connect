@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from people.loader.people import queue_refresh
+from expert_management.loader.experts import queue_refresh
 
 class Command(BaseCommand):
     help = 'Imports from a ProClim database export'

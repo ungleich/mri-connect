@@ -40,10 +40,6 @@ INSTALLED_APPS = [
     'crispy_forms',
     'reversion',
     'tabular_permissions',
-    #'ra',
-    #'ra.admin',
-    #'ra.activity',
-    #'ra.reporting',
     'slick_reporting',
     'rest_framework',
     'corsheaders',
@@ -78,7 +74,7 @@ ROOT_URLCONF = 'mriconnect.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, "templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -115,9 +111,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LOGIN_URL = '/mri/login/'
+LOGIN_URL = '/accounts/login/'
 
-LOGIN_REDIRECT_URL = '/mri/'
+LOGIN_REDIRECT_URL = '/profile/'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
@@ -154,8 +150,6 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-    ("media", os.path.join(BASE_DIR, "media")),
     ("assets", os.path.join(BASE_DIR, "assets")),
 ]
 

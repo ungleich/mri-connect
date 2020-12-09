@@ -1,46 +1,40 @@
-from rest_framework import viewsets, filters, generics
+from django import forms
+from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from django.views import generic
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, generics, viewsets
 
 from .models import Expert
 from .serializers import *
 
 
-# class TopicViewSet(viewsets.ReadOnlyModelViewSet):
-#     pagination_class = None
-#     queryset = Topic.objects.all()
-#     serializer_class = TopicSerializer
+class Signup(generic.CreateView):
+    form_class = UserCreationForm
+    template_name = "registration/signup.html"
+    success_url = "/accounts/login/"
 
-class ExpertViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Expert.objects.filter(allow_public=True).all()
-    serializer_class = ExpertSerializer
 
-class SearchViewSet(viewsets.ReadOnlyModelViewSet):
-    search_fields = ['last_name', 'first_name', 'position', 'official_functions']
-    filter_backends = (filters.SearchFilter,)
-    # filter_backends = (AdvancedSearchFilter,)
-    queryset = Expert.objects.filter(allow_public=True).order_by('-date_edited').all()
-    serializer_class = SearchSerializer
+class Profile(generic.DetailView):
+    queryset = Expert.objects.all().prefetch_related('projects')
+    pk_url_kwarg = "username"
+    template_name = "expert_management/profile.html"
 
-class ExpertiseViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Expert.objects.filter(allow_public=True).order_by('last_name').all()
-    serializer_class = SearchSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['expertise']
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.queryset
+        pk = self.kwargs.get(self.pk_url_kwarg)
+        try:
+            obj = queryset.get(user=get_object_or_404(get_user_model(), username=pk))
+        except Expert.DoesNotExist:
+            return None
+        else:
+            return obj
 
-# class AdvancedSearchFilter(filters.SearchFilter):
-#     def get_search_fields(self, view, request):
-#         return request.GET.getlist('ukeys[]')
-
-class AdvancedViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Expert.objects.filter(allow_public=True).order_by('last_name').all()
-    serializer_class = SearchSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = {
-        'last_name': ['icontains'],
-        'first_name': ['icontains'],
-        'position': ['icontains'],
-        'official_functions': ['icontains'],
-        'list_publications': ['icontains'],
-        # 'affiliation.city',
-        # 'affiliation.country',
-    }
+    def render_to_response(self, context, **response_kwargs):
+        if not context['object']:
+            return HttpResponse(f"The profile for \"{self.kwargs.get(self.pk_url_kwarg)}\" does not exists yet! If it is your profile, please wait while we create the view/page to let you create a profile")
+        return super().render_to_response(context, **response_kwargs)

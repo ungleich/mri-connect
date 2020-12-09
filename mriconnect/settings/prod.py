@@ -50,7 +50,7 @@ if 'DATABASE_URL' in os.environ:
 else:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'ENGINE': 'django.contrib.gis.db.backends.postgis',
             'NAME': env.get('PGDATABASE', 'app' or APP_NAME),
             'CONN_MAX_AGE': 600,  # number of seconds database connections should persist for
 

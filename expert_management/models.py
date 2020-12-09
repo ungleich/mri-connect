@@ -1,16 +1,16 @@
 # from django.db import models
+from django.contrib.auth import get_user_model
 from django.contrib.gis.db import models
-
+from django.core.exceptions import ValidationError
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db.models.signals import m2m_changed
 from django.utils.translation import ugettext_lazy as _
-from django.core.validators import MinValueValidator, MaxValueValidator
 from django_countries.fields import CountryField
-# from django.contrib.gis.db import PointField
 from multiselectfield import MultiSelectField
 
-from django.db.models.signals import m2m_changed
-from django.core.exceptions import ValidationError
 
-
+def join_true_values(iterable, string=", "):
+    return string.join(filter(lambda s: s, map(lambda x: "" if x is None else x, iterable)))
 
 class Affiliation(models.Model):
     name = models.CharField(max_length=256, null=False, blank=False)
@@ -45,34 +45,9 @@ class Project(models.Model):
     location = models.CharField(max_length=256, null=True, blank=True, help_text="This is the location where the research is conducted or the fieldwork, not the home of research group/affiliation")
     coordinates = models.PointField()
     country = CountryField(null=True, blank=True, help_text="This is the country where the research is conducted or the fieldwork, not the home of research group/affiliation")
+
     def __str__(self):
         return self.name
-
-# class Topic(models.Model):
-#     title = models.CharField(max_length=256)
-
-#     def __str__(self):
-#         return self.title
-#     class Meta:
-#         verbose_name = _('Topic')
-#         verbose_name_plural = _('Topics')
-
-
-# class Topic(models.Model):
-#     class TopicsTitle(models.TextChoices):
-#         ATMOSPHERIC_SCIENCES = "ATMOSPHERIC_SCIENCES", "Atmospheric Sciences"
-#         HYDROSPHERIC_SCIENCES = "HYDROSPHERIC_SCIENCES", "Hydrospheric Sciences"
-#         CRYOSPHERIC_SCIENCES = "CRYOSPHERIC_SCIENCES", "Cryospheric Sciences"
-#         EARTH_SCIENCES = "EARTH_SCIENCES", "Earth Sciences"
-#         BIOLOGICAL_SCIENCES = "BIOLOGICAL_SCIENCES", "Biological Sciences"
-#         SOCIAL_SCIENCES_AND_HUMANITIES = "SOCIAL_SCIENCES_AND_HUMANITIES", "Social Sciences and Humanities"
-#         INTEGRATED_SYSTEMS = "INTEGRATED_SYSTEMS", "Integrated Systems"
-
-#     title = models.CharField(max_length=128, choices=TopicsTitle.choices)
-#     # subcategories = models.ManyToManyField('Subcategory', related_name='topic')
-
-#     def __str__(self):
-#         return self.title
 
 class Expertise(models.Model):
     RESEARCH_EXPERTISE = (
@@ -197,8 +172,8 @@ class Expertise(models.Model):
     integrated_sciences_and_humanities = MultiSelectField(choices=INTEGRATED_SYSTEMS_SUBCATEGORIES, null=True, blank=True)
     other_expertise = models.CharField(max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list")
 
-    spatial_scale_of_experise = MultiSelectField(choices=SPATIAL_SCALE_OF_EXPERTISE, null=True, blank=True)
-    other_spatial_scale_of_experise = models.CharField(max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list")
+    spatial_scale_of_expertise = MultiSelectField(choices=SPATIAL_SCALE_OF_EXPERTISE, null=True, blank=True)
+    other_spatial_scale_of_expertise = models.CharField(max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list")
 
     statistical_focus = MultiSelectField(choices=STATISTICAL_FOCUS, null=True, blank=True)
     other_statistical_focus = models.CharField(max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list")
@@ -211,7 +186,7 @@ class Expertise(models.Model):
 
     participation_in_assessments = MultiSelectField(choices=ASSESSMENT_TYPES, null=True, blank=True)
     other_participation_in_assessments = models.CharField(max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list")
-    more_detail_about_participation_in_assessments = models.TextField()
+    more_detail_about_participation_in_assessments = models.TextField(null=True, blank=True)
 
     inputs_or_participation_to_un_conventions = MultiSelectField(choices=UN_CONVENTIONS_POLICY_PROCESSES, null=True, blank=True)
     other_inputs_or_participation_to_un_conventions = models.CharField(max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list")
@@ -227,6 +202,43 @@ class Expertise(models.Model):
 
     expert = models.OneToOneField("Expert", help_text="Research expertise", on_delete=models.CASCADE, related_name="expertise")
 
+    @property
+    def spatial_scale_expertise(self):
+        return join_true_values([
+            self.get_spatial_scale_of_expertise_display(), self.other_spatial_scale_of_expertise
+        ])
+
+    @property
+    def statistical_focus_expertise(self):
+        return join_true_values([
+            self.get_statistical_focus_display(), self.other_statistical_focus
+        ])
+
+    @property
+    def time_scale_expertise(self):
+        return join_true_values([
+            self.get_time_scales_display(), self.other_time_scales
+        ])
+
+    @property
+    def methods_expertise(self):
+        return join_true_values([
+            self.get_methods_display(), self.other_methods
+        ])
+
+    @property
+    def participation_in_assessments_details(self):
+        return join_true_values([
+            self.get_participation_in_assessments_display(),
+            self.other_participation_in_assessments
+        ])
+
+    @property
+    def inputs_or_participation_to_un_conventions_details(self):
+        return join_true_values([
+            self.get_inputs_or_participation_to_un_conventions_display(),
+            self.other_inputs_or_participation_to_un_conventions
+        ])
     class Meta:
         verbose_name = _('Expertise')
         verbose_name_plural = _('Expertise')
@@ -267,6 +279,8 @@ class ExpertManager(models.Manager):
         return self.get(first_name=first_name, last_name=last_name)
 
 class Expert(models.Model):
+    user = models.OneToOneField(get_user_model(), related_name="expert_profile", on_delete=models.CASCADE)
+
     date_added = models.DateField(auto_now_add=True)
     date_edited = models.DateField(auto_now=True)
 

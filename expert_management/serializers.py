@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from .models import Expert, Affiliation, Expertise
+
+from .models import Affiliation, Expert, Expertise
+
 # from .util import expertiseByTopic
 
 class ExpertiseSerializer(serializers.ModelSerializer):

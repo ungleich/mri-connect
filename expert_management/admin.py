@@ -1,8 +1,9 @@
 from django.contrib import admin
-from mapwidgets.widgets import GooglePointFieldWidget
 from django.contrib.gis.db import models
+from mapwidgets.widgets import GooglePointFieldWidget
 
-from .models import Expert, Expertise, Affiliation, Project
+from .models import Affiliation, Expert, Expertise, Project
+
 
 class ExpertiseInlineAdmin(admin.StackedInline):
     model = Expertise
@@ -10,6 +11,9 @@ class ExpertiseInlineAdmin(admin.StackedInline):
 @admin.register(Expert)
 class ExpertAdmin(admin.ModelAdmin):
     fieldsets = (
+        ('User', {
+            'fields': ('user',)
+        }),
         ('Expert', {
             'fields': ('last_name', 'first_name', 'title', 'gender')
         }),

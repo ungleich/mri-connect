@@ -46,6 +46,8 @@ class Project(models.Model):
     coordinates = models.PointField()
     country = CountryField(null=True, blank=True, help_text="This is the country where the research is conducted or the fieldwork, not the home of research group/affiliation")
 
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="projects")
+
     def __str__(self):
         return self.name
 
@@ -351,11 +353,6 @@ class Expert(models.Model):
         max_length=128, null=True, blank=True, unique=True,
         help_text="Identifier from SCNAT database")
 
-    # 16 Current Projects (note: max 5)
-    projects = models.ManyToManyField(Project,
-        related_name="experts", blank=True
-    )
-
     # 17
     url_publications = models.URLField(
         _("Link to publications"),
@@ -418,9 +415,4 @@ def affiliations_changed(sender, **kwargs):
     if kwargs['instance'].affiliations.count() > 3:
         raise ValidationError("You can't assign more than three affiliations.")
 
-def projects_changed(sender, **kwargs):
-    if kwargs['instance'].projects.count() > 5:
-        raise ValidationError("You can't assign more than five projects.")
-
 m2m_changed.connect(affiliations_changed, sender=Expert.affiliations.through)
-m2m_changed.connect(projects_changed, sender=Expert.projects.through)

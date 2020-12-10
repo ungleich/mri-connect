@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block head %}
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmc8Uz_3jy6QrZD-wmb4DKjLpp31eBPKE&callback=initMap&libraries=&v=weekly" defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{ google_map_api_key }}&callback=initMap&libraries=&v=weekly" defer></script>
 {% endblock %}
 
 {% block title %}Profile{% endblock %}
@@ -8,11 +8,20 @@
 <section class="text-center container">
     <div class="row">
         <div class="col-lg-12">
-            <img src="{{ object.upload_photo.url }}" class="img-thumbnail" style="width: 256px; height:256px" alt="Profile Image" />
+            {% if object.upload_photo %}
+                <img src="{{ object.upload_photo.url }}" class="img-thumbnail" style="width: 256px; height:256px" alt="Profile Image" />
+            {% else %}
+                <img src="https://miro.medium.com/max/720/1*W35QUSvGpcLuxPo3SRTH4w.png"
+                     class="img-thumbnail" style="width: 256px; height:256px;" alt="User avatar" />
+            {% endif %}
             <h1 class="fw-light">
                 {{object.get_title_display |default:""}} {{object.first_name}} {{object.last_name}}
             </h1>
-            <a href="mailto:{{object.contact_email}}">Email: {{object.contact_email}}</a>
+            <a href="mailto:{{object.contact_email}}">Email: {{object.contact_email}}</a><br/>
+
+            {% if object.user == request.user %}
+            <a href="{% url 'update-profile' %}" class="btn btn-primary btn-sm" role="btn">Update Profile</a>
+            {% endif %}
         </div>
     </div>
 </section>
@@ -30,7 +39,7 @@
     <dt class="col-sm-3">Career Stage</dt>
     <dd class="col-sm-9">
         {% if object.career_stage %}
-            {{object.career_stage}}
+            {{object.get_career_stage_display}}
         {% elif object.career_stage_note %}
             {{object.career_stage_note}}
         {% else %}
@@ -185,7 +194,7 @@
 
 
 <h3>Projects</h3>
-{% for project in object.projects.all %}
+{% for project in object.user.projects.all %}
 
 <div class="card mb-3">
     <div class="row g-0">
@@ -243,7 +252,7 @@
 
 <script type="text/javascript">
     function initMap() {
-    {% for project in object.projects.all %}
+    {% for project in object.user.projects.all %}
       const myLatLng{{forloop.counter0}} = { lat: {{project.coordinates.coords.1}}, lng: {{project.coordinates.coords.0}} };
       const map{{forloop.counter0}} = new google.maps.Map(document.getElementById("map{{forloop.counter0}}"), {
         zoom: 12,
@@ -257,7 +266,7 @@
       {% endfor %}
 
     }
-    </script>
+</script>
 <dl class="row">
     <dt class="col-sm-3">Publications URL</dt>
     <dd class="col-sm-9">{{object.url_publications}}</dd>

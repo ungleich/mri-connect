@@ -8,6 +8,7 @@ from .models import Affiliation, Expert, Expertise, Project
 class ExpertiseInlineAdmin(admin.StackedInline):
     model = Expertise
 
+
 @admin.register(Expert)
 class ExpertAdmin(admin.ModelAdmin):
     fieldsets = (
@@ -30,39 +31,33 @@ class ExpertAdmin(admin.ModelAdmin):
             'fields': ('url_personal', 'url_cv', 'url_researchgate', 'orcid')
         }),
         ('References', {
-            'fields': ('projects', 'url_publications', 'list_publications')
+            'fields': ('url_publications', 'list_publications')
         }),
         ('Permissions', {
             'fields': ('allow_public', 'allow_photo')
         }),
-        # ('Expertise', {
-        #     'fields': ('expertise', )
-        # }),
     )
     search_fields = ('last_name', 'first_name', 'contact_email')
     list_display = ('fullname', 'allow_public', 'date_edited')
     ordering = ('-date_edited',)
-    inlines = (ExpertiseInlineAdmin, )
+    inlines = (ExpertiseInlineAdmin,)
 
     # view_template = 'expert_management/admin/preview.html'
     class Media:
         css = { 'all': ('admin.css', )}
 
-# @admin.register(Expertise)
-# class ExpertiseAdmin(admin.ModelAdmin):
-#     # fields = ('research_expertise',)
-#     ordering = ('id',)
-#     # inlines = (TopicInlineAdmin, )
 
-# @admin.register(Topic)
-# class TopicAdmin(admin.ModelAdmin):
-#     ordering = ('id',)
+@admin.register(Expertise)
+class ExpertiseAdmin(admin.ModelAdmin):
+    ordering = ('id',)
+
 
 @admin.register(Affiliation)
 class AffiliationAdmin(admin.ModelAdmin):
     ordering = ('name',)
     search_fields = ('name', 'city',)
     list_display = ('name', 'city', 'country')
+
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
@@ -73,7 +68,3 @@ class ProjectAdmin(admin.ModelAdmin):
     formfield_overrides = {
         models.PointField: {"widget": GooglePointFieldWidget}
     }
-
-# @admin.register(Subcategory)
-# class SubcategoryAdmin(admin.ModelAdmin):
-#     list_display = ('title',)

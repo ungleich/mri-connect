@@ -115,6 +115,8 @@ LOGIN_URL = '/accounts/login/'
 
 LOGIN_REDIRECT_URL = '/profile/'
 
+LOGOUT_REDIRECT_URL = '/accounts/login/'
+
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
@@ -142,7 +144,7 @@ DATABASES = {
 # This should be changed once we put this in production.
 CORS_ORIGIN_ALLOW_ALL = True
 
-STATIC_ROOT = os.path.join(BASE_DIR, '..', 'collected_static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 STATICFILES_FINDERS = (
@@ -150,6 +152,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 STATICFILES_DIRS = [
+    ("media", os.path.join(BASE_DIR, "media")),
     ("assets", os.path.join(BASE_DIR, "assets")),
 ]
 

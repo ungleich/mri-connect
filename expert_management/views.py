@@ -1,18 +1,15 @@
-from django import forms
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
-from django.views import generic
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, generics, viewsets
-from django.contrib import messages
-from .models import Expert, Project, Affiliation
-from .serializers import *
-from django.conf import settings
 from django.urls import reverse_lazy
+from django.views import generic
+
 from .forms import ProjectForm
+from .models import Affiliation, Expert, Project
+
 
 class Signup(generic.CreateView):
     form_class = UserCreationForm
@@ -54,6 +51,8 @@ class CreateProfile(LoginRequiredMixin, generic.CreateView):
     model = Expert
     template_name = "expert_management/create-profile.html"
 
+    success_url = reverse_lazy('projects')
+
     # You may be wondering why I mentioned all field names except user
     # instead of __all__ and setting exclude attribute to ('user',)
     # because exclude attribute is not working and the ordering of fields
@@ -78,6 +77,7 @@ class CreateProfile(LoginRequiredMixin, generic.CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
+
     class Meta:
         exclude = ("user",)
 

@@ -14,23 +14,22 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from django.views.generic import TemplateView, RedirectView
-from expert_management import urls as expert_management_url
-from expert_management.views import Signup
-from django.conf.urls.static import static
-from django.conf import settings
+from django.urls import include, path
+from django.views.generic import RedirectView, TemplateView
 
+from expert_management.views import Signup
 
 urlpatterns = [
-    path('sw.js',
-        TemplateView.as_view(template_name="app/sw.js", content_type='application/javascript'),
-        name='sw.js'),
-    path('robots.txt',
-        TemplateView.as_view(template_name="app/robots.txt", content_type="text/plain"),
-        name='robots.txt'),
+    # path('sw.js',
+    #     TemplateView.as_view(template_name="app/sw.js", content_type='application/javascript'),
+    #     name='sw.js'),
+    # path('robots.txt',
+    #     TemplateView.as_view(template_name="app/robots.txt", content_type="text/plain"),
+    #     name='robots.txt'),
 
     # Password management paths
     path('pwd/reset',
@@ -50,9 +49,9 @@ urlpatterns = [
     path('mri/', admin.site.urls),
     path('accounts/', include("django.contrib.auth.urls")),
     path('accounts/signup/', Signup.as_view(), name='signup'),
-    # REST API paths
-    path('', include(expert_management_url)),
+
+    path('', include("expert_management.urls")),
 
     # Redirect home page
-    path('', RedirectView.as_view(url='https://mountainresearchinitiative.org/find-an-expert', permanent=False),),
+    path('', RedirectView.as_view(url='https://mountainresearchinitiative.org/find-an-expert', permanent=False))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

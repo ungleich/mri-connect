@@ -1,4 +1,3 @@
-# from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.gis.db import models
 from django.core.exceptions import ValidationError

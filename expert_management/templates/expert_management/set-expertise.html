@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Set Expertise{% endblock %}
+
+{% block content %}
+{% load crispy_forms_tags %}
+
+<h1>Set Expertise</h1>
+<form method="POST">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <input type="submit" class="btn btn-primary" value="Submit" />
+</form>
+{% endblock%}

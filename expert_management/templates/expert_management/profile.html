@@ -21,6 +21,8 @@
 
             {% if object.user == request.user %}
             <a href="{% url 'update-profile' %}" class="btn btn-primary btn-sm" role="btn">Update Profile</a>
+            <a href="{% url 'projects' %}" class="btn btn-primary btn-sm" role="btn">Update Projects</a>
+            <a href="{% url 'update-expertise' %}" class="btn btn-primary btn-sm" role="btn">Update Expertise</a>
             {% endif %}
         </div>
     </div>

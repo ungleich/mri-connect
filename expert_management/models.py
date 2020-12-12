@@ -240,6 +240,10 @@ class Expertise(models.Model):
             self.get_inputs_or_participation_to_un_conventions_display(),
             self.other_inputs_or_participation_to_un_conventions
         ])
+
+    def __str__(self):
+        return f"{self.expert}'s expertise"
+
     class Meta:
         verbose_name = _('Expertise')
         verbose_name_plural = _('Expertise')

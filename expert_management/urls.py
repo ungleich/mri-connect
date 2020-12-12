@@ -1,12 +1,19 @@
 from django.urls import path
 
-from .views import Profile, CreateProfile, UpdateProfile, ProjectList, CreateProject, DeleteProject
+from . import views
 
 urlpatterns = [
-    path('user/<str:username>/', Profile.as_view(), name='profile'),
-    path('create-profile/', CreateProfile.as_view(), name='create-profile'),
-    path('update-profile/', UpdateProfile.as_view(), name='update-profile'),
-    path('create-project/', CreateProject.as_view(), name='create-project'),
-    path('delete-project/<int:pk>/', DeleteProject.as_view(), name='delete-project'),
-    path('projects/', ProjectList.as_view(), name='projects')
+    # Profile views
+    path('user/<str:username>/', views.Profile.as_view(), name='profile'),
+    path('create-profile/', views.CreateProfile.as_view(), name='create-profile'),
+    path('update-profile/', views.UpdateProfile.as_view(), name='update-profile'),
+
+    # Project views
+    path('projects/', views.ProjectList.as_view(), name='projects'),
+    path('create-project/', views.CreateProject.as_view(), name='create-project'),
+    path('delete-project/<int:pk>/', views.DeleteProject.as_view(), name='delete-project'),
+
+    # Expertise views
+    path('create-expertise/', views.CreateExpertise.as_view(), name='create-expertise'),
+    path('update-expertise/', views.UpdateExpertise.as_view(), name='update-expertise')
 ]

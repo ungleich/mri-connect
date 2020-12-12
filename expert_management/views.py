@@ -8,13 +8,7 @@ from django.urls import reverse_lazy
 from django.views import generic
 
 from .forms import ProjectForm
-from .models import Affiliation, Expert, Project
-
-
-class Signup(generic.CreateView):
-    form_class = UserCreationForm
-    template_name = "registration/signup.html"
-    success_url = "/accounts/login/"
+from .models import Affiliation, Expert, Project, Expertise
 
 
 class GoogleMapAPIKeyMixin:
@@ -22,6 +16,13 @@ class GoogleMapAPIKeyMixin:
         context = super().get_context_data(**kwargs)
         context["google_map_api_key"] = settings.MAP_WIDGETS["GOOGLE_MAP_API_KEY"]
         return context
+
+
+class Signup(generic.CreateView):
+    form_class = UserCreationForm
+    template_name = "registration/signup.html"
+    success_url = reverse_lazy("login")
+
 
 class Profile(GoogleMapAPIKeyMixin, generic.DetailView):
     queryset = Expert.objects.all()
@@ -50,7 +51,6 @@ class Profile(GoogleMapAPIKeyMixin, generic.DetailView):
 class CreateProfile(LoginRequiredMixin, generic.CreateView):
     model = Expert
     template_name = "expert_management/create-profile.html"
-
     success_url = reverse_lazy('projects')
 
     # You may be wondering why I mentioned all field names except user
@@ -66,6 +66,7 @@ class CreateProfile(LoginRequiredMixin, generic.CreateView):
         "proclimid", "url_publications",
         "list_publications", "allow_photo", "allow_public",
     )
+
     def get(self, *args, **kwargs):
         try:
             self.model.objects.get(user=self.request.user)
@@ -85,6 +86,7 @@ class CreateProfile(LoginRequiredMixin, generic.CreateView):
 class UpdateProfile(LoginRequiredMixin, generic.UpdateView):
     model = Expert
     template_name = "expert_management/update-profile.html"
+    success_url = reverse_lazy('projects')
 
     # You may be wondering why I mentioned all field names except user
     # instead of __all__ and setting exclude attribute to ('user',)
@@ -99,6 +101,7 @@ class UpdateProfile(LoginRequiredMixin, generic.UpdateView):
         "proclimid", "url_publications",
         "list_publications", "allow_photo", "allow_public",
     )
+
     def get(self, *args, **kwargs):
         try:
             self.model.objects.get(user=self.request.user)
@@ -115,12 +118,15 @@ class UpdateProfile(LoginRequiredMixin, generic.UpdateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
+
     class Meta:
         exclude = ("user",)
+
 
 class ProjectList(GoogleMapAPIKeyMixin, LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         return Project.objects.filter(user=self.request.user)
+
 
 class CreateProject(GoogleMapAPIKeyMixin, LoginRequiredMixin, generic.CreateView):
     form_class = ProjectForm
@@ -137,3 +143,64 @@ class DeleteProject(LoginRequiredMixin, generic.DeleteView):
 
     def get_queryset(self):
         return Project.objects.filter(user=self.request.user)
+
+
+class CreateExpertise(LoginRequiredMixin, generic.CreateView):
+    model = Expertise
+    fields = (
+        "research_expertise", "atmospheric_sciences", "hydrospheric_sciences", "cryospheric_sciences",
+        "earth_sciences", "biological_sciences", "social_sciences_and_humanities", "integrated_sciences_and_humanities",
+        "other_expertise", "spatial_scale_of_expertise", "other_spatial_scale_of_expertise", "statistical_focus",
+        "other_statistical_focus", "time_scales", "other_time_scales", "methods", "other_methods", "participation_in_assessments",
+        "other_participation_in_assessments", "more_detail_about_participation_in_assessments", "inputs_or_participation_to_un_conventions",
+        "other_inputs_or_participation_to_un_conventions"
+    )
+    template_name = "expert_management/set-expertise.html"
+
+    def get_success_url(self):
+        return reverse_lazy("profile", args=[self.request.user.username])
+
+    def form_valid(self, form):
+        form.instance.expert = get_object_or_404(Expert, user=self.request.user)
+        return super().form_valid(form)
+
+    def get(self, *args, **kwargs):
+        try:
+            self.model.objects.get(expert=get_object_or_404(Expert, user=self.request.user))
+        except self.model.DoesNotExist:
+            return super().get(*args, **kwargs)
+        else:
+            return redirect('update-expertise')
+
+
+class UpdateExpertise(LoginRequiredMixin, generic.UpdateView):
+    model = Expertise
+    fields = (
+        "research_expertise", "atmospheric_sciences", "hydrospheric_sciences", "cryospheric_sciences",
+        "earth_sciences", "biological_sciences", "social_sciences_and_humanities", "integrated_sciences_and_humanities",
+        "other_expertise", "spatial_scale_of_expertise", "other_spatial_scale_of_expertise", "statistical_focus",
+        "other_statistical_focus", "time_scales", "other_time_scales", "methods", "other_methods", "participation_in_assessments",
+        "other_participation_in_assessments", "more_detail_about_participation_in_assessments", "inputs_or_participation_to_un_conventions",
+        "other_inputs_or_participation_to_un_conventions"
+    )
+    template_name = "expert_management/set-expertise.html"
+
+    def get_success_url(self):
+        return reverse_lazy("profile", args=[self.request.user.username])
+
+    def form_valid(self, form):
+        form.instance.expert = get_object_or_404(Expert, user=self.request.user)
+        return super().form_valid(form)
+
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.model.objects.filter(expert=get_object_or_404(Expert, user=self.request.user))
+        return queryset.get(expert=get_object_or_404(Expert, user=self.request.user))
+
+    def get(self, *args, **kwargs):
+        try:
+            self.model.objects.get(expert=get_object_or_404(Expert, user=self.request.user))
+        except self.model.DoesNotExist:
+            return redirect('create-expertise')
+        else:
+            return super().get(*args, **kwargs)

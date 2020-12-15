@@ -33,6 +33,7 @@
                     <dt class="col-sm-6">Location</dt><dd class="col-sm-6">{{project.location}}</dd>
                     <dt class="col-sm-6">Country</dt><dd class="col-sm-6">{{project.get_country_display}}</dd>
                 </dl>
+                <a href="{% url 'update-project' project.id %}" class="btn btn-primary" role="button">Update</a>
                 <a href="{% url 'delete-project' project.id %}" class="btn btn-danger" role="button">Delete</a>
             </p>
         </div>

@@ -11,6 +11,7 @@ from multiselectfield import MultiSelectField
 def join_true_values(iterable, string=", "):
     return string.join(filter(lambda s: s, map(lambda x: "" if x is None else x, iterable)))
 
+
 class Affiliation(models.Model):
     name = models.CharField(max_length=256, null=False, blank=False)
     department = models.CharField(max_length=256, null=True, blank=True)

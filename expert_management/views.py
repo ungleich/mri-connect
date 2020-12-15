@@ -18,6 +18,13 @@ class GoogleMapAPIKeyMixin:
         return context
 
 
+class MyProfileRedirectView(generic.RedirectView):
+    permanent = False
+
+    def get_redirect_url(self, *args, **kwargs):
+        return reverse_lazy("profile", args=[self.request.user])
+
+
 class Signup(generic.CreateView):
     form_class = UserCreationForm
     template_name = "registration/signup.html"
@@ -50,7 +57,7 @@ class Profile(GoogleMapAPIKeyMixin, generic.DetailView):
 
 class CreateProfile(LoginRequiredMixin, generic.CreateView):
     model = Expert
-    template_name = "expert_management/create-profile.html"
+    template_name = "expert_management/set-profile.html"
     success_url = reverse_lazy('projects')
 
     # You may be wondering why I mentioned all field names except user
@@ -85,7 +92,7 @@ class CreateProfile(LoginRequiredMixin, generic.CreateView):
 
 class UpdateProfile(LoginRequiredMixin, generic.UpdateView):
     model = Expert
-    template_name = "expert_management/update-profile.html"
+    template_name = "expert_management/set-profile.html"
     success_url = reverse_lazy('projects')
 
     # You may be wondering why I mentioned all field names except user
@@ -130,8 +137,23 @@ class ProjectList(GoogleMapAPIKeyMixin, LoginRequiredMixin, generic.ListView):
 
 class CreateProject(GoogleMapAPIKeyMixin, LoginRequiredMixin, generic.CreateView):
     form_class = ProjectForm
-    template_name = "expert_management/create-project.html"
+    template_name = "expert_management/set-project.html"
     success_url = reverse_lazy("projects")
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+
+class UpdateProject(GoogleMapAPIKeyMixin, LoginRequiredMixin, generic.UpdateView):
+    form_class = ProjectForm
+    template_name = "expert_management/set-project.html"
+    success_url = reverse_lazy("projects")
+
+    def get_queryset(self, queryset = None):
+        if queryset is None:
+            queryset = Project.objects.filter(user=self.request.user)
+        return queryset
 
     def form_valid(self, form):
         form.instance.user = self.request.user

@@ -11,6 +11,7 @@ urlpatterns = [
     # Project views
     path('projects/', views.ProjectList.as_view(), name='projects'),
     path('create-project/', views.CreateProject.as_view(), name='create-project'),
+    path('update-project/<int:pk>/', views.UpdateProject.as_view(), name='update-project'),
     path('delete-project/<int:pk>/', views.DeleteProject.as_view(), name='delete-project'),
 
     # Expertise views

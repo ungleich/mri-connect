@@ -22,7 +22,7 @@ from django.urls import include, path
 from django.views.generic import RedirectView
 
 
-from expert_management.views import Signup, MyProfileRedirectView
+from expert_management.views import Signup
 
 urlpatterns = [
     # Password management paths
@@ -47,6 +47,5 @@ urlpatterns = [
     path('', include("expert_management.urls")),
 
     # Redirect home page
-    path('profile/', MyProfileRedirectView.as_view()),
     path('', RedirectView.as_view(url='https://mountainresearchinitiative.org/find-an-expert', permanent=False))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

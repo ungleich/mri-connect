@@ -34,6 +34,7 @@ class Affiliation(models.Model):
     class Meta:
         unique_together = [['name', 'department']]
 
+
 class Project(models.Model):
     name = models.CharField(max_length=256)
     acronym = models.CharField(max_length=16, null=True, blank=True)
@@ -50,6 +51,17 @@ class Project(models.Model):
 
     def __str__(self):
         return self.name
+
+
+# GMBA Mountains
+class Mountain(models.Model):
+    name = models.CharField(max_length=50)
+    country = models.CharField(max_length=250)
+    mpoly = models.MultiPolygonField()
+
+    def __str__(self):
+        return f"{self.name}, {self.country}"
+
 
 class Expertise(models.Model):
     RESEARCH_EXPERTISE = (
@@ -193,7 +205,12 @@ class Expertise(models.Model):
     inputs_or_participation_to_un_conventions = MultiSelectField(choices=UN_CONVENTIONS_POLICY_PROCESSES, null=True, blank=True)
     other_inputs_or_participation_to_un_conventions = models.CharField(max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list")
 
-    # mountain_ranges_of_research_interest
+    mountain_ranges_of_research_interest = models.ManyToManyField(Mountain, blank=True, related_name="+")
+    other_mountain_ranges_of_research_interest = models.TextField(null=True, blank=True)
+
+    mountain_ranges_of_research_expertise = models.ManyToManyField(Mountain, blank=True, related_name="+")
+    other_mountain_ranges_of_research_expertise = models.TextField(null=True, blank=True)
+
     """
     Multiple choice (List of mountain ranges from GMBA mountain inventory:
     https://www.gmba.unibe.ch/services/tools/mountain_inventory;
@@ -242,6 +259,20 @@ class Expertise(models.Model):
             self.other_inputs_or_participation_to_un_conventions
         ])
 
+    @property
+    def ranges_of_research_interest(self):
+        return join_true_values([
+            ", ".join([mountain.name for mountain in self.mountain_ranges_of_research_interest.all()]),
+            self.other_mountain_ranges_of_research_interest
+        ])
+
+    @property
+    def ranges_of_research_expertise(self):
+        return join_true_values([
+            ", ".join([mountain.name for mountain in self.mountain_ranges_of_research_expertise.all()]),
+            self.other_mountain_ranges_of_research_expertise
+        ])
+
     def __str__(self):
         return f"{self.expert}'s expertise"
 
@@ -258,10 +289,12 @@ class Title(models.TextChoices):
     PROF = 'PROF', 'Prof.'
     PROF_EMERITUS = 'PROF_EMERIT', 'Prof. emerit.'
 
+
 class Gender(models.TextChoices):
     MALE = 'M', _('Male')
     OTHER = 'F', _('Female')
     FEMALE = 'O', _('Other')
+
 
 class CareerStage(models.TextChoices):
     UNDERGRAD = 'UNDERGRAD', _("Undergraduate student (e.g. BSc/BA)")
@@ -271,6 +304,7 @@ class CareerStage(models.TextChoices):
     PUBLICSECTOR = 'PUBLICSECTOR', _("Practitioner in the public/government sector")
     PRIVATESECTOR = 'PRIVATESECTOR', _("Practitioner or business in the private sector")
     OTHER = 'OTHER', _("Other (short text)")
+
 
 EXPERTS_PREFERENCES = (
     ('join_ecr', _("Would you like to join the MRI Early Career Researchers (ECRs) fellows group? (applies to currently enrolled students, practitioners, or postgraduate/postdoctoral scholars up to 5 years since obtaining last degree)")),
@@ -283,6 +317,7 @@ EXPERTS_PREFERENCES = (
 class ExpertManager(models.Manager):
     def get_by_natural_key(self, first_name, last_name):
         return self.get(first_name=first_name, last_name=last_name)
+
 
 class Expert(models.Model):
     user = models.OneToOneField(get_user_model(), related_name="expert_profile", on_delete=models.CASCADE)
@@ -414,7 +449,6 @@ class Expert(models.Model):
 
 
 # The following is to apply limit on number of affiliations and projects that user can select in their profile
-
 def affiliations_changed(sender, **kwargs):
     if kwargs['instance'].affiliations.count() > 3:
         raise ValidationError("You can't assign more than three affiliations.")

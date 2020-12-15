@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views import generic
 
@@ -48,11 +48,23 @@ class Profile(GoogleMapAPIKeyMixin, generic.DetailView):
             return obj
 
     def render_to_response(self, context, **response_kwargs):
-        if not context['object']:
+        profile_object = context['object']
+
+        # No Profile exists for the requested user
+        if not profile_object:
             if self.kwargs.get(self.pk_url_kwarg) == self.request.user.username:
                 return redirect('create-profile')
             return HttpResponse(f"The profile for \"{self.kwargs.get(self.pk_url_kwarg)}\" does not exists yet!")
-        return super().render_to_response(context, **response_kwargs)
+
+        # Profile exists for the requested user
+        if profile_object.user == self.request.user or profile_object.allow_public:
+            if not profile_object.allow_photo:
+                # TODO: Replace the profile_object.upload_photo.url to something
+                #       https://miro.medium.com/max/720/1*W35QUSvGpcLuxPo3SRTH4w.png
+                pass
+            return super().render_to_response(context, **response_kwargs)
+        else:
+            return render(self.request, "expert_management/private-profile.html", {})
 
 
 class CreateProfile(LoginRequiredMixin, generic.CreateView):
@@ -93,7 +105,7 @@ class CreateProfile(LoginRequiredMixin, generic.CreateView):
 class UpdateProfile(LoginRequiredMixin, generic.UpdateView):
     model = Expert
     template_name = "expert_management/set-profile.html"
-    success_url = reverse_lazy('projects')
+    success_url = reverse_lazy("my-profile")
 
     # You may be wondering why I mentioned all field names except user
     # instead of __all__ and setting exclude attribute to ('user',)
@@ -173,14 +185,15 @@ class CreateExpertise(LoginRequiredMixin, generic.CreateView):
         "research_expertise", "atmospheric_sciences", "hydrospheric_sciences", "cryospheric_sciences",
         "earth_sciences", "biological_sciences", "social_sciences_and_humanities", "integrated_sciences_and_humanities",
         "other_expertise", "spatial_scale_of_expertise", "other_spatial_scale_of_expertise", "statistical_focus",
-        "other_statistical_focus", "time_scales", "other_time_scales", "methods", "other_methods", "participation_in_assessments",
+        "other_statistical_focus", "time_scales", "other_time_scales", "methods", "other_methods",
+        "mountain_ranges_of_research_interest", "other_mountain_ranges_of_research_interest",
+        "mountain_ranges_of_research_expertise", "other_mountain_ranges_of_research_expertise",
+        "participation_in_assessments",
         "other_participation_in_assessments", "more_detail_about_participation_in_assessments", "inputs_or_participation_to_un_conventions",
         "other_inputs_or_participation_to_un_conventions"
     )
     template_name = "expert_management/set-expertise.html"
-
-    def get_success_url(self):
-        return reverse_lazy("profile", args=[self.request.user.username])
+    success_url = reverse_lazy("my-profile")
 
     def form_valid(self, form):
         form.instance.expert = get_object_or_404(Expert, user=self.request.user)
@@ -201,14 +214,15 @@ class UpdateExpertise(LoginRequiredMixin, generic.UpdateView):
         "research_expertise", "atmospheric_sciences", "hydrospheric_sciences", "cryospheric_sciences",
         "earth_sciences", "biological_sciences", "social_sciences_and_humanities", "integrated_sciences_and_humanities",
         "other_expertise", "spatial_scale_of_expertise", "other_spatial_scale_of_expertise", "statistical_focus",
-        "other_statistical_focus", "time_scales", "other_time_scales", "methods", "other_methods", "participation_in_assessments",
+        "other_statistical_focus", "time_scales", "other_time_scales", "methods", "other_methods",
+        "mountain_ranges_of_research_interest", "other_mountain_ranges_of_research_interest",
+        "mountain_ranges_of_research_expertise", "other_mountain_ranges_of_research_expertise",
+        "participation_in_assessments",
         "other_participation_in_assessments", "more_detail_about_participation_in_assessments", "inputs_or_participation_to_un_conventions",
         "other_inputs_or_participation_to_un_conventions"
     )
     template_name = "expert_management/set-expertise.html"
-
-    def get_success_url(self):
-        return reverse_lazy("profile", args=[self.request.user.username])
+    success_url = reverse_lazy("my-profile")
 
     def form_valid(self, form):
         form.instance.expert = get_object_or_404(Expert, user=self.request.user)

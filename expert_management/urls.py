@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
     # Profile views
+    path('profile/', views.MyProfileRedirectView.as_view(), name='my-profile'),
     path('user/<str:username>/', views.Profile.as_view(), name='profile'),
     path('create-profile/', views.CreateProfile.as_view(), name='create-profile'),
     path('update-profile/', views.UpdateProfile.as_view(), name='update-profile'),

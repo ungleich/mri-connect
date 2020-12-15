@@ -30,7 +30,7 @@
                       </li>
                       {% else %}
                       <li class="nav-item">
-                        <a class="nav-link" href="{% url 'profile' request.user %}">Profile</a>
+                        <a class="nav-link" href="{% url 'my-profile' %}">Profile</a>
                       </li>
                       {% endif %}
                       <li class="nav-item">
@@ -49,7 +49,7 @@
       <main>
         {% block before_content %}{% endblock %}
           <div class="bg-light">
-            <div class="container">
+            <div class="container min-vh-100">
                 {% block content %}{% endblock %}
             </div>
           </div>

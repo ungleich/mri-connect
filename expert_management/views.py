@@ -18,6 +18,10 @@ class GoogleMapAPIKeyMixin:
         return context
 
 
+class Index(generic.TemplateView):
+    template_name = "expert_management/index.html"
+
+
 class MyProfileRedirectView(generic.RedirectView):
     permanent = False
 

@@ -2,7 +2,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views import generic
@@ -64,13 +64,13 @@ class Profile(GoogleMapAPIKeyMixin, generic.DetailView):
                 pass
             return super().render_to_response(context, **response_kwargs)
         else:
-            return render(self.request, "expert_management/private-profile.html", {})
+            raise Http404("Profile does not exists.")
 
 
 class CreateProfile(LoginRequiredMixin, generic.CreateView):
     model = Expert
     template_name = "expert_management/set-profile.html"
-    success_url = reverse_lazy('projects')
+    success_url = reverse_lazy("my-profile")
 
     # You may be wondering why I mentioned all field names except user
     # instead of __all__ and setting exclude attribute to ('user',)

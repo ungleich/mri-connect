@@ -11,4 +11,6 @@ class ProjectForm(forms.ModelForm):
         fields = "__all__"
         widgets = {
             'coordinates': GooglePointFieldWidget,
+            'date_start': forms.DateInput(attrs={'type': 'date'}),
+            'date_ending': forms.DateInput(attrs={'type': 'date'}),
         }

@@ -32,6 +32,12 @@
                       <li class="nav-item">
                         <a class="nav-link" href="{% url 'my-profile' %}">Profile</a>
                       </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="{% url 'projects' %}">Projects</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="{% url 'update-expertise' %}">Expertise</a>
+                      </li>
                       {% endif %}
                       <li class="nav-item">
                         {% if not request.user.is_anonymous %}

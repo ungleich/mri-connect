@@ -1,3 +1,5 @@
+from functools import reduce
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -155,25 +157,28 @@ class Search(generic.TemplateView):
 def transform_tt(string):
     return string.replace(" ", "_")
 
+def Q_if_truthy(**kwargs):
+    q = Q(**kwargs)
+    truthy = reduce(lambda x, y: x and bool(y), dict(q.children).values(), True)
+    return (q if truthy else Q())
+
+
 class SearchResultView(generic.ListView):
     template_name = "expert_management/search-result.html"
     model = get_user_model()
 
     def get_queryset(self):
-        name = self.request.GET.get("name")
-        expertise = self.request.GET.get("expertise")
-        regions = self.request.GET.getlist("regions")
+        name = self.request.GET.get("name", "")
+        expertise = self.request.GET.get("expertise", "")
+        regions = self.request.GET.getlist("regions", [])
 
         queryset = get_user_model().objects.annotate(full_name=Concat(F("first_name"), Value(" "), F("last_name")))
-        q = Q(is_public=True)
 
-        if name:
-            q |= Q(full_name__icontains=name)
-
-        if expertise:
-            q |= Q(expertise__research_expertise__icontains=transform_tt(expertise))
-
+        q = Q()
+        q |= Q_if_truthy(full_name__icontains=name)
+        q |= Q_if_truthy(expertise__research_expertise__icontains=transform_tt(expertise))
         for region in regions:
-            q |= Q(expertise__mountain_ranges_of_research_expertise__name=region)
+            q |= Q_if_truthy(expertise__mountain_ranges_of_research_expertise__name=region)
 
-        return queryset.filter(q)
+        q &= Q_if_truthy(is_public=True)
+        return queryset.filter(q).distinct()

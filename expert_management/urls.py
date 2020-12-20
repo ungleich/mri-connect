@@ -8,7 +8,6 @@ urlpatterns = [
     # Profile views
     path('profile/', views.MyProfileRedirectView.as_view(), name='my-profile'),
     path('user/<str:username>/', views.Profile.as_view(), name='profile'),
-    path('create-profile/', views.CreateProfile.as_view(), name='create-profile'),
     path('update-profile/', views.UpdateProfile.as_view(), name='update-profile'),
 
     # Project views
@@ -19,5 +18,8 @@ urlpatterns = [
 
     # Expertise views
     path('create-expertise/', views.CreateExpertise.as_view(), name='create-expertise'),
-    path('update-expertise/', views.UpdateExpertise.as_view(), name='update-expertise')
+    path('update-expertise/', views.UpdateExpertise.as_view(), name='update-expertise'),
+
+    path('search/', views.Search.as_view(), name='search'),
+    path('search-result/', views.SearchResultView.as_view(), name='search-result')
 ]

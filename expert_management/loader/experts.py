@@ -32,7 +32,7 @@ def add_expert(row, m_top, m_exp):
         return '%s;%s;;%s;No e-mail' % (row['Name'], row['FirstName'], row['PersonID'])
     try:
         Expert.objects.get(
-            contact_email=EMailAddress
+            email=EMailAddress
         )
         return ';;%s;Duplicate e-mail' % EMailAddress
     except Expert.DoesNotExist:
@@ -60,7 +60,7 @@ def add_expert(row, m_top, m_exp):
             title        =row['Title'].strip(),
             position     =row['PPosition'].strip(),
             gender       =row['Sex'].strip().upper(),
-            contact_email=EMailAddress,
+            email        =EMailAddress,
             url_personal =fix_url(row['URL_site']),
             url_cv       =fix_url(row['URL_CurrVitae']),
             list_publications=fix_pub(row['KeyPublications']),

@@ -1,4 +1,4 @@
-## MRI Connect
+## MRI Expert Database
 
 An open source search engine and members directory for the [Mountain Research Initiative](https://mountainresearchinitiative.org/).
 

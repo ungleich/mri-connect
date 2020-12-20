@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'crequest',
     'crispy_forms',
     'reversion',
-    'tabular_permissions',
     'slick_reporting',
     'rest_framework',
     'corsheaders',
@@ -92,6 +91,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'mriconnect.wsgi.application'
+
+AUTH_USER_MODEL = "expert_management.User"
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

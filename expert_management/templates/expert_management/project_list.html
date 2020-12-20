@@ -48,6 +48,7 @@ No projects yet.
 <script type="text/javascript">
     function initMap() {
     {% for project in object_list %}
+      {% if project.coordinates %}
       const myLatLng{{forloop.counter0}} = { lat: {{project.coordinates.coords.1}}, lng: {{project.coordinates.coords.0}} };
       const map{{forloop.counter0}} = new google.maps.Map(document.getElementById("map{{forloop.counter0}}"), {
         zoom: 12,
@@ -58,7 +59,8 @@ No projects yet.
         map{{forloop.counter0}},
         title: "{{project.name}}",
       });
-      {% endfor %}
+      {% endif %}
+    {% endfor %}
 
     }
 </script>

@@ -8,8 +8,8 @@
 <section class="text-center container">
     <div class="row">
         <div class="col-lg-12">
-            {% if object.upload_photo %}
-                <img src="{{ object.upload_photo.url }}" class="img-thumbnail" style="width: 256px; height:256px" alt="Profile Image" />
+            {% if object.photo %}
+                <img src="{{ object.photo.url }}" class="img-thumbnail" style="width: 256px; height:256px" alt="Profile Image" />
             {% else %}
                 <img src="https://miro.medium.com/max/720/1*W35QUSvGpcLuxPo3SRTH4w.png"
                      class="img-thumbnail" style="width: 256px; height:256px;" alt="User avatar" />
@@ -17,9 +17,9 @@
             <h1 class="fw-light">
                 {{object.get_title_display |default:""}} {{object.first_name}} {{object.last_name}}
             </h1>
-            <a href="mailto:{{object.contact_email}}">Email: {{object.contact_email}}</a><br/>
+            <a href="mailto:{{ object.email }}">Email: {{ object.email }}</a><br/>
 
-            {% if object.user == request.user %}
+            {% if object == request.user %}
             <a href="{% url 'update-profile' %}" class="btn btn-primary btn-sm" role="btn">Update Profile</a>
             <a href="{% url 'projects' %}" class="btn btn-primary btn-sm" role="btn">Update Projects</a>
             <a href="{% url 'update-expertise' %}" class="btn btn-primary btn-sm" role="btn">Update Expertise</a>
@@ -84,9 +84,6 @@
 
     <dt class="col-sm-3">ORCID</dt>
     <dd class="col-sm-9">{{object.orcid}}</dd>
-
-    <dt class="col-sm-3">ProClim ID</dt>
-    <dd class="col-sm-9">{{object.proclimid}}</dd>
 </dl>
 <h3>Expertise</h3>
 <dl class="row">
@@ -123,11 +120,6 @@
             {% if object.expertise.other_expertise %}
             <dt class="col-sm-3">other expertise</dt><dd class="col-sm-9">{{object.expertise.other_expertise}}</dd>
             {% endif %}
-
-
-            <!-- <dt class="col-sm-3"></dt><dd class="col-sm-9">{{object.expertise.atmospheric_sciences}}</dd>
-            <dt class="col-sm-3"></dt><dd class="col-sm-9">{{object.expertise.atmospheric_sciences}}</dd>
-            <dt class="col-sm-3"></dt><dd class="col-sm-9">{{object.expertise.atmospheric_sciences}}</dd> -->
         </dl>
     </dd>
 
@@ -204,7 +196,7 @@
 
 
 <h3>Projects</h3>
-{% for project in object.user.projects.all %}
+{% for project in object.projects.all %}
 
 <div class="card mb-3">
     <div class="row g-0">
@@ -232,37 +224,12 @@
       </div>
     </div>
   </div>
-
-<!-- <div class="card" style="width: 18rem;">
-    <div id="map{{forloop.counter0}}" style="width: 100%; height: 100%;"></div>
-
-    <div class="card-body">
-        <h5 class="card-title">
-            {{project.name}}
-            {% if project.acronym %}({{project.acronym}}){% endif %}
-        </h5>
-        <div class="row">
-            <div class="col-sm-12">
-            </div>
-        </div>
-        <p class="card-text">
-            <dl class="row">
-                <dt class="col-sm-6">Start Date</dt><dd class="col-sm-6">{{project.date_start}}</dd>
-                <dt class="col-sm-6">End Date</dt><dd class="col-sm-6">{{project.date_ending}}</dd>
-                <dt class="col-sm-6">Funding Source</dt><dd class="col-sm-6">{{project.funding_source}}</dd>
-                <dt class="col-sm-6">Role</dt><dd class="col-sm-6">{{project.role}}</dd>
-                <dt class="col-sm-6">Homepage</dt><dd class="col-sm-6">{{project.homepage}}</dd>
-                <dt class="col-sm-6">Location</dt><dd class="col-sm-6">{{project.location}}</dd>
-                <dt class="col-sm-6">Country</dt><dd class="col-sm-6">{{project.get_country_display}}</dd>
-            </dl>
-        </p>
-    </div>
-</div> -->
 {% endfor %}
 
 <script type="text/javascript">
     function initMap() {
-    {% for project in object.user.projects.all %}
+    {% for project in object.projects.all %}
+      {% if project.coordinates %}
       const myLatLng{{forloop.counter0}} = { lat: {{project.coordinates.coords.1}}, lng: {{project.coordinates.coords.0}} };
       const map{{forloop.counter0}} = new google.maps.Map(document.getElementById("map{{forloop.counter0}}"), {
         zoom: 12,
@@ -273,8 +240,8 @@
         map{{forloop.counter0}},
         title: "{{project.name}}",
       });
-      {% endfor %}
-
+      {% endif %}
+    {% endfor %}
     }
 </script>
 <dl class="row">
@@ -283,11 +250,5 @@
 
     <dt class="col-sm-3">List of publications</dt>
     <dd class="col-sm-9">{{object.list_publications|default:None}}</dd>
-
-    <dt class="col-sm-3"></dt>
-    <dd class="col-sm-9"></dd>
-
-    <dt class="col-sm-3"></dt>
-    <dd class="col-sm-9"></dd>
 </dl>
 {% endblock %}

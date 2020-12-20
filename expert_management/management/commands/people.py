@@ -24,9 +24,9 @@ class Command(BaseCommand):
                 if not '@' in email.strip(): continue
                 try:
                     expert = Expert.objects.get(
-                        contact_email = email.strip()
+                        email = email.strip()
                     )
-                    expert.allow_public = True
+                    expert.is_public = True
                     expert.save()
                     c += 1
                 except Expert.DoesNotExist:

@@ -1,14 +1,18 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse, Http404
+from django.forms.models import fields_for_model
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views import generic
+from django.contrib.gis.db.models import F, Value, Q
+from django.db.models.functions import Concat
 
-from .forms import ProjectForm
-from .models import Affiliation, Expert, Project, Expertise
+from . import data
+from .selector import get_user_profile
+from .forms import ProjectForm, UserCreationForm, SearchForm
+from .models import Affiliation, Expertise, Project
 
 
 class GoogleMapAPIKeyMixin:
@@ -36,114 +40,28 @@ class Signup(generic.CreateView):
 
 
 class Profile(GoogleMapAPIKeyMixin, generic.DetailView):
-    queryset = Expert.objects.all()
+    queryset = get_user_model().objects.all()
     pk_url_kwarg = "username"
     template_name = "expert_management/profile.html"
 
     def get_object(self, queryset=None):
-        if queryset is None:
-            queryset = self.queryset
-        pk = self.kwargs.get(self.pk_url_kwarg)
-        try:
-            obj = queryset.get(user=get_object_or_404(get_user_model(), username=pk))
-        except Expert.DoesNotExist:
-            return None
-        else:
-            return obj
-
-    def render_to_response(self, context, **response_kwargs):
-        profile_object = context['object']
-
-        # No Profile exists for the requested user
-        if not profile_object:
-            if self.kwargs.get(self.pk_url_kwarg) == self.request.user.username:
-                return redirect('create-profile')
-            return HttpResponse(f"The profile for \"{self.kwargs.get(self.pk_url_kwarg)}\" does not exists yet!")
-
-        # Profile exists for the requested user
-        if profile_object.user == self.request.user or profile_object.allow_public:
-            if not profile_object.allow_photo:
-                # TODO: Replace the profile_object.upload_photo.url to something
-                #       https://miro.medium.com/max/720/1*W35QUSvGpcLuxPo3SRTH4w.png
-                pass
-            return super().render_to_response(context, **response_kwargs)
-        else:
-            raise Http404("Profile does not exists.")
-
-
-class CreateProfile(LoginRequiredMixin, generic.CreateView):
-    model = Expert
-    template_name = "expert_management/set-profile.html"
-    success_url = reverse_lazy("my-profile")
-
-    # You may be wondering why I mentioned all field names except user
-    # instead of __all__ and setting exclude attribute to ('user',)
-    # because exclude attribute is not working and the ordering of fields
-    # is not according to our wishes
-    fields = (
-        "last_name", "first_name", "title", "gender", "position",
-        "affiliations", "contact_email", "career_stage",
-        "career_stage_note", "year_of_last_degree_graduation",
-        "preferences", "official_functions", "upload_photo",
-        "url_personal", "url_cv", "url_researchgate", "orcid",
-        "proclimid", "url_publications",
-        "list_publications", "allow_photo", "allow_public",
-    )
-
-    def get(self, *args, **kwargs):
-        try:
-            self.model.objects.get(user=self.request.user)
-        except self.model.DoesNotExist:
-            return super().get(*args, **kwargs)
-        else:
-            return redirect('update-profile')
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
-
-    class Meta:
-        exclude = ("user",)
+        username = self.kwargs.get(self.pk_url_kwarg)
+        return get_user_profile(username, self.request.user)
 
 
 class UpdateProfile(LoginRequiredMixin, generic.UpdateView):
-    model = Expert
+    model = get_user_model()
     template_name = "expert_management/set-profile.html"
     success_url = reverse_lazy("my-profile")
 
-    # You may be wondering why I mentioned all field names except user
-    # instead of __all__ and setting exclude attribute to ('user',)
-    # because exclude attribute is not working and the ordering of fields
-    # is not according to our wishes
-    fields = (
-        "last_name", "first_name", "title", "gender", "position",
-        "affiliations", "contact_email", "career_stage",
-        "career_stage_note", "year_of_last_degree_graduation",
-        "preferences", "official_functions", "upload_photo",
-        "url_personal", "url_cv", "url_researchgate", "orcid",
-        "proclimid", "url_publications",
-        "list_publications", "allow_photo", "allow_public",
-    )
-
-    def get(self, *args, **kwargs):
-        try:
-            self.model.objects.get(user=self.request.user)
-        except self.model.DoesNotExist:
-            return redirect('create-profile')
-        else:
-            return super().get(*args, **kwargs)
+    fields = fields_for_model(model, exclude=data.AUTH_SPECIFIC_FIELDS)
 
     def get_object(self, queryset=None):
-        if queryset is None:
-            queryset = self.queryset
-        return get_object_or_404(self.model, user=self.request.user)
+        return self.request.user
 
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
-
-    class Meta:
-        exclude = ("user",)
 
 
 class ProjectList(GoogleMapAPIKeyMixin, LoginRequiredMixin, generic.ListView):
@@ -166,7 +84,7 @@ class UpdateProject(GoogleMapAPIKeyMixin, LoginRequiredMixin, generic.UpdateView
     template_name = "expert_management/set-project.html"
     success_url = reverse_lazy("projects")
 
-    def get_queryset(self, queryset = None):
+    def get_queryset(self, queryset=None):
         if queryset is None:
             queryset = Project.objects.filter(user=self.request.user)
         return queryset
@@ -185,27 +103,17 @@ class DeleteProject(LoginRequiredMixin, generic.DeleteView):
 
 class CreateExpertise(LoginRequiredMixin, generic.CreateView):
     model = Expertise
-    fields = (
-        "research_expertise", "atmospheric_sciences", "hydrospheric_sciences", "cryospheric_sciences",
-        "earth_sciences", "biological_sciences", "social_sciences_and_humanities", "integrated_sciences_and_humanities",
-        "other_expertise", "spatial_scale_of_expertise", "other_spatial_scale_of_expertise", "statistical_focus",
-        "other_statistical_focus", "time_scales", "other_time_scales", "methods", "other_methods",
-        "mountain_ranges_of_research_interest", "other_mountain_ranges_of_research_interest",
-        "mountain_ranges_of_research_expertise", "other_mountain_ranges_of_research_expertise",
-        "participation_in_assessments",
-        "other_participation_in_assessments", "more_detail_about_participation_in_assessments", "inputs_or_participation_to_un_conventions",
-        "other_inputs_or_participation_to_un_conventions"
-    )
+    fields = fields_for_model(model, exclude={'user'})
     template_name = "expert_management/set-expertise.html"
     success_url = reverse_lazy("my-profile")
 
     def form_valid(self, form):
-        form.instance.expert = get_object_or_404(Expert, user=self.request.user)
+        form.instance.user = self.request.user
         return super().form_valid(form)
 
     def get(self, *args, **kwargs):
         try:
-            self.model.objects.get(expert=get_object_or_404(Expert, user=self.request.user))
+            self.model.objects.get(user=self.request.user)
         except self.model.DoesNotExist:
             return super().get(*args, **kwargs)
         else:
@@ -214,33 +122,58 @@ class CreateExpertise(LoginRequiredMixin, generic.CreateView):
 
 class UpdateExpertise(LoginRequiredMixin, generic.UpdateView):
     model = Expertise
-    fields = (
-        "research_expertise", "atmospheric_sciences", "hydrospheric_sciences", "cryospheric_sciences",
-        "earth_sciences", "biological_sciences", "social_sciences_and_humanities", "integrated_sciences_and_humanities",
-        "other_expertise", "spatial_scale_of_expertise", "other_spatial_scale_of_expertise", "statistical_focus",
-        "other_statistical_focus", "time_scales", "other_time_scales", "methods", "other_methods",
-        "mountain_ranges_of_research_interest", "other_mountain_ranges_of_research_interest",
-        "mountain_ranges_of_research_expertise", "other_mountain_ranges_of_research_expertise",
-        "participation_in_assessments",
-        "other_participation_in_assessments", "more_detail_about_participation_in_assessments", "inputs_or_participation_to_un_conventions",
-        "other_inputs_or_participation_to_un_conventions"
-    )
+    fields = fields_for_model(model, exclude={'user'})
     template_name = "expert_management/set-expertise.html"
     success_url = reverse_lazy("my-profile")
 
     def form_valid(self, form):
-        form.instance.expert = get_object_or_404(Expert, user=self.request.user)
+        form.instance.user = self.request.user
         return super().form_valid(form)
 
     def get_object(self, queryset=None):
         if queryset is None:
-            queryset = self.model.objects.filter(expert=get_object_or_404(Expert, user=self.request.user))
-        return queryset.get(expert=get_object_or_404(Expert, user=self.request.user))
+            queryset = self.model.objects.filter(user=self.request.user)
+        return queryset.get(user=self.request.user)
 
     def get(self, *args, **kwargs):
         try:
-            self.model.objects.get(expert=get_object_or_404(Expert, user=self.request.user))
+            self.model.objects.get(user=self.request.user)
         except self.model.DoesNotExist:
             return redirect('create-expertise')
         else:
             return super().get(*args, **kwargs)
+
+
+class Search(generic.TemplateView):
+    template_name = "expert_management/search.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = SearchForm
+        return context
+
+def transform_tt(string):
+    return string.replace(" ", "_")
+
+class SearchResultView(generic.ListView):
+    template_name = "expert_management/search-result.html"
+    model = get_user_model()
+
+    def get_queryset(self):
+        name = self.request.GET.get("name")
+        expertise = self.request.GET.get("expertise")
+        regions = self.request.GET.getlist("regions")
+
+        queryset = get_user_model().objects.annotate(full_name=Concat(F("first_name"), Value(" "), F("last_name")))
+        q = Q(is_public=True)
+
+        if name:
+            q |= Q(full_name__icontains=name)
+
+        if expertise:
+            q |= Q(expertise__research_expertise__icontains=transform_tt(expertise))
+
+        for region in regions:
+            q |= Q(expertise__mountain_ranges_of_research_expertise__name=region)
+
+        return queryset.filter(q)

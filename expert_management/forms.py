@@ -22,13 +22,11 @@ class ProjectForm(forms.ModelForm):
             'date_ending': forms.DateInput(attrs={'type': 'date'}),
         }
 
-search_form_choices = [(mountain.name, mountain.name) for mountain in Mountain.objects.all()]
-search_form_choices.append(("", ""))
 
 class SearchForm(forms.Form):
     name = forms.CharField(required=False)
     expertise = forms.CharField(required=False)
-    regions = forms.ChoiceField(
-        choices=search_form_choices, required=False, widget=forms.SelectMultiple(attrs={'multiple': 'multiple'}),
-        label="Mountain Ranges of Research Expertise"
+    regions = forms.ModelChoiceField(
+        queryset=Mountain.objects.all(), required=False, widget=forms.SelectMultiple(attrs={'multiple': 'multiple'}),
+        label="Mountain Ranges of Research Expertise", to_field_name="name"
     )

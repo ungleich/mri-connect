@@ -252,17 +252,6 @@ optional = false
 python-versions = "*"
 
 [[package]]
-name = "django-multiselectfield"
-version = "0.1.12"
-description = "Django multiple select field"
-category = "main"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-django = ">=1.4"
-
-[[package]]
 name = "django-polymorphic"
 version = "3.0.0"
 description = "Seamless polymorphic inheritance for Django models"
@@ -725,7 +714,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.6, <4"
-content-hash = "ab6cc12613de07d1809d4e502ce8d498d8d4ffb25da933d709322b02d2e9d0ce"
+content-hash = "f52545c7cc969b824d04ea1a8a55ce6de1d1f16fbfbc7599b20ba9b0bb47c76d"
 
 [metadata.files]
 argparse = [
@@ -853,10 +842,6 @@ django-jazzmin = [
 django-map-widgets = [
     {file = "django-map-widgets-0.3.0.tar.gz", hash = "sha256:7ad4047377614af7664792b0366c7be394b675d2f6106b3560d69c11e2811eb4"},
     {file = "django_map_widgets-0.3.0-py3-none-any.whl", hash = "sha256:9547a14aa3d4dd1ec66270b24f570c83bc52f7c7e41afc410c9c09dee5c3aa64"},
-]
-django-multiselectfield = [
-    {file = "django-multiselectfield-0.1.12.tar.gz", hash = "sha256:d0a4c71568fb2332c71478ffac9f8708e01314a35cf923dfd7a191343452f9f9"},
-    {file = "django_multiselectfield-0.1.12-py3-none-any.whl", hash = "sha256:c270faa7f80588214c55f2d68cbddb2add525c2aa830c216b8a198de914eb470"},
 ]
 django-polymorphic = [
     {file = "django-polymorphic-3.0.0.tar.gz", hash = "sha256:9d886f19f031d26bb1391c055ed9be06fb226a04a4cec1842b372c58873b3caa"},

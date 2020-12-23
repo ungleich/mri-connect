@@ -1,6 +1,8 @@
 import os
 from .base import *
 
+env = os.environ.copy()
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 TEMPLATES[0]['OPTIONS']['debug'] = True
@@ -19,8 +21,12 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.spatialite',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': env.get('PGDATABASE', 'app' or APP_NAME),
+        'CONN_MAX_AGE': 600,  # number of seconds database connections should persist for
+        'USER': 'app'
+        # User, host and port can be configured by the PGUSER, PGHOST and
+        # PGPORT environment variables (these get picked up by libpq).
     }
 }
 

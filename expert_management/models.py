@@ -6,10 +6,25 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db.models.signals import m2m_changed
 from django.utils.translation import ugettext_lazy as _
 from django_countries.fields import CountryField
-from multiselectfield import MultiSelectField
+from django.contrib.postgres.fields import ArrayField
+from django.forms.widgets import CheckboxSelectMultiple
+from django.forms import MultipleChoiceField
 
 from . import data
 from .helper import join_true_values
+
+
+class MultiSelectField(ArrayField):
+    class MyMultipleChoiceField(MultipleChoiceField):
+        widget = CheckboxSelectMultiple
+
+    def formfield(self, **kwargs):
+        defaults = {
+            'form_class': self.MyMultipleChoiceField,
+            'choices': self.base_field.choices,
+        }
+        defaults.update(kwargs)
+        return super(ArrayField, self).formfield(**defaults)
 
 
 class User(AbstractUser):
@@ -20,8 +35,6 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=128, null=False, blank=False)
 
     email = models.EmailField(null=False, blank=False, unique=True)
-    contact_email = models.EmailField(null=False, blank=False, unique=True)
-
 
     title = models.CharField(max_length=16, null=True, blank=True, choices=data.Title.choices)
     gender = models.CharField(max_length=16, null=True, blank=True, choices=data.Gender.choices)
@@ -44,7 +57,7 @@ class User(AbstractUser):
         ])
 
     preferences = MultiSelectField(
-        choices=data.EXPERTS_PREFERENCES, null=True, blank=True
+        models.CharField(choices=data.EXPERTS_PREFERENCES, max_length=128), default=list, null=True, blank=True
     )
 
     official_functions = models.TextField(
@@ -168,34 +181,56 @@ class Mountain(models.Model):
 
 
 class Expertise(models.Model):
-    research_expertise = MultiSelectField(choices=data.RESEARCH_EXPERTISE, null=True, blank=True)
+    research_expertise = MultiSelectField(models.CharField(choices=data.RESEARCH_EXPERTISE, max_length=256), default=list, null=True, blank=True)
 
-    atmospheric_sciences = MultiSelectField(choices=data.ATMOSPHERIC_SCIENCES_SUBCATEGORIES, null=True, blank=True)
-    hydrospheric_sciences = MultiSelectField(choices=data.HYDROSPHERIC_SCIENCES_SUBCATEGORIES, null=True, blank=True)
-    cryospheric_sciences = MultiSelectField(choices=data.CRYOSPHERIC_SCIENCES_SUBCATEGORIES, null=True, blank=True)
-    earth_sciences = MultiSelectField(choices=data.EARTH_SCIENCES_SUBCATEGORIES, null=True, blank=True)
-    biological_sciences = MultiSelectField(choices=data.BIOLOGICAL_SCIENCES_SUBCATEGORIES, null=True, blank=True)
-    social_sciences_and_humanities = MultiSelectField(choices=data.SOCIAL_SCIENCES_AND_HUMANITIES_SUBCATEGORIES, null=True, blank=True)
-    integrated_sciences_and_humanities = MultiSelectField(choices=data.INTEGRATED_SYSTEMS_SUBCATEGORIES, null=True, blank=True)
+    atmospheric_sciences = MultiSelectField(
+        models.CharField(choices=data.ATMOSPHERIC_SCIENCES_SUBCATEGORIES, max_length=256), default=list, null=True, blank=True
+    )
+    hydrospheric_sciences = MultiSelectField(
+        models.CharField(choices=data.HYDROSPHERIC_SCIENCES_SUBCATEGORIES, max_length=256), default=list, null=True, blank=True
+    )
+    cryospheric_sciences = MultiSelectField(
+        models.CharField(choices=data.CRYOSPHERIC_SCIENCES_SUBCATEGORIES, max_length=256), default=list, null=True, blank=True
+    )
+    earth_sciences = MultiSelectField(
+        models.CharField(choices=data.EARTH_SCIENCES_SUBCATEGORIES, max_length=256), default=list, null=True, blank=True
+    )
+    biological_sciences = MultiSelectField(
+        models.CharField(choices=data.BIOLOGICAL_SCIENCES_SUBCATEGORIES, max_length=256), default=list, null=True, blank=True
+    )
+    social_sciences_and_humanities = MultiSelectField(
+        models.CharField(choices=data.SOCIAL_SCIENCES_AND_HUMANITIES_SUBCATEGORIES, max_length=256), default=list, null=True, blank=True
+    )
+    integrated_sciences_and_humanities = MultiSelectField(
+        models.CharField(choices=data.INTEGRATED_SYSTEMS_SUBCATEGORIES, max_length=256), default=list, null=True, blank=True
+    )
     other_expertise = models.CharField(max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list")
 
-    spatial_scale_of_expertise = MultiSelectField(choices=data.SPATIAL_SCALE_OF_EXPERTISE, null=True, blank=True)
+    spatial_scale_of_expertise = MultiSelectField(
+        models.CharField(choices=data.SPATIAL_SCALE_OF_EXPERTISE, max_length=256), default=list, null=True, blank=True
+    )
     other_spatial_scale_of_expertise = models.CharField(max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list")
 
-    statistical_focus = MultiSelectField(choices=data.STATISTICAL_FOCUS, null=True, blank=True)
+    statistical_focus = MultiSelectField(
+        models.CharField(choices=data.STATISTICAL_FOCUS, max_length=256), default=list, null=True, blank=True
+    )
     other_statistical_focus = models.CharField(max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list")
 
-    time_scales = MultiSelectField(choices=data.TIME_SCALES,null=True, blank=True)
+    time_scales = MultiSelectField(models.CharField(choices=data.TIME_SCALES, max_length=256), default=list ,null=True, blank=True)
     other_time_scales = models.CharField(max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list")
 
-    methods = MultiSelectField(choices=data.METHODS, null=True, blank=True)
+    methods = MultiSelectField(models.CharField(choices=data.METHODS, max_length=256), default=list, null=True, blank=True)
     other_methods = models.CharField(max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list")
 
-    participation_in_assessments = MultiSelectField(choices=data.ASSESSMENT_TYPES, null=True, blank=True)
+    participation_in_assessments = MultiSelectField(
+        models.CharField(choices=data.ASSESSMENT_TYPES, max_length=256), default=list, null=True, blank=True
+    )
     other_participation_in_assessments = models.CharField(max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list")
     more_detail_about_participation_in_assessments = models.TextField(null=True, blank=True)
 
-    inputs_or_participation_to_un_conventions = MultiSelectField(choices=data.UN_CONVENTIONS_POLICY_PROCESSES, null=True, blank=True)
+    inputs_or_participation_to_un_conventions = MultiSelectField(
+        models.CharField(choices=data.UN_CONVENTIONS_POLICY_PROCESSES, max_length=256), default=list, null=True, blank=True
+    )
     other_inputs_or_participation_to_un_conventions = models.CharField(max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list")
 
     mountain_ranges_of_research_interest = models.ManyToManyField(Mountain, blank=True, related_name="+")
@@ -207,52 +242,81 @@ class Expertise(models.Model):
     user = models.OneToOneField(User, help_text="Research expertise", on_delete=models.CASCADE, related_name="expertise")
 
     @property
-    def spatial_scale_expertise(self):
+    def research_expertise_display(self):
+        return ", ".join(self.research_expertise)
+
+    @property
+    def atmospheric_sciences_display(self):
+        return ", ".join(self.atmospheric_sciences)
+
+    @property
+    def hydrospheric_sciences_display(self):
+        return ", ".join(self.hydrospheric_sciences)
+
+
+    @property
+    def cryospheric_sciences_display(self):
+        return ", ".join(self.earth_sciences)
+
+    @property
+    def biological_sciences_display(self):
+        return ", ".join(self.biological_sciences)
+
+    @property
+    def social_sciences_and_humanities_display(self):
+        return ", ".join(self.social_sciences_and_humanities)
+
+    @property
+    def integrated_sciences_and_humanities_display(self):
+        return ", ".join(self.integrated_sciences_and_humanities)
+
+    @property
+    def spatial_scale_of_expertise_display(self):
         return join_true_values([
-            self.get_spatial_scale_of_expertise_display(), self.other_spatial_scale_of_expertise
+            ", ".join(self.spatial_scale_of_expertise), self.other_spatial_scale_of_expertise
         ])
 
     @property
-    def statistical_focus_expertise(self):
+    def statistical_focus_display(self):
         return join_true_values([
-            self.get_statistical_focus_display(), self.other_statistical_focus
+             ", ".join(self.statistical_focus), self.other_statistical_focus
         ])
 
     @property
-    def time_scale_expertise(self):
+    def time_scales_display(self):
         return join_true_values([
-            self.get_time_scales_display(), self.other_time_scales
+             ", ".join(self.time_scales), self.other_time_scales
         ])
 
     @property
-    def methods_expertise(self):
+    def methods_display(self):
         return join_true_values([
-            self.get_methods_display(), self.other_methods
+             ", ".join(self.methods), self.other_methods
         ])
 
     @property
-    def participation_in_assessments_details(self):
+    def participation_in_assessments_display(self):
         return join_true_values([
-            self.get_participation_in_assessments_display(),
+             ", ".join(self.participation_in_assessments),
             self.other_participation_in_assessments
         ])
 
     @property
-    def inputs_or_participation_to_un_conventions_details(self):
+    def inputs_or_participation_to_un_conventions_display(self):
         return join_true_values([
-            self.get_inputs_or_participation_to_un_conventions_display(),
+             ", ".join(self.inputs_or_participation_to_un_conventions),
             self.other_inputs_or_participation_to_un_conventions
         ])
 
     @property
-    def ranges_of_research_interest(self):
+    def mountain_ranges_of_research_interest_display(self):
         return join_true_values([
             ", ".join([mountain.name for mountain in self.mountain_ranges_of_research_interest.all()]),
             self.other_mountain_ranges_of_research_interest
         ])
 
     @property
-    def ranges_of_research_expertise(self):
+    def mountain_ranges_of_research_expertise_display(self):
         return join_true_values([
             ", ".join([mountain.name for mountain in self.mountain_ranges_of_research_expertise.all()]),
             self.other_mountain_ranges_of_research_expertise

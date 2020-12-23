@@ -21,5 +21,6 @@ urlpatterns = [
     path('update-expertise/', views.UpdateExpertise.as_view(), name='update-expertise'),
 
     path('search/', views.Search.as_view(), name='search'),
+    path('advance-search/', views.AdvanceSearch.as_view(), name='advance-search'),
     path('search-result/', views.SearchResultView.as_view(), name='search-result')
 ]

@@ -16,3 +16,7 @@ def expertiseByTopic(expertise):
             'title': exp.title,
         })
     return [ v for k,v in topics.items() ]
+
+
+def zip_with_itself(iterable):
+    return list(zip(iterable, iterable))

@@ -1,4 +1,5 @@
 from functools import reduce
+from itertools import chain
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -8,12 +9,13 @@ from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views import generic
-from django.contrib.gis.db.models import F, Value, Q
+from django.contrib.gis.db.models import F, Value, Q, CharField
 from django.db.models.functions import Concat
+from django.contrib.postgres.search import SearchVector
 
 from . import data
 from .selector import get_user_profile
-from .forms import ProjectForm, UserCreationForm, SearchForm
+from .forms import ProjectForm, UserCreationForm, SearchForm, AdvanceSearchForm
 from .models import Affiliation, Expertise, Project
 
 
@@ -154,6 +156,16 @@ class Search(generic.TemplateView):
         context['form'] = SearchForm
         return context
 
+
+class AdvanceSearch(generic.TemplateView):
+    template_name = "expert_management/advance-search.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = AdvanceSearchForm
+        return context
+
+
 def transform_tt(string):
     return string.replace(" ", "_")
 
@@ -170,15 +182,45 @@ class SearchResultView(generic.ListView):
     def get_queryset(self):
         name = self.request.GET.get("name", "")
         expertise = self.request.GET.get("expertise", "")
-        regions = self.request.GET.getlist("regions", [])
+        regions_of_expertise = self.request.GET.getlist("regions_of_expertise", [])
+        regions_of_interest = self.request.GET.getlist("regions_of_interest", [])
+        official_functions = self.request.GET.get("official_functions", "")
+        career_stages = self.request.GET.getlist("career_stage", [])
+        affiliation = self.request.GET.get("affiliation", "")
+        country = self.request.GET.get("country", "")
+
+        other_expertise_fields = ["other_expertise", "other_spatial_scale_of_expertise", "other_statistical_focus", "other_time_scales", "other_methods", "other_participation_in_assessments", "more_detail_about_participation_in_assessments", "other_inputs_or_participation_to_un_conventions"]
 
         queryset = get_user_model().objects.annotate(full_name=Concat(F("first_name"), Value(" "), F("last_name")))
+        expertise_fields = [
+            f"expertise__{field}__overlap" for field in fields_for_model(Expertise, exclude=other_expertise_fields + ["user", "mountain_ranges_of_research_interest", "other_mountain_ranges_of_research_interest", "mountain_ranges_of_research_expertise", "other_mountain_ranges_of_research_expertise" ])
+        ]
 
         q = Q()
+
+        for field in expertise_fields:
+            q |= Q_if_truthy(**{field: [expertise]})
+
+        for field in map(lambda s: f"expertise__{s}__icontains", other_expertise_fields):
+            q |= Q_if_truthy(**{field: expertise})
+
         q |= Q_if_truthy(full_name__icontains=name)
-        q |= Q_if_truthy(expertise__research_expertise__icontains=transform_tt(expertise))
-        for region in regions:
+        q |= Q_if_truthy(official_functions__icontains=official_functions)
+        q |= Q_if_truthy(affiliations__name__icontains=affiliation)
+        q |= Q_if_truthy(affiliations__country=country)
+        q |= Q_if_truthy(projects__country=country)
+
+        for region in regions_of_expertise:
             q |= Q_if_truthy(expertise__mountain_ranges_of_research_expertise__name=region)
+            q |= Q_if_truthy(expertise__other_mountain_ranges_of_research_expertise__icontains=region)
+
+        for region in regions_of_interest:
+            q |= Q_if_truthy(expertise__mountain_ranges_of_research_interest__name=region)
+            q |= Q_if_truthy(expertise__other_mountain_ranges_of_research_interest__icontains=region)
+
+        for career_stage in career_stages:
+            q |= Q_if_truthy(career_stage=career_stage)
 
         q &= Q_if_truthy(is_public=True)
+
         return queryset.filter(q).distinct()

@@ -1,6 +1,7 @@
 from django.contrib.gis.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from .util import zip_with_itself
 
 class Title(models.TextChoices):
     MR = 'MR', 'Mr.'
@@ -34,125 +35,65 @@ EXPERTS_PREFERENCES = (
     ('newsletter', _("I would like to receive monthly MRI Global Newsletters and Newsflashes from the MRI")),
 )
 
-AUTH_SPECIFIC_FIELDS = ("username", "password", "groups", "user_permissions", "date_added", "date_edited", "date_joined", "last_login", "is_staff", "is_superuser", "is_active", "email")
+AUTH_SPECIFIC_FIELDS = ("username", "password", "groups", "user_permissions", "date_added", "date_edited", "date_joined", "last_login", "is_staff", "is_superuser", "is_active")
 
-RESEARCH_EXPERTISE = (
-    ('basic_research', 'Basic Research'),
-    ('applied_research', 'Applied Research'),
-    ('research_interface_and_management', 'Research Interface and Management'),
-    ('interdisciplinary_research', 'Interdisciplinary Research'),
-    ('transdisciplinary_research', 'Transdisciplinary Research'),
-)
+RESEARCH_EXPERTISE = zip_with_itself((
+    'Basic Research', 'Applied Research', 'Research Interface and Management', 'Interdisciplinary Research', 'Transdisciplinary Research'
+))
 
-ATMOSPHERIC_SCIENCES_SUBCATEGORIES = (
-    ("meteorology", "Meteorology"),
-    ("climatology", "Climatology"),
-    ("atmospheric_physics_or_chemistry", "Atmospheric Physics/Chemistry"),
-    ("pollution", "Pollution")
-)
+ATMOSPHERIC_SCIENCES_SUBCATEGORIES = zip_with_itself((
+    "Meteorology", "Climatology", "Atmospheric Physics/Chemistry", "Pollution"
+))
 
-HYDROSPHERIC_SCIENCES_SUBCATEGORIES = (
-    ("fresh_water_systems", "Fresh Water Systems"),
-    ("precipitation_and_runoff", "Precipitation and Runoff"),
-    ("hydrogeology", "Hydrogeology")
-)
+HYDROSPHERIC_SCIENCES_SUBCATEGORIES = zip_with_itself((
+    "Fresh Water Systems", "Precipitation and Runoff", "Hydrogeology"
+))
 
-CRYOSPHERIC_SCIENCES_SUBCATEGORIES = (
-    ("glaciology", "Glaciology"),
-    ("snow_sciences", "Snow Sciences"),
-    ("permafrost_and_solifluction", "Permafrost and solifluction")
-)
+CRYOSPHERIC_SCIENCES_SUBCATEGORIES = zip_with_itself((
+    "Glaciology", "Snow Sciences", "Permafrost and solifluction"
+))
 
-EARTH_SCIENCES_SUBCATEGORIES = (
-    ("soil_science_or_pedology", "Soil Science/Pedology"),
-    ("geomorphology", "Geomorphology"),
-    ("geochemistry", "Geochemistry"),
-    ("geology", "Geology"),
-    ("physical_geography", "Physical Geography"),
-    ("geophysics", "Geophysics")
-)
+EARTH_SCIENCES_SUBCATEGORIES = zip_with_itself((
+    "Soil Science/Pedology", "Geomorphology", "Geochemistry", "Geology", "Physical Geography", "Geophysics"
+))
 
-BIOLOGICAL_SCIENCES_SUBCATEGORIES = (
-    ("botany", "Botany"),
-    ("zoology", "Zoology"),
-    ("ecology", "Ecology"),
-    ("terrestrial_ecosystems", "Terrestrial Ecosystems"),
-    ("aquatic_ecosystems", "Aquatic Ecosystems"),
-    ("soil_organisms", "Soil organisms"),
-    ("forestry", "Forestry"),
-    ("ecosystem_functioning", "Ecosystem functioning"),
-    ("ecosystem_services", "Ecosystem services"),
-    ("biodiversity", "Biodiversity"),
-)
+BIOLOGICAL_SCIENCES_SUBCATEGORIES = zip_with_itself((
+    "Botany", "Zoology", "Ecology", "Terrestrial Ecosystems", "Aquatic Ecosystems", "Soil organisms", "Forestry",
+    "Ecosystem functioning", "Ecosystem services", "Biodiversity",
+))
 
-SOCIAL_SCIENCES_AND_HUMANITIES_SUBCATEGORIES = (
-    ("history-classical_studies-archaeology-prehistory_and_early_history", "History, classical studies, archaeology, prehistory and early history"),
-    ("linguistics_and_literature-philosophy", "Linguistics and literature, philosophy"),
-    ("art_studies-musicology-theatre_and_film_studies-architecture", "Art studies, musicology, theatre and film studies, architecture"),
-    ("ethnology-social_and_human_geography", "Ethnology, social and human geography"),
-    ("psychology", "Psychology"),
-    ("educational_studies", "Educational studies"),
-    ("sociology-social_work", "Sociology, social work"),
-    ("political_sciences", "Political sciences"),
-    ("media_and_communication_studies", "Media and communication studies"),
-    ("public_health", "Public health"),
-    ("economics", "Economics"),
-    ("law", "Law"),
-)
+SOCIAL_SCIENCES_AND_HUMANITIES_SUBCATEGORIES = zip_with_itself((
+    "History, classical studies, archaeology, prehistory and early history",
+    "Linguistics and literature, philosophy", "Art studies, musicology, theatre and film studies, architecture",
+    "Ethnology, social and human geography", "Psychology", "Educational studies", "Sociology, social work",
+    "Political sciences", "Media and communication studies", "Public health", "Economics", "Law",
+))
 
-INTEGRATED_SYSTEMS_SUBCATEGORIES = (
-    ("carbon_cycle", "Carbon Cycle"),
-    ("other_biogeochemical_cycles", "Other Biogeochemical Cycles"),
-    ("hydrogeochemical_cycle", "Hydrogeochemical Cycle"),
-    ("nutrient_cycle", "Nutrient Cycle"),
-    ("social_ecological_systems", "Social-ecological Systems")
-)
+INTEGRATED_SYSTEMS_SUBCATEGORIES = zip_with_itself((
+    "Carbon Cycle", "Other Biogeochemical Cycles", "Hydrogeochemical Cycle", "Nutrient Cycle", "Social-ecological Systems"
+))
 
-SPATIAL_SCALE_OF_EXPERTISE = (
-    ("global_or_hemispheric", "Global / Hemispheric"),
-    ("continental", "Continental"),
-    ("regional", "Regional"),
-    ("national_or_cultural", "National / Cultural"),
-    ("local_or_community", "Local / Community"),
-)
+SPATIAL_SCALE_OF_EXPERTISE = zip_with_itself((
+    "Global / Hemispheric", "Continental", "Regional", "National / Cultural", "Local / Community",
+))
 
-STATISTICAL_FOCUS = (
-    ("extremes", "Extremes"),
-    ("mean_change_or_trends", "Mean Change / Trends"),
-    ("variability", "Variability"),
-)
+STATISTICAL_FOCUS = zip_with_itself((
+    "Extremes", "Mean Change / Trends", "Variability",
+))
 
-TIME_SCALES = (
-    ("seasonal_or_annual", "Seasonal / Annual"),
-    ("decadal_or_centennial", "Decadal / Centennial"),
-    ("millenial", "Millenial"),
-    ("100_kyr", "100 kyr"),
-    ("billenial", "Billenial (Mio yrs)")
-)
+TIME_SCALES = zip_with_itself((
+    "Seasonal / Annual", "Decadal / Centennial", "Millenial", "100 kyr", "Billenial (Mio yrs)"
+))
 
-METHODS = (
-    ("earth_observations", "Earth Observations"),
-    ("remote_sensing", "Remote sensing"),
-    ("field_observations", "Field observations"),
-    ("field_experiments", "Field Experiments"),
-    ("modeling", "Modeling"),
-    ("spatial_analyses", "Spatial analyses"),
-    ("policy_analysis", "Policy Analysis"),
-    ("qualitative_social_science_methods", "Qualitative social science methods"),
-    ("integrative_assessments", "Integrative assessments"),
-    ("synthesis_and_meta-analyses", "Synthesis and meta-analyses"),
-)
+METHODS = zip_with_itself((
+    "Earth Observations", "Remote sensing", "Field observations", "Field Experiments", "Modeling", "Spatial analyses",
+    "Policy Analysis", "Qualitative social science methods", "Integrative assessments", "Synthesis and meta-analyses",
+))
 
-ASSESSMENT_TYPES = (
-    ("ipcc", "IPCC"),
-    ("ipbes", "IPBES"),
-    ("undrr_gar", "UNDRR GAR")
-)
+ASSESSMENT_TYPES = zip_with_itself((
+    "IPCC", "IPBES", "UNDRR GAR"
+))
 
-UN_CONVENTIONS_POLICY_PROCESSES = (
-    ("un_agenda_2030_or_un_hlpf", "UN Agenda 2030 (SDGs) / UN HLPF"),
-    ("unfccc", "UNFCCC"),
-    ("cbd", "CBD"),
-    ("undrr_sedai", "UNDRR Sedai"),
-    ("unccd", "UNCCD")
-)
+UN_CONVENTIONS_POLICY_PROCESSES = zip_with_itself((
+    "UN Agenda 2030 (SDGs) / UN HLPF", "UNFCCC", "CBD", "UNDRR Sedai", "UNCCD"
+))

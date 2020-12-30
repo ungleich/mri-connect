@@ -18,6 +18,7 @@ bleach = "^3.2.1"
 numpy = "^1.19.4"
 django-jazzmin = "^2.4.3"
 django-crispy-forms = "^1.10.0"
+pandas = "^1.2.0"
 
 [tool.poetry.dev-dependencies]
 isort = "^5.6.4"

@@ -10,7 +10,9 @@ Currently under development by ungleich, [ungleich.ch](https://datalets.ch)
 
 To install, get a hold of **Python 3** and [Pipenv](https://github.com/pypa/pipenv) on your machine.
 
-    $ git clone https://gitlab.com/datalets/mri-connect.git
+```bash
+git clone https://gitlab.com/datalets/mri-connect.git
+```
 
 You also need to install the `postgis` and `gdal` to enable support for spatial computation.
 
@@ -18,32 +20,49 @@ You also need to enable `unaccent` extension for postgresql. You can do that by 
 
 You can use `pip install -r requirements.txt`, but in development we use Poetry:
 
-    $ pip install -g poetry
-    $ poetry install
-    $ poetry shell
+```bash
+pip install -g poetry
+poetry install
+poetry shell
+```
 
 1. To create a blank database or upgrade the configured one:
 
-    $ ./manage.py migrate
+    ```bash
+    ./manage.py migrate
+    ```
 
 2. Create an admin account using:
 
-    $ ./manage.py createsuperuser
+    ```bash
+    ./manage.py createsuperuser
+    ```
 
 3. Check for any new changes from the expert_management application
-
-    $ ./manage.py makemigrations expert_management
+    ```bash
+    ./manage.py makemigrations expert_management
+    ```
 
 4. To start the backend:
-
-    $ ./manage.py runserver
-
+    ```bash
+    ./manage.py runserver
+    ```
 
 ## Data migration
 
 To import data from the legacy database, use:
+```bash
+./manage.py importdata <xlsx_file_path>
+```
 
-    $ ./manage.py importdata <filepath>
+## Load Mountains (GMBA)
+
+To import mountains, use the following command
+```bash
+./manage.py loadgma <path_to_shp_file>
+```
+
+You can download the GMBA mountain registry from https://ilias.unibe.ch/goto_ilias3_unibe_file_1047348_download.html
 
 ## Deployment
 

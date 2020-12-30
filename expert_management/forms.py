@@ -1,14 +1,13 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from mapwidgets.widgets import GooglePointFieldWidget
 from django_countries.fields import CountryField
-
-from .models import Project, User, Mountain
+from mapwidgets.widgets import GooglePointFieldWidget
 
 from . import data
+from .models import Mountain, Project, User
 
 
-class UserCreationForm(UserCreationForm):
+class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
         fields = ("first_name", "last_name", "username", "email")

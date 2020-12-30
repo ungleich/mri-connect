@@ -1,28 +1,30 @@
 [tool.poetry]
-name = "mri-ra-connect"
+name = "mri-connect"
 version = "0.1.0"
 description = ""
-authors = ["Oleg Lavrovsky <oleg@datalets.ch>"]
+authors = ["Ahmad Bilal Khalid <ahmedbilal96@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = ">=3.6, <4"
-gunicorn = "*"
-django-ra-erp = "^1.1.1"
-django-countries = "^6.1.3"
-data-wizard = "^1.3.0"
-djangorestframework = "^3.12.1"
-markdown = "^3.3.3"
-django-filter = "^2.4.0"
-rapidfuzz = "^0.12.5"
-django-cors-headers = "^3.5.0"
+python = ">=3.8.3, <4"
+Django = "^3.1.4"
+django-countries = "^7.0"
 Pillow = "^8.0.1"
-urllib3 = "^1.26.2"
-dj_database_url = "^0.5.0"
+dj-database-url = "^0.5.0"
 django-map-widgets = "^0.3.0"
+openpyxl = "^3.0.5"
+Unidecode = "^1.1.2"
+psycopg2 = "^2.8.6"
+bleach = "^3.2.1"
+numpy = "^1.19.4"
+django-jazzmin = "^2.4.3"
+django-crispy-forms = "^1.10.0"
 
 [tool.poetry.dev-dependencies]
-pytest = "*"
-bumpversion = "*"
-pytest-sugar = "*"
-pytest-cov = "*"
 isort = "^5.6.4"
+black = "^20.8b1"
+pylint = "^2.6.0"
+pylint-django = "^2.3.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

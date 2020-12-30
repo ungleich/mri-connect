@@ -118,7 +118,7 @@
             {% endif %}
 
             {% if object.expertise.other_expertise %}
-            <dt class="col-sm-3">other expertise</dt><dd class="col-sm-9">{{object.expertise.other_expertise}}</dd>
+            <dt class="col-sm-3">Other expertise</dt><dd class="col-sm-9">{{object.expertise.other_expertise}}</dd>
             {% endif %}
         </dl>
     </dd>
@@ -179,15 +179,6 @@
                     {{affiliation.name}}
                     <p class="text-muted">{{affiliation.street}} P.O {{affiliation.post_code}} {{affiliation.city}} {{affiliation.get_country_display}}</p>
                 </h5>
-                <div class="row">
-                    <div class="col-sm-12">
-                    </div>
-                </div>
-                <p class="card-text">
-                    <dl class="row">
-                        <dt class="col-sm-6">Department</dt><dd class="col-sm-6">{{affiliation.department}}</dd>
-                    </dl>
-                </p>
             </div>
         </div>
     </div>

@@ -4,6 +4,7 @@
 
 {% block content %}
 <h1>Search Result</h1>
+<h3>Total Count: {{ object_list.count }}</h3>
 <ul>
 {% for expert in object_list %}
     <li><a href="{% url 'profile' expert.username %}">{{ expert.first_name }} {{ expert.last_name }}</a></li>

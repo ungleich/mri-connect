@@ -36,26 +36,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.postgres',
-
-    'crequest',
-    'crispy_forms',
-    'reversion',
-    'slick_reporting',
-    'rest_framework',
-    'corsheaders',
-    'jazzmin',
-
-    'django_filters',
-    'django_countries',
     'django.contrib.gis',
+    'crispy_forms',
+    'jazzmin',
+    'django_countries',
     'django.contrib.admin', # comes at the end because the theme is replaced
     'mapwidgets',
     'expert_management.apps.ExpertManagementConfig'
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
-
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -63,9 +53,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    'crequest.middleware.CrequestMiddleware',
-
 ]
 
 ROOT_URLCONF = 'mriconnect.urls'
@@ -84,7 +71,6 @@ TEMPLATES = [
 
                 'django.template.context_processors.i18n',
                 'django.template.context_processors.static',
-                'ra.base.context_processors.global_info',
             ],
         },
     },
@@ -193,12 +179,4 @@ JAZZMIN_UI_TWEAKS = {
     "sidebar_nav_legacy_style": False,
     "sidebar_nav_flat_style": False,
     "footer_small_text": False
-}
-
-REST_FRAMEWORK = {
-
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
-    'PAGE_SIZE': 10
-
 }

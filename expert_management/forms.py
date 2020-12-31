@@ -4,7 +4,7 @@ from django_countries.fields import CountryField
 from mapwidgets.widgets import GooglePointFieldWidget
 
 from . import data
-from .models import Mountain, Project, User
+from .models import Mountain, Project, User, Affiliation
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -56,5 +56,8 @@ class AdvanceSearchForm(SearchForm):
         choices=data.CareerStage.choices, required=False, widget=forms.SelectMultiple(attrs={'multiple': 'multiple'})
     )
     official_functions = forms.CharField(required=False)
-    affiliation = forms.CharField(required=False, label="Affiliation")
+    affiliation = forms.ModelChoiceField(
+        queryset=Affiliation.objects.all(), widget=forms.SelectMultiple(attrs={'multiple': 'multiple'}),
+        required=False, label="Affiliation", to_field_name="name"
+    )
     country = CountryField().formfield(required=False, label="Affiliation / Project Country")

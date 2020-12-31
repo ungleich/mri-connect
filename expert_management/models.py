@@ -372,7 +372,7 @@ class Expertise(models.Model):
 
 
 # The following is to apply limit on number of affiliations and projects that user can select in their profile
-def affiliations_changed(_, **kwargs):
+def affiliations_changed(sender, **kwargs):
     if kwargs["instance"].affiliations.count() > 3:
         raise ValidationError("You can't assign more than three affiliations.")
 

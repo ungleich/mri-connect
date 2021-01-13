@@ -175,9 +175,10 @@ def classify_expertise(user_expertise):
         }
 
         found[expertise_category] = list(_found.values())
-        list(map(lambda x: user_expertise.remove(x), _found.keys()))
+        list(map(user_expertise.remove, _found.keys()))
 
-    found['OTHER_EXPERTISE'] = ', '.join(user_expertise)
+    # Just throw aways non-categorized expertise
+    # found['OTHER_EXPERTISE'] = ', '.join(user_expertise)
     return {
         EXPERTISE_CATEGORY_TO_FIELD_MAPPING[key]: value for key, value in found.items()
     }

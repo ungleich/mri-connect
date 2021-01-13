@@ -1,16 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}Search Result{% endblock %}
-
 {% block content %}
-<h1>Search Result</h1>
-<h3>Total Count: {{ object_list.count }}</h3>
-<ul>
-{% for expert in object_list %}
-    <li><a href="{% url 'profile' expert.username %}">{{ expert.first_name }} {{ expert.last_name }}</a></li>
-{% empty %}
-    <li>No result for this search. Please try another query.</li>
-{% endfor %}
-</ul>
-
+<div class="p-5 rounded bg-white">
+    <h1>{{title}} <small class="text-muted">Total Count: {{ object_list.count }}</small></h1>
+    <ul>
+    {% for expert in object_list %}
+        <li><a href="{% url 'profile' expert.username %}">{{ expert.first_name }} {{ expert.last_name }}</a></li>
+    {% empty %}
+        <li>No result for this search. Please try another query.</li>
+    {% endfor %}
+    </ul>
+</div>
 {% endblock %}

@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% block title %}Advance Search{% endblock %}
 
 {% block head %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -9,12 +8,13 @@
 
 {% block content %}
 {% load crispy_forms_tags %}
-<h1>Advance Search</h1>
-<form method="GET" action="{% url 'search-result' %}">
-    {{ form|crispy }}
-    <button type="submit" class="btn btn-primary">Search</button>
-</form>
-
+<div class="p-5 bg-white rounded">
+<h1>{{title}}</h1>
+    <form method="GET" action="{% url 'search-result' %}">
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+</div>
 <script type="text/javascript">
     $(document).ready(function() {
         $('#{{form.expertise.id_for_label}}').select2({tags: true});
@@ -22,6 +22,8 @@
         $('#{{form.regions_of_expertise.id_for_label}}').select2();
         $('#{{form.regions_of_interest.id_for_label}}').select2();
         $('#{{form.career_stage.id_for_label}}').select2();
+        $('#{{form.participation_in_assessments.id_for_label}}').select2();
+        $('#{{form.inputs_or_participation_to_un_conventions.id_for_label}}').select2();
     });
 </script>
 {% endblock %}

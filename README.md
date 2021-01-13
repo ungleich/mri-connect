@@ -68,12 +68,20 @@ You can download the GMBA mountain registry from https://ilias.unibe.ch/goto_ili
 
 `DJANGO_SETTINGS_MODULE="mriconnect.settings.prod"` in the environment ensures that production settings, loaded from the environment in `prod.py`, should be used.
 
-Use a WSGI server like uwsgi to host the app in production mode. Environment settings are set in the `app.ini`, e.g.:
+Use a WSGI server like uwsgi to host the app in production mode.
+
+Environment settings are set in the `app.ini`, e.g.:
 
 ```
 env = DJANGO_SETTINGS_MODULE=mriconnect.settings.prod
-env = ALLOWED_HOSTS=mri.django-hosting.ch
+env = ALLOWED_HOSTS=mri-staging.django-hosting.ch
 env = LOG_DIR=/home/app/logs/
+env = GOOGLE_MAP_API_KEY=google_map_api_key
+env = EMAIL_HOST=smtp.example.com
+env = EMAIL_PORT=587
+env = EMAIL_HOST_USER=user@example.com
+env = EMAIL_HOST_PASSWORD=password
+env = DEFAULT_FROM_EMAIL=resetpassword@mri-staging.django-hosting.ch
 ```
 
 Settings can also be provided using `mriconnect/settings/local.py`

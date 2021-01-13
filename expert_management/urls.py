@@ -3,8 +3,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.Index.as_view(), name='index'),
-
     # Profile views
     path('profile/', views.MyProfileRedirectView.as_view(), name='my-profile'),
     path('user/<str:username>/', views.Profile.as_view(), name='profile'),
@@ -20,7 +18,7 @@ urlpatterns = [
     path('create-expertise/', views.CreateExpertise.as_view(), name='create-expertise'),
     path('update-expertise/', views.UpdateExpertise.as_view(), name='update-expertise'),
 
-    path('search/', views.Search.as_view(), name='search'),
-    path('advance-search/', views.AdvanceSearch.as_view(), name='advance-search'),
+    path('', views.Search.as_view(), name='search'),
+    path('advanced-search/', views.AdvancedSearch.as_view(), name='advanced-search'),
     path('search-result/', views.SearchResultView.as_view(), name='search-result')
 ]

@@ -1,5 +1,3 @@
-from functools import reduce
-
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -11,9 +9,19 @@ from django.urls import reverse_lazy
 from django.views import generic
 
 from . import data
-from .forms import AdvanceSearchForm, ProjectForm, SearchForm, CustomUserCreationForm
+from .forms import AdvancedSearchForm, ProjectForm, SearchForm, CustomUserCreationForm
 from .models import Expertise, Project
 from .selector import get_user_profile
+from .utils.common import Q_if_truthy
+
+
+class TitleMixin:
+    title = None
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({'title': self.title})
+        return context
 
 
 class GoogleMapAPIKeyMixin:
@@ -23,8 +31,9 @@ class GoogleMapAPIKeyMixin:
         return context
 
 
-class Index(generic.TemplateView):
+class Index(TitleMixin, generic.TemplateView):
     template_name = "expert_management/index.html"
+    title = "Homepage"
 
 
 class MyProfileRedirectView(generic.RedirectView):
@@ -34,10 +43,11 @@ class MyProfileRedirectView(generic.RedirectView):
         return reverse_lazy("profile", args=[self.request.user])
 
 
-class Signup(generic.CreateView):
+class Signup(TitleMixin, generic.CreateView):
     form_class = CustomUserCreationForm
     template_name = "registration/signup.html"
     success_url = reverse_lazy("login")
+    title = "Signup"
 
 
 class Profile(GoogleMapAPIKeyMixin, generic.DetailView):
@@ -45,16 +55,24 @@ class Profile(GoogleMapAPIKeyMixin, generic.DetailView):
     pk_url_kwarg = "username"
     template_name = "expert_management/profile.html"
 
+    def get_context_data(self, **kwargs):
+        user = self.get_object()
+        full_name = " ".join([user.first_name, user.last_name])
+
+        context = super().get_context_data(**kwargs)
+        context.update({'title': full_name})
+        return context
+
     def get_object(self, queryset=None):
         username = self.kwargs.get(self.pk_url_kwarg)
         return get_user_profile(username, self.request.user)
 
 
-class UpdateProfile(LoginRequiredMixin, generic.UpdateView):
+class UpdateProfile(TitleMixin, LoginRequiredMixin, generic.UpdateView):
     model = get_user_model()
     template_name = "expert_management/set-profile.html"
     success_url = reverse_lazy("my-profile")
-
+    title = "Update Profile"
     fields = fields_for_model(model, exclude=data.AUTH_SPECIFIC_FIELDS)
 
     def get_object(self, queryset=None):
@@ -65,25 +83,29 @@ class UpdateProfile(LoginRequiredMixin, generic.UpdateView):
         return super().form_valid(form)
 
 
-class ProjectList(GoogleMapAPIKeyMixin, LoginRequiredMixin, generic.ListView):
+class ProjectList(TitleMixin, GoogleMapAPIKeyMixin, LoginRequiredMixin, generic.ListView):
+    title = "My Projects"
+
     def get_queryset(self):
         return Project.objects.filter(user=self.request.user)
 
 
-class CreateProject(GoogleMapAPIKeyMixin, LoginRequiredMixin, generic.CreateView):
+class CreateProject(TitleMixin, GoogleMapAPIKeyMixin, LoginRequiredMixin, generic.CreateView):
     form_class = ProjectForm
     template_name = "expert_management/set-project.html"
     success_url = reverse_lazy("projects")
+    title = "Create Project"
 
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
 
-class UpdateProject(GoogleMapAPIKeyMixin, LoginRequiredMixin, generic.UpdateView):
+class UpdateProject(TitleMixin, GoogleMapAPIKeyMixin, LoginRequiredMixin, generic.UpdateView):
     form_class = ProjectForm
     template_name = "expert_management/set-project.html"
     success_url = reverse_lazy("projects")
+    title = "Update Project"
 
     def get_queryset(self, queryset=None):
         if queryset is None:
@@ -95,18 +117,20 @@ class UpdateProject(GoogleMapAPIKeyMixin, LoginRequiredMixin, generic.UpdateView
         return super().form_valid(form)
 
 
-class DeleteProject(LoginRequiredMixin, generic.DeleteView):
+class DeleteProject(TitleMixin, LoginRequiredMixin, generic.DeleteView):
     success_url = reverse_lazy("projects")
+    title = "Confirm Project Deletion"
 
     def get_queryset(self):
         return Project.objects.filter(user=self.request.user)
 
 
-class CreateExpertise(LoginRequiredMixin, generic.CreateView):
+class CreateExpertise(TitleMixin, LoginRequiredMixin, generic.CreateView):
     model = Expertise
     fields = fields_for_model(model, exclude={'user'})
     template_name = "expert_management/set-expertise.html"
     success_url = reverse_lazy("my-profile")
+    title = "Update Expertise"
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -121,11 +145,12 @@ class CreateExpertise(LoginRequiredMixin, generic.CreateView):
             return redirect('update-expertise')
 
 
-class UpdateExpertise(LoginRequiredMixin, generic.UpdateView):
+class UpdateExpertise(TitleMixin, LoginRequiredMixin, generic.UpdateView):
     model = Expertise
     fields = fields_for_model(model, exclude={'user'})
     template_name = "expert_management/set-expertise.html"
     success_url = reverse_lazy("my-profile")
+    title = "Update Expertise"
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -145,8 +170,9 @@ class UpdateExpertise(LoginRequiredMixin, generic.UpdateView):
             return super().get(*args, **kwargs)
 
 
-class Search(generic.TemplateView):
+class Search(TitleMixin, generic.TemplateView):
     template_name = "expert_management/search.html"
+    title = 'Search'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -154,33 +180,28 @@ class Search(generic.TemplateView):
         return context
 
 
-class AdvanceSearch(generic.TemplateView):
-    template_name = "expert_management/advance-search.html"
+class AdvancedSearch(TitleMixin, generic.TemplateView):
+    template_name = "expert_management/advanced-search.html"
+    title = 'Advanced Search'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = AdvanceSearchForm
+        context['form'] = AdvancedSearchForm
         return context
 
 
-def transform_tt(string):
-    return string.replace(" ", "_")
-
-def Q_if_truthy(**kwargs):
-    query = Q(**kwargs)
-    truthy = reduce(lambda x, y: x and bool(y), dict(query.children).values(), True)
-    return query if truthy else Q()
-
-
-class SearchResultView(generic.ListView):
+class SearchResultView(TitleMixin, generic.ListView):
     template_name = "expert_management/search-result.html"
     model = get_user_model()
+    title = "Search Result"
 
     def get_queryset(self):
         name = self.request.GET.get("name", "")
         expertise = self.request.GET.get("expertise", "")
         regions_of_expertise = self.request.GET.getlist("regions_of_expertise", [])
         regions_of_interest = self.request.GET.getlist("regions_of_interest", [])
+        participation_in_assessments = self.request.GET.getlist("participation_in_assessments", [])
+        inputs_or_participation_to_un_conventions = self.request.GET.getlist("inputs_or_participation_to_un_conventions", [])
         official_functions = self.request.GET.get("official_functions", "")
         career_stages = self.request.GET.getlist("career_stage", [])
         affiliation = self.request.GET.get("affiliation", "")
@@ -227,6 +248,8 @@ class SearchResultView(generic.ListView):
         for career_stage in career_stages:
             query |= Q_if_truthy(career_stage=career_stage)
 
+        query |= Q_if_truthy(expertise__participation_in_assessments__overlap=participation_in_assessments)
+        query |= Q_if_truthy(expertise__inputs_or_participation_to_un_conventions__overlap=inputs_or_participation_to_un_conventions)
         query &= Q_if_truthy(is_public=True)
 
         return queryset.filter(query).distinct()

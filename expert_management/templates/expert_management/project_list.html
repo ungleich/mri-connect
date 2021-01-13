@@ -1,7 +1,5 @@
 {% extends "base.html" %}
 
-{% block title %}My Projects{% endblock %}
-
 {% block head %}
 <script src="https://maps.googleapis.com/maps/api/js?key={{ google_map_api_key }}&callback=initMap&libraries=&v=weekly" defer></script>
 {% endblock %}
@@ -9,42 +7,43 @@
 {% block content %}
 {% load crispy_forms_tags %}
 
-<h1>My Projects</h1>
-<a href="{% url 'create-project' %}" class="btn btn-primary btn-sm" role="btn">Create Project</a> <br/>
-{% for project in object_list %}
-<div class="card mb-3">
-    <div class="row g-0">
-      <div class="col-md-9">
-        <div id="map{{forloop.counter0}}" style="width: 100%; height: 100%;"></div>
-      </div>
-      <div class="col-md-3">
-        <div class="card-body">
-            <h5 class="card-title">
-                {{project.name}}
-                {% if project.acronym %}({{project.acronym}}){% endif %}
-            </h5>
-            <p class="card-text">
-                <dl class="row">
-                    <dt class="col-sm-6">Start Date</dt><dd class="col-sm-6">{{project.date_start}}</dd>
-                    <dt class="col-sm-6">End Date</dt><dd class="col-sm-6">{{project.date_ending}}</dd>
-                    <dt class="col-sm-6">Funding Source</dt><dd class="col-sm-6">{{project.funding_source}}</dd>
-                    <dt class="col-sm-6">Role</dt><dd class="col-sm-6">{{project.role}}</dd>
-                    <dt class="col-sm-6">Homepage</dt><dd class="col-sm-6">{{project.homepage}}</dd>
-                    <dt class="col-sm-6">Location</dt><dd class="col-sm-6">{{project.location}}</dd>
-                    <dt class="col-sm-6">Country</dt><dd class="col-sm-6">{{project.get_country_display}}</dd>
-                </dl>
-                <a href="{% url 'update-project' project.id %}" class="btn btn-primary" role="button">Update</a>
-                <a href="{% url 'delete-project' project.id %}" class="btn btn-danger" role="button">Delete</a>
-            </p>
+<div class="p-5 bg-white rounded">
+  <h1>{{title}}</h1>
+  <a href="{% url 'create-project' %}" class="btn btn-primary btn-sm" role="btn">Create Project</a> <br/>
+  {% for project in object_list %}
+  <div class="card mb-3">
+      <div class="row g-0">
+        <div class="col-md-9">
+          <div id="map{{forloop.counter0}}" style="width: 100%; height: 100%;"></div>
+        </div>
+        <div class="col-md-3">
+          <div class="card-body">
+              <h5 class="card-title">
+                  {{project.name}}
+                  {% if project.acronym %}({{project.acronym}}){% endif %}
+              </h5>
+              <p class="card-text">
+                  <dl class="row">
+                      <dt class="col-sm-6">Start Date</dt><dd class="col-sm-6">{{project.date_start}}</dd>
+                      <dt class="col-sm-6">End Date</dt><dd class="col-sm-6">{{project.date_ending}}</dd>
+                      <dt class="col-sm-6">Funding Source</dt><dd class="col-sm-6">{{project.funding_source}}</dd>
+                      <dt class="col-sm-6">Role</dt><dd class="col-sm-6">{{project.role}}</dd>
+                      <dt class="col-sm-6">Homepage</dt><dd class="col-sm-6">{{project.homepage}}</dd>
+                      <dt class="col-sm-6">Location</dt><dd class="col-sm-6">{{project.location}}</dd>
+                      <dt class="col-sm-6">Country</dt><dd class="col-sm-6">{{project.get_country_display}}</dd>
+                  </dl>
+                  <a href="{% url 'update-project' project.id %}" class="btn btn-primary" role="button">Update</a>
+                  <a href="{% url 'delete-project' project.id %}" class="btn btn-danger" role="button">Delete</a>
+              </p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-{% empty %}
-No projects yet.
-{% endfor %}
-
+  {% empty %}
+  No projects yet.
+  {% endfor %}
+</div>
 <script type="text/javascript">
     function initMap() {
     {% for project in object_list %}

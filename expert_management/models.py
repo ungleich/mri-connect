@@ -111,6 +111,7 @@ class User(AbstractUser):
             namearray.append(self.last_name)
         return " ".join(namearray)
 
+
     @property
     def publications(self):
         pub = self.list_publications
@@ -224,7 +225,7 @@ class Expertise(models.Model):
         null=True,
         blank=True,
     )
-    integrated_sciences_and_humanities = MultiSelectField(
+    integrated_systems = MultiSelectField(
         models.CharField(choices=data.INTEGRATED_SYSTEMS_SUBCATEGORIES, max_length=256),
         default=list,
         null=True,
@@ -313,8 +314,8 @@ class Expertise(models.Model):
         return ", ".join(self.social_sciences_and_humanities)
 
     @property
-    def integrated_sciences_and_humanities_display(self):
-        return ", ".join(self.integrated_sciences_and_humanities)
+    def integrated_systems_display(self):
+        return ", ".join(self.integrated_systems)
 
     @property
     def spatial_scale_of_expertise_display(self):

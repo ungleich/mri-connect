@@ -47,7 +47,7 @@ class SearchForm(forms.Form):
     )
 
 
-class AdvanceSearchForm(SearchForm):
+class AdvancedSearchForm(SearchForm):
     regions_of_interest = forms.ModelChoiceField(
         queryset=Mountain.objects.all(), required=False, widget=forms.SelectMultiple(attrs={'multiple': 'multiple'}),
         label="Mountain Ranges of Research Interest", to_field_name="name"
@@ -61,3 +61,10 @@ class AdvanceSearchForm(SearchForm):
         required=False, label="Affiliation", to_field_name="name"
     )
     country = CountryField().formfield(required=False, label="Affiliation / Project Country")
+    participation_in_assessments = forms.ChoiceField(
+        choices=data.ASSESSMENT_TYPES, required=False, widget=forms.SelectMultiple(attrs={'multiple': 'multiple'})
+    )
+    inputs_or_participation_to_un_conventions = forms.ChoiceField(
+        label="Inputs / Participation to UN Conventions", choices=data.UN_CONVENTIONS_POLICY_PROCESSES,
+        required=False, widget=forms.SelectMultiple(attrs={'multiple': 'multiple'})
+    )

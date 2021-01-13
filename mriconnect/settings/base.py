@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 
+env = os.environ.copy()
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # See prod.py / dev.py / set optional local.py for your deployments
@@ -37,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.postgres',
     'django.contrib.gis',
+    'django.contrib.sites',
     'crispy_forms',
     'jazzmin',
     'django_countries',
@@ -54,6 +57,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+SITE_ID = 1
 
 ROOT_URLCONF = 'mriconnect.urls'
 
@@ -180,3 +185,20 @@ JAZZMIN_UI_TWEAKS = {
     "sidebar_nav_flat_style": False,
     "footer_small_text": False
 }
+
+MEDIA_URL = 'media/'
+MEDIA_ROOT = 'media/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+MAP_WIDGETS = {
+    "GOOGLE_MAP_API_KEY": env.get("GOOGLE_MAP_API_KEY")
+}
+
+EMAIL_HOST = env.get("EMAIL_HOST")
+EMAIL_PORT = env.get("EMAIL_PORT")
+EMAIL_HOST_USER = env.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env.get("EMAIL_HOST_PASSWROD")
+EMAIL_USE_TLS = env.get("EMAIL_USE_TLS", True)
+
+DEFAULT_FROM_EMAIL = env.get("DEFAULT_FROM_EMAIL", "webmaster@localhost")

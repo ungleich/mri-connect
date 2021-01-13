@@ -1,7 +1,5 @@
 {% extends "base.html" %}
 
-{% block title %}Set Expertise{% endblock %}
-
 {% block head %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
@@ -10,13 +8,15 @@
 
 {% block content %}
 {% load crispy_forms_tags %}
+<div class="p-5 rounded bg-white">
+    <h1>{{title}}</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <input type="submit" class="btn btn-primary" value="Submit" />
+    </form>
+</div>
 
-<h1>Set Expertise</h1>
-<form method="POST">
-    {% csrf_token %}
-    {{ form|crispy }}
-    <input type="submit" class="btn btn-primary" value="Submit" />
-</form>
 <script type="text/javascript">
     $(document).ready(function() {
         $('#{{form.mountain_ranges_of_research_interest.id_for_label}}').select2();

@@ -3,243 +3,265 @@
 <script src="https://maps.googleapis.com/maps/api/js?key={{ google_map_api_key }}&callback=initMap&libraries=&v=weekly" defer></script>
 {% endblock %}
 
-{% block title %}Profile{% endblock %}
 {% block before_content %}
-<section class="text-center container">
-    <div class="row">
-        <div class="col-lg-12">
-            {% if object.photo %}
-                <img src="{{ object.photo.url }}" class="img-thumbnail" style="width: 256px; height:256px" alt="Profile Image" />
-            {% else %}
-                <img src="https://miro.medium.com/max/720/1*W35QUSvGpcLuxPo3SRTH4w.png"
-                     class="img-thumbnail" style="width: 256px; height:256px;" alt="User avatar" />
-            {% endif %}
-            <h1 class="fw-light">
-                {{object.get_title_display |default:""}} {{object.first_name}} {{object.last_name}}
-            </h1>
-            <a href="mailto:{{ object.email }}">Email: {{ object.email }}</a><br/>
+<div class="bg-light">
+    <section class="text-center container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div style="background-color: #D9D9D9;">
+                    <img src="{{ object.photo.url }}" class="img-thumbnail" style="width: 256px; height:256px" alt="Profile Image" />
+                    <h1 class="fw-light">
+                        {{object.get_title_display |default:""}} {{object.first_name}} {{object.last_name}}
+                    </h1>
+                    <a href="mailto:{{ object.email }}">Email: {{ object.email }}</a><br/>
 
-            {% if object == request.user %}
-            <a href="{% url 'update-profile' %}" class="btn btn-primary btn-sm" role="btn">Update Profile</a>
-            <a href="{% url 'projects' %}" class="btn btn-primary btn-sm" role="btn">Update Projects</a>
-            <a href="{% url 'update-expertise' %}" class="btn btn-primary btn-sm" role="btn">Update Expertise</a>
-            {% endif %}
-        </div>
-    </div>
-</section>
-{% endblock %}
-{% block content %}
-<dl class="row">
-    <h3>Information</h3>
+                    {% if object == request.user %}
+                    <a href="{% url 'update-profile' %}" class="btn btn-primary btn-sm" role="btn">Update Profile</a>
+                    <a href="{% url 'projects' %}" class="btn btn-primary btn-sm" role="btn">Update Projects</a>
+                    <a href="{% url 'update-expertise' %}" class="btn btn-primary btn-sm" role="btn">Update Expertise</a>
+                    <a href="{% url 'password_change' %}" class="btn btn-warning btn-sm" role="btn">Change Password</a>
+                    {% endif %}
+                </div>
 
-    <dt class="col-sm-3">Gender</dt>
-    <dd class="col-sm-9">{{object.get_gender_display}}</dd>
-
-    <dt class="col-sm-3">Position</dt>
-    <dd class="col-sm-9">{{object.position}}</dd>
-
-    <dt class="col-sm-3">Career Stage</dt>
-    <dd class="col-sm-9">
-        {% if object.career_stage %}
-            {{object.get_career_stage_display}}
-        {% elif object.career_stage_note %}
-            {{object.career_stage_note}}
-        {% else %}
-            Not Mentioned
-        {% endif %}
-    </dd>
-
-    <dt class="col-sm-3">Year of Last Degree Graduation</dt>
-    <dd class="col-sm-9">{{object.year_of_last_degree_graduation|default:"Not Mentioned"}}</dd>
-
-    <dt class="col-sm-3">Official Functions</dt>
-    <dd class="col-sm-9">{{object.official_functions|default:"Not Mentioned"}}</dd>
-
-    <dt class="col-sm-3">Personal Webpage</dt>
-    <dd class="col-sm-9">
-        {% if object.url_personal %}
-            <a href="{{object.url_personal}}">{{object.url_personal}}</a>
-        {% else %}
-            Not Mentioned
-        {% endif %}
-    </dd>
-
-    <dt class="col-sm-3">CV</dt>
-    <dd class="col-sm-9">
-        {% if object.url_cv %}
-            <a href="{{object.url_cv}}">{{object.url_cv}}</a>
-        {% else %}
-            Not Mentioned
-        {% endif %}
-    </dd>
-
-    <dt class="col-sm-3">ResearchGate Profile</dt>
-    <dd class="col-sm-9">
-        {% if object.url_researchgate %}
-            <a href="{{object.url_researchgate}}">{{object.url_researchgate}}</a>
-        {% else %}
-            Not Mentioned
-        {% endif %}
-    </dd>
-
-    <dt class="col-sm-3">ORCID</dt>
-    <dd class="col-sm-9">{{object.orcid}}</dd>
-</dl>
-<h3>Expertise</h3>
-<dl class="row">
-    <dt class="col-sm-3">Research Expertise</dt>
-    <dd class="col-sm-9">{{object.expertise.research_expertise_display}}</dd>
-
-    <dt class="col-sm-3">Disciplinary Expertise</dt>
-    <dd class="col-sm-9">
-        <dl class="row">
-            {% if object.expertise.atmospheric_sciences_display %}
-            <dt class="col-sm-3">Atmospheric Sciences</dt><dd class="col-sm-9">{{object.expertise.atmospheric_sciences_display}}</dd>
-            {% endif %}
-
-            {% if object.expertise.hyrdospheric_sciences_display %}
-            <dt class="col-sm-3">Hydrospheric Sciences</dt><dd class="col-sm-9">{{object.expertise.hyrdospheric_sciences_display}}</dd>
-            {% endif %}
-
-            {% if object.expertise.cryospheric_sciences_display %}
-            <dt class="col-sm-3">Cryospheric Sciences</dt><dd class="col-sm-9">{{object.expertise.cryospheric_sciences_display}}</dd>
-            {% endif %}
-
-            {% if object.expertise.earth_sciences_display %}
-            <dt class="col-sm-3">Earth Sciences</dt><dd class="col-sm-9">{{object.expertise.earth_sciences_display}}</dd>
-            {% endif %}
-
-            {% if object.expertise.biological_sciences_display %}
-            <dt class="col-sm-3">Biological Sciences</dt><dd class="col-sm-9">{{object.expertise.biological_sciences_display}}</dd>
-            {% endif %}
-
-            {% if object.expertise.social_sciences_and_humanities_display %}
-            <dt class="col-sm-3">Social Sciences and Humanities</dt><dd class="col-sm-9">{{object.expertise.social_sciences_and_humanities_display}}</dd>
-            {% endif %}
-
-            {% if object.expertise.other_expertise %}
-            <dt class="col-sm-3">Other expertise</dt><dd class="col-sm-9">{{object.expertise.other_expertise}}</dd>
-            {% endif %}
-        </dl>
-    </dd>
-
-    <dt class="col-sm-3">Spatial Scale of Expertise</dt>
-    <dd class="col-sm-9">
-        {{object.expertise.spatial_scale_of_expertise_display}}
-    </dd>
-
-    <dt class="col-sm-3">Statistical Focus</dt>
-    <dd class="col-sm-9">
-        {{object.expertise.statistical_focus_display}}
-    </dd>
-
-    <dt class="col-sm-3">Time Scales</dt>
-    <dd class="col-sm-9">
-        {{object.expertise.time_scales_display}}
-    </dd>
-
-    <dt class="col-sm-3">Methods</dt>
-    <dd class="col-sm-9">
-        {{object.expertise.methods_display}}
-    </dd>
-    <dt class="col-sm-3">Mountain Ranges of Research Interest</dt>
-    <dd class="col-sm-9">
-        {{object.expertise.mountain_ranges_of_research_interest_display}}
-    </dd>
-    <dt class="col-sm-3">Mountain Ranges of Research Expertise</dt>
-    <dd class="col-sm-9">
-        {{object.expertise.mountain_ranges_of_research_expertise_display}}
-    </dd>
-
-    <dt class="col-sm-3">Partition in Assessments</dt>
-    <dd class="col-sm-9">
-        {{object.expertise.participation_in_assessments_display}}
-        {% if object.expertise.more_detail_about_participation_in_assessments %}
-        <dl class="row">
-            <dt class="col-sm-3">Details</dt>
-            <dt class="col-sm-9">{{object.expertise.more_detail_about_participation_in_assessments}}</dt>
-        </dl>
-        {% endif %}
-    </dd>
-
-    <dt class="col-sm-3">Inputs / Participation to/in UN Conventions</dt>
-    <dd class="col-sm-9">{{object.expertise.inputs_or_participation_to_un_conventions_display}}</dd>
-
-    <dt class="col-sm-3"></dt>
-    <dd class="col-sm-9"></dd>
-</dl>
-
-<h3>Affiliations</h3>
-<div class="row justify-content-start">
-{% for affiliation in object.affiliations.all %}
-    <div class="col">
-        <div class="card" style="width: 100%; height:100%;">
-            <div class="card-body">
-                <h5 class="card-title text-center">
-                    {{affiliation.name}}
-                    <p class="text-muted">{{affiliation.street}} P.O {{affiliation.post_code}} {{affiliation.city}} {{affiliation.get_country_display}}</p>
-                </h5>
             </div>
         </div>
-    </div>
-{% endfor %}
+    </section>
 </div>
 
+{% endblock %}
+{% block content %}
+<div class="p-5 bg-white rounded">
+    <dl class="row">
+        <h3>Information</h3>
 
-<h3>Projects</h3>
-{% for project in object.projects.all %}
+        <dt class="col-sm-5">Position</dt>
+        <dd class="col-sm-7">{{object.position}}</dd>
 
-<div class="card mb-3">
-    <div class="row g-0">
-      <div class="col-md-9">
-        <div id="map{{forloop.counter0}}" style="width: 100%; height: 100%;"></div>
-      </div>
-      <div class="col-md-3">
-        <div class="card-body">
-            <h5 class="card-title">
-                {{project.name}}
-                {% if project.acronym %}({{project.acronym}}){% endif %}
-            </h5>
-            <p class="card-text">
-                <dl class="row">
-                    <dt class="col-sm-6">Start Date</dt><dd class="col-sm-6">{{project.date_start}}</dd>
-                    <dt class="col-sm-6">End Date</dt><dd class="col-sm-6">{{project.date_ending}}</dd>
-                    <dt class="col-sm-6">Funding Source</dt><dd class="col-sm-6">{{project.funding_source}}</dd>
-                    <dt class="col-sm-6">Role</dt><dd class="col-sm-6">{{project.role}}</dd>
-                    <dt class="col-sm-6">Homepage</dt><dd class="col-sm-6">{{project.homepage}}</dd>
-                    <dt class="col-sm-6">Location</dt><dd class="col-sm-6">{{project.location}}</dd>
-                    <dt class="col-sm-6">Country</dt><dd class="col-sm-6">{{project.get_country_display}}</dd>
-                </dl>
-            </p>
+        <dt class="col-sm-5">Career Stage</dt>
+        <dd class="col-sm-7">
+            {% if object.career_stage %}
+                {{object.get_career_stage_display}}
+            {% elif object.career_stage_note %}
+                {{object.career_stage_note}}
+            {% else %}
+                Not Mentioned
+            {% endif %}
+        </dd>
+
+        <dt class="col-sm-5">Year of Last Degree Graduation</dt>
+        <dd class="col-sm-7">{{object.year_of_last_degree_graduation|default:"Not Mentioned"}}</dd>
+
+        <dt class="col-sm-5">Official Functions</dt>
+        <dd class="col-sm-7">{{object.official_functions|default:"Not Mentioned"}}</dd>
+
+        <dt class="col-sm-5">Personal Webpage</dt>
+        <dd class="col-sm-7">
+            {% if object.url_personal %}
+                <a href="{{object.url_personal}}">{{object.url_personal}}</a>
+            {% else %}
+                Not Mentioned
+            {% endif %}
+        </dd>
+
+        <dt class="col-sm-5">CV</dt>
+        <dd class="col-sm-7">
+            {% if object.url_cv %}
+                <a href="{{object.url_cv}}">{{object.url_cv}}</a>
+            {% else %}
+                Not Mentioned
+            {% endif %}
+        </dd>
+
+        <dt class="col-sm-5">ResearchGate Profile</dt>
+        <dd class="col-sm-7">
+            {% if object.url_researchgate %}
+                <a href="{{object.url_researchgate}}">{{object.url_researchgate}}</a>
+            {% else %}
+                Not Mentioned
+            {% endif %}
+        </dd>
+
+        <dt class="col-sm-5">ORCID</dt>
+        <dd class="col-sm-7">{{object.orcid}}</dd>
+    </dl>
+    <h3>Expertise</h3>
+    <dl class="row">
+        <dt class="col-sm-5">Research Expertise</dt>
+        <dd class="col-sm-7">{{object.expertise.research_expertise_display}}</dd>
+
+        {% if object.expertise.spatial_scale_of_expertise_display %}
+        <dt class="col-sm-5">Spatial Scale of Expertise</dt>
+        <dd class="col-sm-7">
+            {{object.expertise.spatial_scale_of_expertise_display}}
+        </dd>
+        {% endif %}
+
+        {% if object.expertise.statistical_focus_display %}
+        <dt class="col-sm-5">Statistical Focus</dt>
+        <dd class="col-sm-7">
+            {{object.expertise.statistical_focus_display}}
+        </dd>
+        {% endif %}
+
+        {% if object.expertise.time_scales_display %}
+        <dt class="col-sm-5">Time Scales</dt>
+        <dd class="col-sm-7">
+            {{object.expertise.time_scales_display}}
+        </dd>
+        {% endif %}
+
+        {% if object.expertise.methods_display %}
+        <dt class="col-sm-5">Methods</dt>
+        <dd class="col-sm-7">
+            {{object.expertise.methods_display}}
+        </dd>
+        {% endif %}
+
+        {% if object.expertise.mountain_ranges_of_research_interest_display %}
+        <dt class="col-sm-5">Mountain Ranges of Research Interest</dt>
+        <dd class="col-sm-7">
+            {{object.expertise.mountain_ranges_of_research_interest_display}}
+        </dd>
+        {% endif %}
+
+        {% if object.expertise.mountain_ranges_of_research_expertise_display %}
+        <dt class="col-sm-5">Mountain Ranges of Research Expertise</dt>
+        <dd class="col-sm-7">
+            {{object.expertise.mountain_ranges_of_research_expertise_display}}
+        </dd>
+        {% endif %}
+
+        {% if object.expertise.participation_in_assessments_display %}
+        <dt class="col-sm-5">Participation in Assessments</dt>
+        <dd class="col-sm-7">
+            {{object.expertise.participation_in_assessments_display}}
+            {% if object.expertise.more_detail_about_participation_in_assessments %}
+            <dl class="row">
+                <dt class="col-sm-5">Details</dt>
+                <dt class="col-sm-7">{{object.expertise.more_detail_about_participation_in_assessments}}</dt>
+            </dl>
+            {% endif %}
+        </dd>
+        {% endif %}
+
+        {% if object.expertise.inputs_or_participation_to_un_conventions_display %}
+        <dt class="col-sm-5">Inputs / Participation to/in UN Conventions</dt>
+        <dd class="col-sm-7">{{object.expertise.inputs_or_participation_to_un_conventions_display}}</dd>
+        {% endif %}
+    </dl>
+    <div>
+    <h4>Disciplinary Expertise</h4>
+    <dl class="row">
+        {% if object.expertise.atmospheric_sciences_display %}
+        <dt class="col-sm-5">Atmospheric Sciences</dt><dd class="col-sm-7">{{object.expertise.atmospheric_sciences_display}}</dd>
+        {% endif %}
+
+        {% if object.expertise.hyrdospheric_sciences_display %}
+        <dt class="col-sm-5">Hydrospheric Sciences</dt><dd class="col-sm-7">{{object.expertise.hyrdospheric_sciences_display}}</dd>
+        {% endif %}
+
+        {% if object.expertise.cryospheric_sciences_display %}
+        <dt class="col-sm-5">Cryospheric Sciences</dt><dd class="col-sm-7">{{object.expertise.cryospheric_sciences_display}}</dd>
+        {% endif %}
+
+        {% if object.expertise.earth_sciences_display %}
+        <dt class="col-sm-5">Earth Sciences</dt><dd class="col-sm-7">{{object.expertise.earth_sciences_display}}</dd>
+        {% endif %}
+
+        {% if object.expertise.biological_sciences_display %}
+        <dt class="col-sm-5">Biological Sciences</dt><dd class="col-sm-7">{{object.expertise.biological_sciences_display}}</dd>
+        {% endif %}
+
+        {% if object.expertise.social_sciences_and_humanities_display %}
+        <dt class="col-sm-5">Social Sciences and Humanities</dt><dd class="col-sm-7">{{object.expertise.social_sciences_and_humanities_display}}</dd>
+        {% endif %}
+
+        {% if object.expertise.integrated_systems_display %}
+        <dt class="col-sm-5">Integrated Systems</dt><dd class="col-sm-7">{{object.expertise.integrated_systems_display}}</dd>
+        {% endif %}
+
+        {% if object.expertise.other_expertise %}
+        <dt class="col-sm-5">Other expertise</dt><dd class="col-sm-7">{{object.expertise.other_expertise}}</dd>
+        {% endif %}
+    </dl>
+    </div>
+
+
+    <h3>Affiliations</h3>
+    <div class="row justify-content-start">
+    {% for affiliation in object.affiliations.all %}
+        <div class="col">
+            <div class="card" style="width: 100%; height:100%;">
+                <div class="card-body">
+                    <h5 class="card-title text-center">
+                        {{affiliation.name}}
+                        {% if affiliation.get_country_display or affiliation.city %}
+                        <span class="text-muted">({{affiliation.get_country_display}}, {{affiliation.city}})</span>
+                        {% endif %}
+                    </h5>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+
+
+    <h3>Projects</h3>
+    {% for project in object.projects.all %}
+
+    <div class="card mb-3">
+        <div class="row g-0">
+          <div class="col-md-9">
+            <div id="map{{forloop.counter0}}" style="width: 100%; height: 100%;"></div>
+          </div>
+          <div class="col-md-3">
+            <div class="card-body">
+                <h5 class="card-title">
+                    {{project.name}}
+                    {% if project.acronym %}({{project.acronym}}){% endif %}
+                </h5>
+                <p class="card-text">
+                    <dl class="row">
+                        <dt class="col-sm-6">Start Date</dt><dd class="col-sm-6">{{project.date_start}}</dd>
+                        <dt class="col-sm-6">End Date</dt><dd class="col-sm-6">{{project.date_ending}}</dd>
+                        <dt class="col-sm-6">Funding Source</dt><dd class="col-sm-6">{{project.funding_source}}</dd>
+                        <dt class="col-sm-6">Role</dt><dd class="col-sm-6">{{project.role}}</dd>
+                        <dt class="col-sm-6">Homepage</dt><dd class="col-sm-6">{{project.homepage}}</dd>
+                        <dt class="col-sm-6">Location</dt><dd class="col-sm-6">{{project.location}}</dd>
+                        <dt class="col-sm-6">Country</dt><dd class="col-sm-6">{{project.get_country_display}}</dd>
+                    </dl>
+                </p>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-{% endfor %}
-
-<script type="text/javascript">
-    function initMap() {
-    {% for project in object.projects.all %}
-      {% if project.coordinates %}
-      const myLatLng{{forloop.counter0}} = { lat: {{project.coordinates.coords.1}}, lng: {{project.coordinates.coords.0}} };
-      const map{{forloop.counter0}} = new google.maps.Map(document.getElementById("map{{forloop.counter0}}"), {
-        zoom: 12,
-        center: myLatLng{{forloop.counter0}},
-      });
-      new google.maps.Marker({
-        position: myLatLng{{forloop.counter0}},
-        map{{forloop.counter0}},
-        title: "{{project.name}}",
-      });
-      {% endif %}
     {% endfor %}
-    }
-</script>
-<dl class="row">
-    <dt class="col-sm-3">Publications URL</dt>
-    <dd class="col-sm-9">{{object.url_publications}}</dd>
 
-    <dt class="col-sm-3">List of publications</dt>
-    <dd class="col-sm-9">{{object.list_publications|default:None}}</dd>
-</dl>
+    <script type="text/javascript">
+        function initMap() {
+        {% for project in object.projects.all %}
+          {% if project.coordinates %}
+          const myLatLng{{forloop.counter0}} = { lat: {{project.coordinates.coords.1}}, lng: {{project.coordinates.coords.0}} };
+          const map{{forloop.counter0}} = new google.maps.Map(document.getElementById("map{{forloop.counter0}}"), {
+            zoom: 12,
+            center: myLatLng{{forloop.counter0}},
+          });
+          new google.maps.Marker({
+            position: myLatLng{{forloop.counter0}},
+            map{{forloop.counter0}},
+            title: "{{project.name}}",
+          });
+          {% endif %}
+        {% endfor %}
+        }
+    </script>
+    <dl class="row">
+        <dt class="col-sm-5">Publications URL</dt>
+        <dd class="col-sm-7">{{object.url_publications}}</dd>
+
+        <dt class="col-sm-5">List of publications</dt>
+        <dd class="col-sm-7">{{object.list_publications|default:None}}</dd>
+    </dl>
+</div>
+
 {% endblock %}

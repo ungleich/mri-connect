@@ -148,7 +148,7 @@ def classify_expertise(user_expertise):
         "EARTH_SCIENCES_SUBCATEGORIES": "earth_sciences",
         "BIOLOGICAL_SCIENCES_SUBCATEGORIES": "biological_sciences",
         "SOCIAL_SCIENCES_AND_HUMANITIES_SUBCATEGORIES": "social_sciences_and_humanities",
-        "INTEGRATED_SYSTEMS_SUBCATEGORIES": "integrated_sciences_and_humanities",
+        "INTEGRATED_SYSTEMS_SUBCATEGORIES": "integrated_systems",
         "SPATIAL_SCALE_OF_EXPERTISE": "spatial_scale_of_expertise",
         "STATISTICAL_FOCUS": "statistical_focus",
         "TIME_SCALES": "time_scales",

@@ -59,7 +59,7 @@ To import data from the legacy database, use:
 
 To import mountains, use the following command
 ```bash
-./manage.py loadgma <path_to_shp_file>
+./manage.py loadgmba <path_to_shp_file>
 ```
 
 You can download the GMBA mountain registry from https://ilias.unibe.ch/goto_ilias3_unibe_file_1047348_download.html
@@ -70,7 +70,7 @@ You can download the GMBA mountain registry from https://ilias.unibe.ch/goto_ili
 
 Use a WSGI server like uwsgi to host the app in production mode.
 
-Environment settings are set in the `app.ini`, e.g.:
+Environment settings are set in the `app.ini` In our case, it exists at `/etc/uwsgi/conf.d/app.ini`, e.g.:
 
 ```
 env = DJANGO_SETTINGS_MODULE=mriconnect.settings.prod

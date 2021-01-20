@@ -124,7 +124,7 @@ class User(AbstractUser):
         return self.get_career_stage_display()
 
     def __str__(self):
-        return self.username
+        return f"{self.first_name} {self.last_name} ({self.username})"
 
     class Meta:
         verbose_name = _("Expert")
@@ -188,93 +188,44 @@ class Mountain(models.Model):
 
 
 class Expertise(models.Model):
-    research_expertise = MultiSelectField(
-        models.CharField(choices=data.RESEARCH_EXPERTISE, max_length=256), default=list, null=True, blank=True
-    )
+    research_expertise = models.ManyToManyField("ResearchExpertise", blank=True)
+    atmospheric_sciences = models.ManyToManyField("AtmosphericSciences", blank=True)
+    hydrospheric_sciences = models.ManyToManyField("HydrosphericSciences", blank=True)
+    cryospheric_sciences = models.ManyToManyField("CryosphericSciences", blank=True)
+    earth_sciences = models.ManyToManyField("EarthSciences", blank=True)
+    biological_sciences = models.ManyToManyField("BiologicalSciences", blank=True)
+    social_sciences_and_humanities = models.ManyToManyField("SocialSciencesAndHumanities", blank=True)
+    integrated_systems = models.ManyToManyField("IntegratedSystems", blank=True)
 
-    atmospheric_sciences = MultiSelectField(
-        models.CharField(choices=data.ATMOSPHERIC_SCIENCES_SUBCATEGORIES, max_length=256),
-        default=list,
-        null=True,
-        blank=True,
-    )
-    hydrospheric_sciences = MultiSelectField(
-        models.CharField(choices=data.HYDROSPHERIC_SCIENCES_SUBCATEGORIES, max_length=256),
-        default=list,
-        null=True,
-        blank=True,
-    )
-    cryospheric_sciences = MultiSelectField(
-        models.CharField(choices=data.CRYOSPHERIC_SCIENCES_SUBCATEGORIES, max_length=256),
-        default=list,
-        null=True,
-        blank=True,
-    )
-    earth_sciences = MultiSelectField(
-        models.CharField(choices=data.EARTH_SCIENCES_SUBCATEGORIES, max_length=256), default=list, null=True, blank=True
-    )
-    biological_sciences = MultiSelectField(
-        models.CharField(choices=data.BIOLOGICAL_SCIENCES_SUBCATEGORIES, max_length=256),
-        default=list,
-        null=True,
-        blank=True,
-    )
-    social_sciences_and_humanities = MultiSelectField(
-        models.CharField(choices=data.SOCIAL_SCIENCES_AND_HUMANITIES_SUBCATEGORIES, max_length=256),
-        default=list,
-        null=True,
-        blank=True,
-    )
-    integrated_systems = MultiSelectField(
-        models.CharField(choices=data.INTEGRATED_SYSTEMS_SUBCATEGORIES, max_length=256),
-        default=list,
-        null=True,
-        blank=True,
-    )
     other_expertise = models.TextField(null=True, blank=True, help_text="This should be a comma seperated list")
 
-    spatial_scale_of_expertise = MultiSelectField(
-        models.CharField(choices=data.SPATIAL_SCALE_OF_EXPERTISE, max_length=256), default=list, null=True, blank=True
-    )
+    spatial_scale_of_expertise = models.ManyToManyField("SpatialScaleOfExpertise", blank=True)
     other_spatial_scale_of_expertise = models.CharField(
         max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list"
     )
 
-    statistical_focus = MultiSelectField(
-        models.CharField(choices=data.STATISTICAL_FOCUS, max_length=256), default=list, null=True, blank=True
-    )
+    statistical_focus = models.ManyToManyField("StatisticalFocus", blank=True)
     other_statistical_focus = models.CharField(
         max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list"
     )
 
-    time_scales = MultiSelectField(
-        models.CharField(choices=data.TIME_SCALES, max_length=256), default=list, null=True, blank=True
-    )
+    time_scales = models.ManyToManyField("TimeScales", blank=True)
     other_time_scales = models.CharField(
         max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list"
     )
 
-    methods = MultiSelectField(
-        models.CharField(choices=data.METHODS, max_length=256), default=list, null=True, blank=True
-    )
+    methods = models.ManyToManyField("Methods", blank=True)
     other_methods = models.CharField(
         max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list"
     )
 
-    participation_in_assessments = MultiSelectField(
-        models.CharField(choices=data.ASSESSMENT_TYPES, max_length=256), default=list, null=True, blank=True
-    )
+    participation_in_assessments = models.ManyToManyField("ParticipationInAssessments", blank=True)
     other_participation_in_assessments = models.CharField(
         max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list"
     )
     more_detail_about_participation_in_assessments = models.TextField(null=True, blank=True)
 
-    inputs_or_participation_to_un_conventions = MultiSelectField(
-        models.CharField(choices=data.UN_CONVENTIONS_POLICY_PROCESSES, max_length=256),
-        default=list,
-        null=True,
-        blank=True,
-    )
+    inputs_or_participation_to_un_conventions = models.ManyToManyField("InputsOrParticipationToUNConventions", blank=True)
     other_inputs_or_participation_to_un_conventions = models.CharField(
         max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list"
     )
@@ -291,61 +242,76 @@ class Expertise(models.Model):
 
     @property
     def research_expertise_display(self):
-        return ", ".join(self.research_expertise)
+        return ", ".join([expertise.title for expertise in self.research_expertise.all()])
 
     @property
     def atmospheric_sciences_display(self):
-        return ", ".join(self.atmospheric_sciences)
+        return ", ".join([expertise.title for expertise in self.atmospheric_sciences.all()])
 
     @property
     def hydrospheric_sciences_display(self):
-        return ", ".join(self.hydrospheric_sciences)
+        return ", ".join([expertise.title for expertise in self.hydrospheric_sciences.all()])
 
     @property
     def cryospheric_sciences_display(self):
-        return ", ".join(self.cryospheric_sciences)
+        return ", ".join([expertise.title for expertise in self.cryospheric_sciences.all()])
 
     @property
     def earth_sciences_display(self):
-        return ", ".join(self.earth_sciences)
+        return ", ".join([expertise.title for expertise in self.earth_sciences.all()])
 
     @property
     def biological_sciences_display(self):
-        return ", ".join(self.biological_sciences)
+        return ", ".join([expertise.title for expertise in self.biological_sciences.all()])
 
     @property
     def social_sciences_and_humanities_display(self):
-        return ", ".join(self.social_sciences_and_humanities)
+        return ", ".join([expertise.title for expertise in self.social_sciences_and_humanities.all()])
 
     @property
     def integrated_systems_display(self):
-        return ", ".join(self.integrated_systems)
+        return ", ".join([expertise.title for expertise in self.integrated_systems.all()])
 
     @property
     def spatial_scale_of_expertise_display(self):
-        return join_true_values([", ".join(self.spatial_scale_of_expertise), self.other_spatial_scale_of_expertise])
+        return join_true_values([
+            ", ".join([expertise.title for expertise in self.spatial_scale_of_expertise.all()]),
+            self.other_spatial_scale_of_expertise
+        ])
 
     @property
     def statistical_focus_display(self):
-        return join_true_values([", ".join(self.statistical_focus), self.other_statistical_focus])
+        return join_true_values([
+            ", ".join([expertise.title for expertise in self.statistical_focus.all()]),
+            self.other_statistical_focus
+        ])
 
     @property
     def time_scales_display(self):
-        return join_true_values([", ".join(self.time_scales), self.other_time_scales])
+        return join_true_values([
+            ", ".join([expertise.title for expertise in self.time_scales.all()]),
+            self.other_time_scales
+        ])
 
     @property
     def methods_display(self):
-        return join_true_values([", ".join(self.methods), self.other_methods])
+        return join_true_values([
+            ", ".join([expertise.title for expertise in self.methods.all()]),
+            self.other_methods
+        ])
 
     @property
     def participation_in_assessments_display(self):
-        return join_true_values([", ".join(self.participation_in_assessments), self.other_participation_in_assessments])
+        return join_true_values([
+            ", ".join([expertise.title for expertise in self.participation_in_assessments.all()]),
+            self.other_participation_in_assessments
+        ])
 
     @property
     def inputs_or_participation_to_un_conventions_display(self):
         return join_true_values(
             [
-                ", ".join(self.inputs_or_participation_to_un_conventions),
+                ", ".join([expertise.title for expertise in self.inputs_or_participation_to_un_conventions.all()]),
                 self.other_inputs_or_participation_to_un_conventions,
             ]
         )
@@ -374,6 +340,104 @@ class Expertise(models.Model):
     class Meta:
         verbose_name = _("Expertise")
         verbose_name_plural = _("Expertise")
+
+#FIXME: This looks very bad. Note to me to refactor it someday
+class ResearchExpertise(models.Model):
+    title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
+
+    def __str__(self):
+        return self.title
+
+
+class AtmosphericSciences(models.Model):
+    title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
+
+    def __str__(self):
+        return self.title
+
+
+class HydrosphericSciences(models.Model):
+    title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
+
+    def __str__(self):
+        return self.title
+
+
+class CryosphericSciences(models.Model):
+    title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
+
+    def __str__(self):
+        return self.title
+
+
+class EarthSciences(models.Model):
+    title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
+
+    def __str__(self):
+        return self.title
+
+
+class BiologicalSciences(models.Model):
+    title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
+
+    def __str__(self):
+        return self.title
+
+
+class SocialSciencesAndHumanities(models.Model):
+    title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
+
+    def __str__(self):
+        return self.title
+
+
+class IntegratedSystems(models.Model):
+    title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
+
+    def __str__(self):
+        return self.title
+
+
+class SpatialScaleOfExpertise(models.Model):
+    title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
+
+    def __str__(self):
+        return self.title
+
+
+class StatisticalFocus(models.Model):
+    title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
+
+    def __str__(self):
+        return self.title
+
+
+class TimeScales(models.Model):
+    title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
+
+    def __str__(self):
+        return self.title
+
+
+class Methods(models.Model):
+    title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
+
+    def __str__(self):
+        return self.title
+
+
+class ParticipationInAssessments(models.Model):
+    title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
+
+    def __str__(self):
+        return self.title
+
+
+class InputsOrParticipationToUNConventions(models.Model):
+    title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
+
+    def __str__(self):
+        return self.title
 
 
 # The following is to apply limit on number of affiliations and projects that user can select in their profile

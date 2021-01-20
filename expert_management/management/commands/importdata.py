@@ -5,7 +5,7 @@ import pandas as pd
 from django.core.management import BaseCommand
 from django.db import IntegrityError
 
-from expert_management.models import Affiliation, Expertise, User
+from expert_management import models
 from expert_management.utils.common import non_zero_keys
 from expert_management.utils.importdata import *
 
@@ -54,6 +54,78 @@ class Command(BaseCommand):
 
             classified_expertise = classify_expertise(_parsed_expertise_and_specialities)
 
+            #FIXME: This looks very bad. Note to me to refactor it someday
+            research_expertise = return_existing_objects(
+                classified_expertise.pop("research_expertise"),
+                models.ResearchExpertise,
+                lambda exp: models.ResearchExpertise.objects.get(title=exp)
+            )
+            atmospheric_sciences = return_existing_objects(
+                classified_expertise.pop("atmospheric_sciences"),
+                models.AtmosphericSciences,
+                lambda exp: models.AtmosphericSciences.objects.get(title=exp)
+            )
+            hydrospheric_sciences = return_existing_objects(
+                classified_expertise.pop("hydrospheric_sciences"),
+                models.HydrosphericSciences,
+                lambda exp: models.HydrosphericSciences.objects.get(title=exp)
+            )
+            cryospheric_sciences = return_existing_objects(
+                classified_expertise.pop("cryospheric_sciences"),
+                models.CryosphericSciences,
+                lambda exp: models.CryosphericSciences.objects.get(title=exp)
+            )
+            earth_sciences = return_existing_objects(
+                classified_expertise.pop("earth_sciences"),
+                models.EarthSciences,
+                lambda exp: models.EarthSciences.objects.get(title=exp)
+            )
+            biological_sciences = return_existing_objects(
+                classified_expertise.pop("biological_sciences"),
+                models.BiologicalSciences,
+                lambda exp: models.BiologicalSciences.objects.get(title=exp)
+            )
+            social_sciences_and_humanities = return_existing_objects(
+                classified_expertise.pop("social_sciences_and_humanities"),
+                models.SocialSciencesAndHumanities,
+                lambda exp: models.SocialSciencesAndHumanities.objects.get(title=exp)
+            )
+            integrated_systems = return_existing_objects(
+                classified_expertise.pop("integrated_systems"),
+                models.IntegratedSystems,
+                lambda exp: models.IntegratedSystems.objects.get(title=exp)
+            )
+            spatial_scale_of_expertise = return_existing_objects(
+                classified_expertise.pop("spatial_scale_of_expertise"),
+                models.SpatialScaleOfExpertise,
+                lambda exp: models.SpatialScaleOfExpertise.objects.get(title=exp)
+            )
+            statistical_focus = return_existing_objects(
+                classified_expertise.pop("statistical_focus"),
+                models.StatisticalFocus,
+                lambda exp: models.StatisticalFocus.objects.get(title=exp)
+            )
+            time_scales = return_existing_objects(
+                classified_expertise.pop("time_scales"),
+                models.TimeScales,
+                lambda exp: models.TimeScales.objects.get(title=exp)
+            )
+            methods = return_existing_objects(
+                classified_expertise.pop("methods"),
+                models.Methods,
+                lambda exp: models.Methods.objects.get(title=exp)
+            )
+            participation_in_assessments = return_existing_objects(
+                classified_expertise.pop("participation_in_assessments"),
+                models.ParticipationInAssessments,
+                lambda exp: models.ParticipationInAssessments.objects.get(title=exp)
+            )
+            inputs_or_participation_to_un_conventions = return_existing_objects(
+                classified_expertise.pop("inputs_or_participation_to_un_conventions"),
+                models.InputsOrParticipationToUNConventions,
+                lambda exp: models.InputsOrParticipationToUNConventions.objects.get(title=exp)
+            )
+
             username = get_unique_username(first_name, last_name)
             if username and email:
                 actual_user_data = non_zero_keys(
@@ -67,7 +139,7 @@ class Command(BaseCommand):
                     }
                 )
                 try:
-                    user = User.objects.create_user(username=username, email=email)
+                    user = models.User.objects.create_user(username=username, email=email)
 
                     for key in actual_user_data:
                         setattr(user, key, actual_user_data[key])
@@ -75,8 +147,25 @@ class Command(BaseCommand):
                     if affiliation:
                         user.affiliations.add(affiliation)
 
+                    #FIXME: This looks very bad. Note to me to refactor it someday
+                    models.Expertise(**classified_expertise, user=user).save()
+
+                    user.expertise.research_expertise.add(*research_expertise)
+                    user.expertise.atmospheric_sciences.add(*atmospheric_sciences)
+                    user.expertise.hydrospheric_sciences.add(*hydrospheric_sciences)
+                    user.expertise.cryospheric_sciences.add(*cryospheric_sciences)
+                    user.expertise.earth_sciences.add(*earth_sciences)
+                    user.expertise.biological_sciences.add(*biological_sciences)
+                    user.expertise.social_sciences_and_humanities.add(*social_sciences_and_humanities)
+                    user.expertise.integrated_systems.add(*integrated_systems)
+                    user.expertise.spatial_scale_of_expertise.add(*spatial_scale_of_expertise)
+                    user.expertise.statistical_focus.add(*statistical_focus)
+                    user.expertise.time_scales.add(*time_scales)
+                    user.expertise.methods.add(*methods)
+                    user.expertise.participation_in_assessments.add(*participation_in_assessments)
+                    user.expertise.inputs_or_participation_to_un_conventions.add(*inputs_or_participation_to_un_conventions)
                     user.save()
-                    Expertise(**classified_expertise, user=user).save()
+
                 except IntegrityError:
                     logger.info("Skipping personID %s because email %s already exists", person_id, email)
             else:

@@ -40,7 +40,7 @@ class MyProfileRedirectView(generic.RedirectView):
     permanent = False
 
     def get_redirect_url(self, *args, **kwargs):
-        return reverse_lazy("profile", args=[self.request.user])
+        return reverse_lazy("profile", args=[self.request.user.username])
 
 
 class Signup(TitleMixin, generic.CreateView):
@@ -197,7 +197,7 @@ class SearchResultView(TitleMixin, generic.ListView):
 
     def get_queryset(self):
         name = self.request.GET.get("name", "")
-        expertise = self.request.GET.get("expertise", "")
+        expertise = self.request.GET.getlist("expertise", [])
         regions_of_expertise = self.request.GET.getlist("regions_of_expertise", [])
         regions_of_interest = self.request.GET.getlist("regions_of_interest", [])
         participation_in_assessments = self.request.GET.getlist("participation_in_assessments", [])
@@ -214,19 +214,18 @@ class SearchResultView(TitleMixin, generic.ListView):
         ]
 
         queryset = get_user_model().objects.annotate(full_name=Concat(F("first_name"), Value(" "), F("last_name")))
-        expertise_excluded_fields = [
-            "user", "mountain_ranges_of_research_interest", "other_mountain_ranges_of_research_interest",
-            "mountain_ranges_of_research_expertise", "other_mountain_ranges_of_research_expertise"
-        ]
-        expertise_fields = [
-            f"expertise__{field}__overlap"
-            for field in fields_for_model(Expertise, exclude=other_expertise_fields + expertise_excluded_fields)
+        editable_expertise_fields = [
+            "research_expertise", "atmospheric_sciences", "hydrospheric_sciences", "cryospheric_sciences",
+            "earth_sciences", "biological_sciences", "social_sciences_and_humanities",
+            "integrated_systems", "spatial_scale_of_expertise", "statistical_focus",
+            "time_scales", "methods", "participation_in_assessments",
+            "inputs_or_participation_to_un_conventions",
         ]
 
         query = Q()
 
-        for field in expertise_fields:
-            query |= Q_if_truthy(**{field: [expertise]})
+        for field in editable_expertise_fields:
+            query |= Q_if_truthy(**{f"expertise__{field}__title__in": expertise})
 
         for field in map(lambda s: f"expertise__{s}__icontains", other_expertise_fields):
             query |= Q_if_truthy(**{field: expertise})

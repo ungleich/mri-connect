@@ -9,12 +9,14 @@ from django_countries import countries
 from unidecode import unidecode
 
 from expert_management import data
-from expert_management.models import Affiliation, User
+from expert_management import models
 from expert_management.utils.common import non_zero_keys
+
 
 __all__ = [
     'parse_expertise', 'parse_gender', 'parse_speciality',
-    'classify_expertise', 'get_unique_username', 'create_or_get_affiliation'
+    'classify_expertise', 'get_unique_username', 'create_or_get_affiliation',
+    'return_existing_objects'
 ]
 
 
@@ -161,9 +163,38 @@ def classify_expertise(user_expertise):
     EXPERTISE_CATEGORIES = list(EXPERTISE_CATEGORY_TO_FIELD_MAPPING.keys())[:-1]
 
     found = {key: [] for key in EXPERTISE_CATEGORIES}
+    #FIXME: This looks very bad. Note to me to refactor it someday
 
     for expertise_category in EXPERTISE_CATEGORIES:
-        expertise = ", ".join(dict(getattr(data, expertise_category)).keys())
+        if expertise_category == "RESEARCH_EXPERTISE":
+            expertise = ", ".join([ expertise['title'] for expertise in models.ResearchExpertise.objects.all().values() ])
+        elif expertise_category == "ATMOSPHERIC_SCIENCES_SUBCATEGORIES":
+            expertise = ", ".join([ expertise['title'] for expertise in models.AtmosphericSciences.objects.all().values() ])
+        elif expertise_category == "HYDROSPHERIC_SCIENCES_SUBCATEGORIES":
+            expertise = ", ".join([ expertise['title'] for expertise in models.HydrosphericSciences.objects.all().values() ])
+        elif expertise_category == "CRYOSPHERIC_SCIENCES_SUBCATEGORIES":
+            expertise = ", ".join([ expertise['title'] for expertise in models.CryosphericSciences.objects.all().values() ])
+        elif expertise_category == "EARTH_SCIENCES_SUBCATEGORIES":
+            expertise = ", ".join([ expertise['title'] for expertise in models.EarthSciences.objects.all().values() ])
+        elif expertise_category == "BIOLOGICAL_SCIENCES_SUBCATEGORIES":
+            expertise = ", ".join([ expertise['title'] for expertise in models.BiologicalSciences.objects.all().values() ])
+        elif expertise_category == "SOCIAL_SCIENCES_AND_HUMANITIES_SUBCATEGORIES":
+            expertise = ", ".join([ expertise['title'] for expertise in models.SocialSciencesAndHumanities.objects.all().values() ])
+        elif expertise_category == "INTEGRATED_SYSTEMS_SUBCATEGORIES":
+            expertise = ", ".join([ expertise['title'] for expertise in models.IntegratedSystems.objects.all().values() ])
+        elif expertise_category == "SPATIAL_SCALE_OF_EXPERTISE":
+            expertise = ", ".join([ expertise['title'] for expertise in models.SpatialScaleOfExpertise.objects.all().values() ])
+        elif expertise_category == "STATISTICAL_FOCUS":
+            expertise = ", ".join([ expertise['title'] for expertise in models.StatisticalFocus.objects.all().values() ])
+        elif expertise_category == "TIME_SCALES":
+            expertise = ", ".join([ expertise['title'] for expertise in models.TimeScales.objects.all().values() ])
+        elif expertise_category == "METHODS":
+            expertise = ", ".join([ expertise['title'] for expertise in models.Methods.objects.all().values() ])
+        elif expertise_category == "ASSESSMENT_TYPES":
+            expertise = ", ".join([ expertise['title'] for expertise in models.ParticipationInAssessments.objects.all().values() ])
+        elif expertise_category == "UN_CONVENTIONS_POLICY_PROCESSES":
+            expertise = ", ".join([ expertise['title'] for expertise in models.InputsOrParticipationToUNConventions.objects.all().values() ])
+
         get_compiled_pattern = lambda phrase: re.compile(
             re.escape(phrase).replace("/", r"(/|and)").replace("and", r"(/|and)"),
             re.IGNORECASE
@@ -173,7 +204,6 @@ def classify_expertise(user_expertise):
             for usr_expertise in user_expertise
             if get_compiled_pattern(usr_expertise).search(expertise)
         }
-
         found[expertise_category] = list(_found.values())
         list(map(user_expertise.remove, _found.keys()))
 
@@ -202,8 +232,8 @@ def get_unique_username(first_name, last_name):
 
     for username in get_possible_usernames(first_name, last_name):
         try:
-            User.objects.get(username=username)
-        except User.DoesNotExist:
+            models.User.objects.get(username=username)
+        except models.User.DoesNotExist:
             return username
 
 def parse_gender(gender):
@@ -223,8 +253,8 @@ def create_or_get_affiliation(abbreviation, name, street, city, zip_code, countr
     # some entries have unrelated i.e misc data inside affiliation_name column
     if affiliation_name and len(affiliation_name) < 512:
         try:
-            affiliation = Affiliation.objects.get(name__unaccent=affiliation_name)
-        except Affiliation.DoesNotExist:
+            affiliation = models.Affiliation.objects.get(name__unaccent=affiliation_name)
+        except models.Affiliation.DoesNotExist:
             _data = non_zero_keys({
                 "name": affiliation_name,
                 "street": street,
@@ -232,5 +262,15 @@ def create_or_get_affiliation(abbreviation, name, street, city, zip_code, countr
                 "city": city,
                 "country": countries.by_name(country or '')
             })
-            affiliation = Affiliation.objects.create(**_data)
+            affiliation = models.Affiliation.objects.create(**_data)
         return affiliation
+
+
+def return_existing_objects(iterable, model, query_func):
+    existing_object = []
+    for item in iterable:
+        try:
+            existing_object.append(query_func(item))
+        except model.DoesNotExist:
+            pass
+    return existing_object

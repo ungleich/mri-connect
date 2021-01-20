@@ -303,6 +303,10 @@ class Expertise(models.Model):
 
     @property
     def cryospheric_sciences_display(self):
+        return ", ".join(self.cryospheric_sciences)
+
+    @property
+    def earth_sciences_display(self):
         return ", ".join(self.earth_sciences)
 
     @property

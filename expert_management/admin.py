@@ -42,6 +42,9 @@ class ProjectAdmin(admin.ModelAdmin):
     }
 
 
+admin.site.register(models.RoleAndInvolvement)
+admin.site.register(models.GeoMountainsRegistry)
+
 admin.site.register(models.ResearchExpertise)
 admin.site.register(models.AtmosphericSciences)
 admin.site.register(models.HydrosphericSciences)

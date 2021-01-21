@@ -29,6 +29,38 @@ class CareerStage(models.TextChoices):
     OTHER = "OTHER", _("Other (short text)")
 
 
+class Role(models.TextChoices):
+    CoordinationOfficeStaff = "Coordination Office Staff", "Coordination Office Staff"
+    CoPi = "Co-PI", "Co-PI"
+    SLCMember = "SLC-Member", "SLC-Member"
+
+
+class WorkingGroup(models.TextChoices):
+    EducationForSustainableMountainDevelopment = "Education for Sustainable Mountain Development", "Education for Sustainable Mountain Development"
+    ElevationDependentClimateChange = "Elevation Dependent Climate Change", "Elevation Dependent Climate Change"
+    MountainGovernance = "Mountain Governance", "Mountain Governance"
+    MountainObservatories = "Mountain Observatories","Mountain Observatories"
+    MountainResilience = "Mountain Resilience", "Mountain Resilience"
+
+
+class InvolvementInMRIActivity(models.TextChoices):
+    AdaptationAtAltitude = "Adaptation at Altitude", "Adaptation at Altitude"
+    GlobalAssessment = "Global Assessment", "Global Assessment"
+    ConectateAPlus = "Conéctate-A+", "Conéctate-A+"
+    ContributionToIPCC = "Contribution to IPCC AR6", "Contribution to IPCC AR6"
+    GeoMountains = "GEO Mountains", "GEO Mountains"
+    SythesisWorkshops = "Synthesis Workshops", "Synthesis Workshops"
+
+
+class GeoMountainsRole(models.TextChoices):
+    DataProvider = "Data Provider", "Data Provider"
+    DataUser = "Data user", "Data user",
+    LeadOrCoLead = "Lead or Co-Lead", "Lead or Co-Lead"
+    ObservatoryContactPoint = "Observatory Contact Point", "Observatory Contact Point"
+    StaffMemberToSecretariat = "Staff member of the Secretariat to the Flagship or Initiative", "Staff member of the Secretariat to the Flagship or Initiative"
+    SteeringCommitteeMember = "Steering Committee (Board, Advisory Ctte, etc) Member)", "Steering Committee (Board, Advisory Ctte, etc) Member)"
+
+
 EXPERTS_PREFERENCES = (
     (
         "join_ecr",

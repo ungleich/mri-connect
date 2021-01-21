@@ -1,6 +1,6 @@
 from functools import reduce
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django_countries.fields import CountryField
 from mapwidgets.widgets import GooglePointFieldWidget
 
@@ -12,7 +12,7 @@ from .utils.common import zip_with_itself
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = models.User
-        fields = ("first_name", "last_name", "username", "email")
+        fields = ("first_name", "last_name", "username", "email", "password1", "password2", "is_subscribed_to_newsletter")
 
 
 class ProjectForm(forms.ModelForm):

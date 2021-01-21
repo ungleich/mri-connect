@@ -97,6 +97,7 @@ class User(AbstractUser):
 
     is_public = models.BooleanField(default=False, help_text="I allow publishing my profile on the web")
     is_photo_public = models.BooleanField(default=False, help_text="I allow publishing my photo on the web")
+    is_subscribed_to_newsletter = models.BooleanField(default=False, blank=False, null=False, verbose_name="Do you want to subscribe to Newsletter?")
 
     # 2 EXPERTISE
 
@@ -439,6 +440,35 @@ class InputsOrParticipationToUNConventions(models.Model):
     def __str__(self):
         return self.title
 
+
+class RoleAndInvolvement(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    role = MultiSelectField(
+        models.CharField(choices=data.Role.choices, max_length=512), default=list, null=True, blank=True
+    )
+    co_pi_year = models.IntegerField(null=True, blank=True)
+    slc_year = models.IntegerField(null=True, blank=True)
+    working_group = MultiSelectField(
+        models.CharField(choices=data.WorkingGroup.choices, max_length=512), default=list, null=True, blank=True
+    )
+    other_working_group = models.TextField(null=True, blank=True)
+    working_group_notes = models.TextField(null=True, blank=True)
+    involvement = MultiSelectField(
+        models.CharField(choices=data.InvolvementInMRIActivity.choices, max_length=512), default=list, null=True, blank=True
+    )
+    other_involvement = models.TextField(null=True, blank=True)
+    involvement_notes = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{' '.join([self.user.first_name, self.user.last_name, self.user.username])} 's Role and Involvement"
+
+
+class GeoMountainsRegistry(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    is_geomountains_member = models.BooleanField(default=False)
+    role = MultiSelectField(
+        models.CharField(choices=data.GeoMountainsRole.choices, max_length=512), default=list, null=True, blank=True
+    )
 
 # The following is to apply limit on number of affiliations and projects that user can select in their profile
 def affiliations_changed(sender, **kwargs):

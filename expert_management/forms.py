@@ -42,7 +42,7 @@ class SearchForm(forms.Form):
         required=False, widget=forms.SelectMultiple(attrs={'multiple': 'multiple'}),
         to_field_name="title",
         queryset = reduce(
-            lambda acc, val: acc.union(val.objects.values_list("title")),
+            lambda acc, val: acc.union(val.objects.all()),
             expertise_subcategories,
             models.ResearchExpertise.objects.none()
         )

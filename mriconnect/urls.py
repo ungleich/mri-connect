@@ -21,7 +21,8 @@ from django.contrib.auth import views as auth_views
 from django.urls import include, path
 from django.views.generic import RedirectView
 
-import debug_toolbar
+if settings.DEBUG:
+    import debug_toolbar
 
 from expert_management.views import Signup
 
@@ -46,7 +47,8 @@ urlpatterns = [
     path('accounts/signup/', Signup.as_view(), name='signup'),
 
     path('', include("expert_management.urls")),
-    path('__debug__/', include(debug_toolbar.urls)),
-
     # Redirect home page
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.DEBUG:
+    urlpatterns += [path('__debug__/', include(debug_toolbar.urls))]

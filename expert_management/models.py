@@ -180,7 +180,7 @@ class Project(models.Model):
 
 # GMBA Mountains
 class Mountain(models.Model):
-    name = models.CharField(max_length=256)
+    name = models.CharField(max_length=256, unique=True, blank=False, null=False)
 
     def __str__(self):
         return self.name

@@ -13,7 +13,7 @@ def get_user_profile(username: str, requester: User):
     except get_user_model().DoesNotExist:
         raise Http404()
 
-    if profile['photo'] == '' or not profile['is_photo_public']:
+    if profile['photo'] == '' or not (profile['is_photo_public'] or is_owner_requesting):
         profile['photo'] = ImageField()
         profile['photo'].url = lambda: 'https://miro.medium.com/max/720/1*W35QUSvGpcLuxPo3SRTH4w.png'
 

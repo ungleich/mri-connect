@@ -2,6 +2,7 @@ from functools import reduce
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django_countries.fields import CountryField
+from django.forms.widgets import CheckboxSelectMultiple
 from mapwidgets.widgets import GooglePointFieldWidget
 
 from . import data
@@ -27,6 +28,28 @@ class ProjectForm(forms.ModelForm):
         }
 
 
+class ExpertiseForm(forms.ModelForm):
+    class Meta:
+        model = models.Expertise
+        exclude = ("user",)
+        widgets = {
+            'research_expertise': CheckboxSelectMultiple,
+            'disciplinary_expertise': CheckboxSelectMultiple,
+            'atmospheric_sciences': CheckboxSelectMultiple,
+            'hydrospheric_sciences': CheckboxSelectMultiple,
+            'cryospheric_sciences': CheckboxSelectMultiple,
+            'earth_sciences': CheckboxSelectMultiple,
+            'biological_sciences': CheckboxSelectMultiple,
+            'social_sciences_and_humanities': CheckboxSelectMultiple,
+            'integrated_systems': CheckboxSelectMultiple,
+            'spatial_scale_of_expertise': CheckboxSelectMultiple,
+            'statistical_focus': CheckboxSelectMultiple,
+            'time_scales': CheckboxSelectMultiple,
+            'methods': CheckboxSelectMultiple,
+            'participation_in_assessments': CheckboxSelectMultiple,
+            'inputs_or_participation_to_un_conventions': CheckboxSelectMultiple,
+        }
+
 class SearchForm(forms.Form):
     name = forms.CharField(required=False)
 
@@ -42,7 +65,7 @@ class SearchForm(forms.Form):
         required=False, widget=forms.SelectMultiple(attrs={'multiple': 'multiple'}),
         to_field_name="title",
         queryset = reduce(
-            lambda acc, val: acc.union(val.objects.all()),
+            lambda acc, val: acc.union(val.objects.all().exclude(title="Other")),
             expertise_subcategories,
             models.ResearchExpertise.objects.none()
         )

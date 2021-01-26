@@ -48,6 +48,11 @@ poetry shell
     ./manage.py runserver
     ```
 
+## Bootstrap (Mountain Ranges, Expertise' subcategories)
+```bash
+./manage.py bootstrap
+```
+
 ## Data migration
 
 To import data from the legacy database, use:

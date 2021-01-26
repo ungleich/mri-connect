@@ -95,9 +95,9 @@ class User(AbstractUser):
     url_publications = models.URLField(_("Link to publications"), null=True, blank=True, max_length=1024)
     list_publications = models.TextField(_("Free text list of publications"), null=True, blank=True)
 
-    is_public = models.BooleanField(default=False, help_text="I allow publishing my profile on the web")
-    is_photo_public = models.BooleanField(default=False, help_text="I allow publishing my photo on the web")
-    is_subscribed_to_newsletter = models.BooleanField(default=False, blank=False, null=False, verbose_name="Do you want to subscribe to Newsletter?")
+    is_public = models.BooleanField(default=False, verbose_name="I allow for my profile to be publicly visible in the MRI Expert Database")
+    is_photo_public = models.BooleanField(default=False, verbose_name="I allow for my photo to be publicly visible in the MRI Expert Database")
+    is_subscribed_to_newsletter = models.BooleanField(default=False, blank=False, null=False, verbose_name="I would like to subscribe to the MRI Global Newsletter")
 
     # 2 EXPERTISE
 
@@ -180,16 +180,15 @@ class Project(models.Model):
 
 # GMBA Mountains
 class Mountain(models.Model):
-    name = models.CharField(max_length=50)
-    country = models.CharField(max_length=250)
-    mpoly = models.MultiPolygonField()
+    name = models.CharField(max_length=256)
 
     def __str__(self):
-        return f"{self.name}, {self.country}"
+        return self.name
 
 
 class Expertise(models.Model):
     research_expertise = models.ManyToManyField("ResearchExpertise", blank=True)
+    disciplinary_expertise = models.ManyToManyField("DisciplinaryExpertise", blank=True)
     atmospheric_sciences = models.ManyToManyField("AtmosphericSciences", blank=True)
     hydrospheric_sciences = models.ManyToManyField("HydrosphericSciences", blank=True)
     cryospheric_sciences = models.ManyToManyField("CryosphericSciences", blank=True)
@@ -341,6 +340,14 @@ class Expertise(models.Model):
     class Meta:
         verbose_name = _("Expertise")
         verbose_name_plural = _("Expertise")
+
+
+class DisciplinaryExpertise(models.Model):
+    title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
+
+    def __str__(self):
+        return self.title
+
 
 #FIXME: This looks very bad. Note to me to refactor it someday
 class ResearchExpertise(models.Model):

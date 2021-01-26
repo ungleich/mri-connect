@@ -9,7 +9,7 @@ from django.urls import reverse_lazy
 from django.views import generic
 
 from . import data
-from .forms import AdvancedSearchForm, ProjectForm, SearchForm, CustomUserCreationForm
+from .forms import AdvancedSearchForm, ProjectForm, SearchForm, CustomUserCreationForm, ExpertiseForm
 from .models import Expertise, Project
 from .selector import get_user_profile
 from .utils.common import Q_if_truthy
@@ -127,7 +127,7 @@ class DeleteProject(TitleMixin, LoginRequiredMixin, generic.DeleteView):
 
 class CreateExpertise(TitleMixin, LoginRequiredMixin, generic.CreateView):
     model = Expertise
-    fields = fields_for_model(model, exclude={'user'})
+    form_class = ExpertiseForm
     template_name = "expert_management/set-expertise.html"
     success_url = reverse_lazy("my-profile")
     title = "Update Expertise"

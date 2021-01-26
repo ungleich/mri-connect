@@ -1,6 +1,6 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from django.contrib.gis.db.models import PointField
+from django.contrib.gis.db.models import PointField, ManyToManyField
+from django.forms.widgets import CheckboxSelectMultiple
 from mapwidgets.widgets import GooglePointFieldWidget
 
 from . import models
@@ -9,6 +9,9 @@ from . import models
 class ExpertiseInlineAdmin(admin.StackedInline):
     model = models.Expertise
 
+    formfield_overrides = {
+        ManyToManyField: {"widget": CheckboxSelectMultiple}
+    }
 
 class ProjectInlineAdmin(admin.StackedInline):
     model = models.Project
@@ -41,10 +44,12 @@ class ProjectAdmin(admin.ModelAdmin):
         PointField: {"widget": GooglePointFieldWidget}
     }
 
+admin.site.register(models.Mountain)
 
 admin.site.register(models.RoleAndInvolvement)
 admin.site.register(models.GeoMountainsRegistry)
 
+admin.site.register(models.DisciplinaryExpertise)
 admin.site.register(models.ResearchExpertise)
 admin.site.register(models.AtmosphericSciences)
 admin.site.register(models.HydrosphericSciences)

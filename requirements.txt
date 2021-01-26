@@ -13,6 +13,9 @@ django-countries==7.0 \
 django-crispy-forms==1.10.0; python_version >= "3.5" \
     --hash=sha256:d3f808d20cafe20fd38a49a47e72db1fd519fcf31bef4f47f008619336a3ebff \
     --hash=sha256:92ed3fdc52c08d21d60adbb9de24e432c590e66e894f43cee0974fc959209976
+django-debug-toolbar==3.2; python_version >= "3.6" \
+    --hash=sha256:84e2607d900dbd571df0a2acf380b47c088efb787dce9805aefeb407341961d2 \
+    --hash=sha256:9e5a25d0c965f7e686f6a8ba23613ca9ca30184daa26487706d4829f5cfb697a
 django-jazzmin==2.4.3; python_version >= "3.5" \
     --hash=sha256:853ff15eca95236708ef370007db509305cd0ebb1a605e842db13ab531c8fb83 \
     --hash=sha256:5a7be0ba0d2680b9851c111dff4efc002584378fcdff2407f9c84b05a973c35b

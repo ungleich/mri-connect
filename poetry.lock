@@ -239,6 +239,18 @@ optional = false
 python-versions = ">=3.5"
 
 [[package]]
+name = "django-debug-toolbar"
+version = "3.2"
+description = "A configurable set of panels that display various debug information about the current request/response."
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+Django = ">=2.2"
+sqlparse = ">=0.2.0"
+
+[[package]]
 name = "django-jazzmin"
 version = "2.4.3"
 description = "Drop-in theme for django admin, that utilises AdminLTE 3 & Bootstrap 4 to make yo' admin look jazzy"
@@ -1121,7 +1133,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8.3, <4"
-content-hash = "936cb5f1f2dccb0296a52c1b97922b1dc7a66e33499d94aa1960c086b618acf2"
+content-hash = "d32f934496c718b85616494b56901ad323fe11a4ee0fb7a45cb523215058627b"
 
 [metadata.files]
 anyio = [
@@ -1256,6 +1268,10 @@ django-countries = [
 django-crispy-forms = [
     {file = "django-crispy-forms-1.10.0.tar.gz", hash = "sha256:d3f808d20cafe20fd38a49a47e72db1fd519fcf31bef4f47f008619336a3ebff"},
     {file = "django_crispy_forms-1.10.0-py3-none-any.whl", hash = "sha256:92ed3fdc52c08d21d60adbb9de24e432c590e66e894f43cee0974fc959209976"},
+]
+django-debug-toolbar = [
+    {file = "django-debug-toolbar-3.2.tar.gz", hash = "sha256:84e2607d900dbd571df0a2acf380b47c088efb787dce9805aefeb407341961d2"},
+    {file = "django_debug_toolbar-3.2-py3-none-any.whl", hash = "sha256:9e5a25d0c965f7e686f6a8ba23613ca9ca30184daa26487706d4829f5cfb697a"},
 ]
 django-jazzmin = [
     {file = "django-jazzmin-2.4.3.tar.gz", hash = "sha256:853ff15eca95236708ef370007db509305cd0ebb1a605e842db13ab531c8fb83"},

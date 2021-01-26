@@ -87,6 +87,7 @@ env = EMAIL_PORT=587
 env = EMAIL_HOST_USER=user@example.com
 env = EMAIL_HOST_PASSWORD=password
 env = DEFAULT_FROM_EMAIL=resetpassword@mri-staging.django-hosting.ch
+env = SECRET_KEY=secret_key
 ```
 
 Settings can also be provided using `mriconnect/settings/local.py`

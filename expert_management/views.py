@@ -147,7 +147,7 @@ class CreateExpertise(TitleMixin, LoginRequiredMixin, generic.CreateView):
 
 class UpdateExpertise(TitleMixin, LoginRequiredMixin, generic.UpdateView):
     model = Expertise
-    fields = fields_for_model(model, exclude={'user'})
+    form_class = ExpertiseForm
     template_name = "expert_management/set-expertise.html"
     success_url = reverse_lazy("my-profile")
     title = "Update Expertise"

@@ -88,6 +88,9 @@ env = EMAIL_HOST_USER=user@example.com
 env = EMAIL_HOST_PASSWORD=password
 env = DEFAULT_FROM_EMAIL=resetpassword@mri-staging.django-hosting.ch
 env = SECRET_KEY=secret_key
+env = MAILCHIMP_API_KEY=mailchimp_api_key
+env = MAILCHIMP_SERVER_PREFIX=mailchimp_server_prefix
+env = MAILCHIMP_LIST_ID=mailchimp_list_id
 ```
 
 Settings can also be provided using `mriconnect/settings/local.py`

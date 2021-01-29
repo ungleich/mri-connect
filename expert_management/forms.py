@@ -1,5 +1,7 @@
 from functools import reduce
 from django import forms
+from django.conf import settings
+
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django_countries.fields import CountryField
 from django.forms.widgets import CheckboxSelectMultiple
@@ -8,12 +10,24 @@ from mapwidgets.widgets import GooglePointFieldWidget
 from . import data
 from . import models
 from .utils.common import zip_with_itself
+from .utils.mailchimp import Mailchimp
 
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = models.User
         fields = ("first_name", "last_name", "username", "email", "password1", "password2", "is_subscribed_to_newsletter")
+
+    def save(self, commit=True):
+        user = super().save(commit)
+        mailchimp = Mailchimp()
+
+        if user.is_subscribed_to_newsletter:
+            mailchimp.add_member(user.email, settings.MAILCHIMP_LIST_ID)
+        else:
+            mailchimp.delete_member(user.email, settings.MAILCHIMP_LIST_ID)
+
+        return user
 
 
 class ProjectForm(forms.ModelForm):
@@ -34,7 +48,6 @@ class ExpertiseForm(forms.ModelForm):
         exclude = ("user",)
         widgets = {
             'research_expertise': CheckboxSelectMultiple,
-            'disciplinary_expertise': CheckboxSelectMultiple,
             'atmospheric_sciences': CheckboxSelectMultiple,
             'hydrospheric_sciences': CheckboxSelectMultiple,
             'cryospheric_sciences': CheckboxSelectMultiple,
@@ -49,6 +62,7 @@ class ExpertiseForm(forms.ModelForm):
             'participation_in_assessments': CheckboxSelectMultiple,
             'inputs_or_participation_to_un_conventions': CheckboxSelectMultiple,
         }
+
 
 class SearchForm(forms.Form):
     name = forms.CharField(required=False)

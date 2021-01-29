@@ -1,26 +1,38 @@
 import logging
+import re
 
 import numpy as np
 import pandas as pd
 from django.core.management import BaseCommand
 from django.db import IntegrityError
+from django.conf import settings
 
 from expert_management import models
-from expert_management.utils.common import non_zero_keys
+from expert_management.utils.common import non_zero_keys, generate_pseduo_random_password
 from expert_management.utils.importdata import *
+from expert_management.utils.mailchimp import Mailchimp
+
+from mailchimp_marketing.api_client import ApiClientError
 
 logger = logging.getLogger(__name__)
 
+email_pattern = r"""(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])"""
+email_pattern = re.compile(email_pattern, re.M)
 
 class Command(BaseCommand):
     help_text = "Import data from old-database dump (.xlsx)"
 
     def add_arguments(self, parser):
         parser.add_argument("xlsx_file_path")
+        parser.add_argument("--skip-mailchimp-sync", action="store_true")
 
     def handle(self, *args, **options):
         sheet = pd.read_excel(options["xlsx_file_path"], engine="openpyxl", index_col=0)
         sheet = sheet.replace({np.nan: None})
+        skip_mailchimp_sync = options["skip_mailchimp_sync"]
+
+        if not skip_mailchimp_sync:
+            mailchimp = Mailchimp()
 
         for person_id, row in sheet.iterrows():
             last_name = row["Name"]
@@ -40,8 +52,15 @@ class Command(BaseCommand):
                 affiliation_abbreviation, affiliation_fullname, affiliation_street,
                 affiliation_city, affiliation_zip, affiliation_country
             )
+            email = row["EMailAddress"] or row["EMailAddress2"]
+            comment = row["Comment"]
 
-            email = row["EMailAddress"] if row["EMailAddress"] else row["EMailAddress2"]
+            # If user provided no email in EMailAddress and EMailAddress2 field but there is something in comment field
+            if not email and comment:
+                match = email_pattern.search(comment)
+                if match:
+                    email = match.group(0)
+
 
             personal_url = row["URL_site"]
 
@@ -139,7 +158,12 @@ class Command(BaseCommand):
                     }
                 )
                 try:
-                    user = models.User.objects.create_user(username=username, email=email)
+                    user = models.User.objects.create_user(username=username, email=email, password=models.User.objects.make_random_password(length=32))
+                    if not skip_mailchimp_sync:
+                        response = mailchimp.get_member(email, settings.MAILCHIMP_LIST_ID)
+
+                        if response:  # User found, but he/she may be archived
+                            user.is_subscribed_to_newsletter = response["status"] == "subscribed"
 
                     for key in actual_user_data:
                         setattr(user, key, actual_user_data[key])

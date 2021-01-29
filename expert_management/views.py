@@ -13,6 +13,7 @@ from .forms import AdvancedSearchForm, ProjectForm, SearchForm, CustomUserCreati
 from .models import Expertise, Project
 from .selector import get_user_profile
 from .utils.common import Q_if_truthy
+from .utils.mailchimp import Mailchimp
 
 
 class TitleMixin:
@@ -80,6 +81,18 @@ class UpdateProfile(TitleMixin, LoginRequiredMixin, generic.UpdateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
+        mailchimp = Mailchimp()
+
+        # NOTE: We can do little optimization here i.e checking whether is_subscribed_to_newsletter
+        # changed or not. and if changed then we can update the mailchimp. We can check that using
+        # if 'is_subscribed_to_newsletter' in form.changed_data but it have some quirky behavior and
+        # I do not want to optimize it prematurely
+
+        if form.instance.user.is_subscribed_to_newsletter:
+            mailchimp.add_member(form.instance.user.email, settings.MAILCHIMP_LIST_ID)
+        else:
+            mailchimp.delete_member(form.instance.user.email, settings.MAILCHIMP_LIST_ID)
+
         return super().form_valid(form)
 
 

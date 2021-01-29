@@ -188,7 +188,6 @@ class Mountain(models.Model):
 
 class Expertise(models.Model):
     research_expertise = models.ManyToManyField("ResearchExpertise", blank=True)
-    disciplinary_expertise = models.ManyToManyField("DisciplinaryExpertise", blank=True)
     atmospheric_sciences = models.ManyToManyField("AtmosphericSciences", blank=True)
     hydrospheric_sciences = models.ManyToManyField("HydrosphericSciences", blank=True)
     cryospheric_sciences = models.ManyToManyField("CryosphericSciences", blank=True)
@@ -472,10 +471,12 @@ class RoleAndInvolvement(models.Model):
 
 class GeoMountainsRegistry(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    is_geomountains_member = models.BooleanField(default=False)
     role = MultiSelectField(
         models.CharField(choices=data.GeoMountainsRole.choices, max_length=512), default=list, null=True, blank=True
     )
+
+    def __str__(self):
+        return f'{self.user.first_name} {self.user.last_name} ({self.user.username})'
 
 # The following is to apply limit on number of affiliations and projects that user can select in their profile
 def affiliations_changed(sender, **kwargs):

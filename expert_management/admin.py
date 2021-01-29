@@ -6,6 +6,47 @@ from mapwidgets.widgets import GooglePointFieldWidget
 from . import models
 
 
+@admin.register(models.Expertise)
+class ExpertiseAdmin(admin.ModelAdmin):
+    fieldsets = [
+        (None, {
+            'fields': [
+                'research_expertise',
+                'spatial_scale_of_expertise',
+                'other_spatial_scale_of_expertise',
+                'statistical_focus',
+                'other_statistical_focus',
+                'time_scales',
+                'other_time_scales',
+                'methods',
+                'other_methods',
+                'participation_in_assessments',
+                'other_participation_in_assessments',
+                'more_detail_about_participation_in_assessments',
+                'inputs_or_participation_to_un_conventions',
+                'other_inputs_or_participation_to_un_conventions',
+                'mountain_ranges_of_research_interest',
+                'other_mountain_ranges_of_research_interest',
+                'mountain_ranges_of_research_expertise',
+                'other_mountain_ranges_of_research_expertise',
+                'user',
+            ]
+        }),
+        ('Disciplinary Expertise', {
+            'fields': [
+                'atmospheric_sciences',
+                'hydrospheric_sciences',
+                'cryospheric_sciences',
+                'earth_sciences',
+                'biological_sciences',
+                'social_sciences_and_humanities',
+                'integrated_systems',
+                'other_expertise'
+            ]
+        })
+    ]
+
+
 class ExpertiseInlineAdmin(admin.StackedInline):
     model = models.Expertise
 
@@ -44,10 +85,15 @@ class ProjectAdmin(admin.ModelAdmin):
         PointField: {"widget": GooglePointFieldWidget}
     }
 
+
+@admin.register(models.GeoMountainsRegistry)
+class GeoMountainsRegistryAdmin(admin.ModelAdmin):
+    search_fields = ('user__first_name', 'user__last_name', 'user__username', 'user__email')
+
+
 admin.site.register(models.Mountain)
 
 admin.site.register(models.RoleAndInvolvement)
-admin.site.register(models.GeoMountainsRegistry)
 
 admin.site.register(models.DisciplinaryExpertise)
 admin.site.register(models.ResearchExpertise)

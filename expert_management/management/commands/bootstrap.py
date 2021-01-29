@@ -14,12 +14,6 @@ RESEARCH_EXPERTISE_SUB_CATEGORIES = [
     'Transdisciplinary Research'
 ]
 
-DISCIPLINARY_EXPERTISE_SUB_CATEGORIES = [
-    'Atmospheric Sciences', 'Hydrospheric Sciences', 'Cryospheric Sciences', 'Earth Sciences', 'Biological Sciences',
-    'Social Sciences and Humanities', 'Integrated Systems', 'Spatial Scale of Expertise', 'Statistical Focus',
-    'Time Scales', 'Methods', 'Participation in Assessment', 'Inputs or Participation to UN Conventions'
-]
-
 ATMOSPHERIC_SCIENCES_SUB_CATEGORIES = ['Meteorology', 'Climatology', 'Atmospheric Physics / Chemistry', 'Pollution']
 
 HYDROSPERIC_SCIENCES_SUB_CATEGORIES = ['Fresh Water Systems', 'Precipitation and Runoff', 'Hydrogeology']
@@ -75,10 +69,6 @@ class Command(BaseCommand):
         )
         models.ResearchExpertise.objects.bulk_create(
             [models.ResearchExpertise(title=title) for title in RESEARCH_EXPERTISE_SUB_CATEGORIES],
-            ignore_conflicts=True
-        )
-        models.DisciplinaryExpertise.objects.bulk_create(
-            [models.DisciplinaryExpertise(title=title) for title in DISCIPLINARY_EXPERTISE_SUB_CATEGORIES],
             ignore_conflicts=True
         )
         models.AtmosphericSciences.objects.bulk_create(

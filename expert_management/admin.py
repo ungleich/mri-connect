@@ -95,7 +95,6 @@ admin.site.register(models.Mountain)
 
 admin.site.register(models.RoleAndInvolvement)
 
-admin.site.register(models.DisciplinaryExpertise)
 admin.site.register(models.ResearchExpertise)
 admin.site.register(models.AtmosphericSciences)
 admin.site.register(models.HydrosphericSciences)

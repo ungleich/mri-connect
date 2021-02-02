@@ -67,7 +67,7 @@ class User(AbstractUser):
         help_text="Official functions that I hold in national and international programs, commissions, etc.",
     )
 
-    photo = models.ImageField(upload_to="experts", null=True, blank=True)
+    photo = models.ImageField(upload_to="experts", null=True, blank=True, help_text="Format: .jpg, .png, Size: 300x350 pixels")
 
     url_personal = models.URLField(
         _("Personal website"),
@@ -341,16 +341,15 @@ class Expertise(models.Model):
         verbose_name_plural = _("Expertise")
 
 
-class DisciplinaryExpertise(models.Model):
-    title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
-
-    def __str__(self):
-        return self.title
+class SortedExpertiseModelManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().all().order_by("title")
 
 
 #FIXME: This looks very bad. Note to me to refactor it someday
 class ResearchExpertise(models.Model):
     title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
+    objects = SortedExpertiseModelManager()
 
     def __str__(self):
         return self.title
@@ -358,6 +357,7 @@ class ResearchExpertise(models.Model):
 
 class AtmosphericSciences(models.Model):
     title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
+    objects = SortedExpertiseModelManager()
 
     def __str__(self):
         return self.title
@@ -365,6 +365,7 @@ class AtmosphericSciences(models.Model):
 
 class HydrosphericSciences(models.Model):
     title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
+    objects = SortedExpertiseModelManager()
 
     def __str__(self):
         return self.title
@@ -372,6 +373,7 @@ class HydrosphericSciences(models.Model):
 
 class CryosphericSciences(models.Model):
     title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
+    objects = SortedExpertiseModelManager()
 
     def __str__(self):
         return self.title
@@ -379,6 +381,7 @@ class CryosphericSciences(models.Model):
 
 class EarthSciences(models.Model):
     title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
+    objects = SortedExpertiseModelManager()
 
     def __str__(self):
         return self.title
@@ -386,6 +389,7 @@ class EarthSciences(models.Model):
 
 class BiologicalSciences(models.Model):
     title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
+    objects = SortedExpertiseModelManager()
 
     def __str__(self):
         return self.title
@@ -393,6 +397,7 @@ class BiologicalSciences(models.Model):
 
 class SocialSciencesAndHumanities(models.Model):
     title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
+    objects = SortedExpertiseModelManager()
 
     def __str__(self):
         return self.title
@@ -400,6 +405,7 @@ class SocialSciencesAndHumanities(models.Model):
 
 class IntegratedSystems(models.Model):
     title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
+    objects = SortedExpertiseModelManager()
 
     def __str__(self):
         return self.title
@@ -407,6 +413,7 @@ class IntegratedSystems(models.Model):
 
 class SpatialScaleOfExpertise(models.Model):
     title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
+    objects = SortedExpertiseModelManager()
 
     def __str__(self):
         return self.title
@@ -414,6 +421,7 @@ class SpatialScaleOfExpertise(models.Model):
 
 class StatisticalFocus(models.Model):
     title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
+    objects = SortedExpertiseModelManager()
 
     def __str__(self):
         return self.title
@@ -421,6 +429,7 @@ class StatisticalFocus(models.Model):
 
 class TimeScales(models.Model):
     title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
+    objects = SortedExpertiseModelManager()
 
     def __str__(self):
         return self.title
@@ -428,6 +437,7 @@ class TimeScales(models.Model):
 
 class Methods(models.Model):
     title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
+    objects = SortedExpertiseModelManager()
 
     def __str__(self):
         return self.title
@@ -435,6 +445,7 @@ class Methods(models.Model):
 
 class ParticipationInAssessments(models.Model):
     title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
+    objects = SortedExpertiseModelManager()
 
     def __str__(self):
         return self.title
@@ -442,6 +453,7 @@ class ParticipationInAssessments(models.Model):
 
 class InputsOrParticipationToUNConventions(models.Model):
     title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
+    objects = SortedExpertiseModelManager()
 
     def __str__(self):
         return self.title

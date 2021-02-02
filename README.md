@@ -60,15 +60,6 @@ To import data from the legacy database, use:
 ./manage.py importdata <xlsx_file_path>
 ```
 
-## Load Mountains (GMBA)
-
-To import mountains, use the following command
-```bash
-./manage.py loadgmba <path_to_shp_file>
-```
-
-You can download the GMBA mountain registry from https://ilias.unibe.ch/goto_ilias3_unibe_file_1047348_download.html
-
 ## Deployment
 
 `DJANGO_SETTINGS_MODULE="mriconnect.settings.prod"` in the environment ensures that production settings, loaded from the environment in `prod.py`, should be used.

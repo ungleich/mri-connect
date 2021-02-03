@@ -11,19 +11,12 @@
 <div class="p-5 bg-white rounded">
 <h1>{{title}}</h1>
     <form method="GET" action="{% url 'search-result' %}">
-        {{ form|crispy }}
-        <button type="submit" class="btn btn-primary">Search</button>
+        {% crispy form form.helper %}
     </form>
 </div>
 <script type="text/javascript">
     $(document).ready(function() {
-        $('#{{form.expertise.id_for_label}}').select2({tags: true});
-        $('#{{form.affiliation.id_for_label}}').select2();
-        $('#{{form.regions_of_expertise.id_for_label}}').select2();
-        $('#{{form.regions_of_interest.id_for_label}}').select2();
-        $('#{{form.career_stage.id_for_label}}').select2();
-        $('#{{form.participation_in_assessments.id_for_label}}').select2();
-        $('#{{form.inputs_or_participation_to_un_conventions.id_for_label}}').select2();
+        [...$("select[multiple]")].forEach(select => $(`#${select.id}`).select2({tags: true}))
     });
 </script>
 {% endblock %}

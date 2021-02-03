@@ -25,10 +25,10 @@ class ExpertiseAdmin(admin.ModelAdmin):
                 'more_detail_about_participation_in_assessments',
                 'inputs_or_participation_to_un_conventions',
                 'other_inputs_or_participation_to_un_conventions',
-                'mountain_ranges_of_research_interest',
-                'other_mountain_ranges_of_research_interest',
                 'mountain_ranges_of_research_expertise',
                 'other_mountain_ranges_of_research_expertise',
+                'mountain_ranges_of_research_interest',
+                'other_mountain_ranges_of_research_interest',
                 'user',
             ]
         }),
@@ -64,7 +64,7 @@ class ProjectInlineAdmin(admin.StackedInline):
 
 @admin.register(models.User)
 class UserAdmin(admin.ModelAdmin):
-    search_fields = ('first_name', 'last_name')
+    search_fields = ('first_name', 'last_name', 'username', 'email')
     inlines = (ExpertiseInlineAdmin, ProjectInlineAdmin)
 
 

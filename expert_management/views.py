@@ -3,7 +3,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.gis.db.models import F, Q, Value
 from django.db.models.functions import Concat
-from django.forms.models import fields_for_model
+from django.forms.models import fields_for_model, ModelMultipleChoiceField
+
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views import generic
@@ -12,8 +13,9 @@ from . import data
 from .forms import AdvancedSearchForm, ProjectForm, SearchForm, CustomUserCreationForm, ExpertiseForm
 from .models import Expertise, Project
 from .selector import get_user_profile
-from .utils.common import Q_if_truthy
+from .utils.common import Q_if_truthy, non_zero_keys
 from .utils.mailchimp import Mailchimp
+from .utils.importdata import classify_expertise
 
 
 class TitleMixin:
@@ -209,59 +211,60 @@ class SearchResultView(TitleMixin, generic.ListView):
     title = "Search Result"
 
     def get_queryset(self):
+        other_expertise_fields = [
+            "other_expertise", "other_spatial_scale_of_expertise", "other_statistical_focus",
+            "other_time_scales", "other_methods", "other_participation_in_assessments",
+            "more_detail_about_participation_in_assessments", "other_inputs_or_participation_to_un_conventions",
+            "other_mountain_ranges_of_research_interest", "other_mountain_ranges_of_research_expertise"
+        ]
+        expertise_fields = fields_for_model(
+            Expertise,
+            exclude=other_expertise_fields + [
+                "user",
+                "mountain_ranges_of_research_expertise",
+                "mountain_ranges_of_research_interest"
+            ]
+        )
+
         name = self.request.GET.get("name", "")
         expertise = self.request.GET.getlist("expertise", [])
-        regions_of_expertise = self.request.GET.getlist("regions_of_expertise", [])
-        regions_of_interest = self.request.GET.getlist("regions_of_interest", [])
-        participation_in_assessments = self.request.GET.getlist("participation_in_assessments", [])
-        inputs_or_participation_to_un_conventions = self.request.GET.getlist("inputs_or_participation_to_un_conventions", [])
+        regions_of_expertise = self.request.GET.getlist("mountain_ranges_of_research_expertise", [])
+        regions_of_interest = self.request.GET.getlist("mountain_ranges_of_research_interest", [])
         official_functions = self.request.GET.get("official_functions", "")
         career_stages = self.request.GET.getlist("career_stage", [])
         affiliation = self.request.GET.get("affiliation", "")
         country = self.request.GET.get("country", "")
 
-        other_expertise_fields = [
-            "other_expertise", "other_spatial_scale_of_expertise", "other_statistical_focus",
-            "other_time_scales", "other_methods", "other_participation_in_assessments",
-            "more_detail_about_participation_in_assessments", "other_inputs_or_participation_to_un_conventions"
-        ]
+        form_data = non_zero_keys({
+            field_name: self.request.GET.get(field_name, "") if not isinstance(field, ModelMultipleChoiceField)
+                                                             else self.request.GET.getlist(field_name, [])
+            for field_name, field in expertise_fields.items()
+        } if not expertise else classify_expertise(expertise))
 
         queryset = get_user_model().objects.annotate(full_name=Concat(F("first_name"), Value(" "), F("last_name")))
-        editable_expertise_fields = [
-            "research_expertise", "atmospheric_sciences", "hydrospheric_sciences", "cryospheric_sciences",
-            "earth_sciences", "biological_sciences", "social_sciences_and_humanities",
-            "integrated_systems", "spatial_scale_of_expertise", "statistical_focus",
-            "time_scales", "methods", "participation_in_assessments",
-            "inputs_or_participation_to_un_conventions",
-        ]
-
         query = Q()
 
-        for field in editable_expertise_fields:
-            query |= Q_if_truthy(**{f"expertise__{field}__title__in": expertise})
+        for field in form_data:
+            query |= Q_if_truthy(**{f"expertise__{field}__title__in": form_data[field]})
 
         for field in map(lambda s: f"expertise__{s}__icontains", other_expertise_fields):
-            query |= Q_if_truthy(**{field: expertise})
+            query |= Q_if_truthy(**{field: " ".join(expertise)})
 
         query |= Q_if_truthy(full_name__icontains=name)
         query |= Q_if_truthy(official_functions__icontains=official_functions)
         query |= Q_if_truthy(affiliations__name__icontains=affiliation)
         query |= Q_if_truthy(affiliations__country=country)
         query |= Q_if_truthy(projects__country=country)
+        query |= Q_if_truthy(career_stage__in=career_stages)
 
-        for region in regions_of_expertise:
-            query |= Q_if_truthy(expertise__mountain_ranges_of_research_expertise__name=region)
-            query |= Q_if_truthy(expertise__other_mountain_ranges_of_research_expertise__icontains=region)
+        query |= Q_if_truthy(expertise__mountain_ranges_of_research_expertise__name__in=regions_of_expertise)
+        query |= Q_if_truthy(
+            expertise__other_mountain_ranges_of_research_expertise__icontains=" ".join(regions_of_expertise)
+        )
 
-        for region in regions_of_interest:
-            query |= Q_if_truthy(expertise__mountain_ranges_of_research_interest__name=region)
-            query |= Q_if_truthy(expertise__other_mountain_ranges_of_research_interest__icontains=region)
+        query |= Q_if_truthy(expertise__mountain_ranges_of_research_interest__name__in=regions_of_interest)
+        query |= Q_if_truthy(
+            expertise__other_mountain_ranges_of_research_interest__icontains=" ".join(regions_of_interest)
+        )
 
-        for career_stage in career_stages:
-            query |= Q_if_truthy(career_stage=career_stage)
-
-        query |= Q_if_truthy(expertise__participation_in_assessments__overlap=participation_in_assessments)
-        query |= Q_if_truthy(expertise__inputs_or_participation_to_un_conventions__overlap=inputs_or_participation_to_un_conventions)
-        query &= Q_if_truthy(is_public=True)
-
-        return queryset.filter(query).distinct()
+        return queryset.filter(query & Q(is_public=True)).distinct() if query else queryset.none()

@@ -189,12 +189,12 @@ class Mountain(models.Model):
 class Expertise(models.Model):
     research_expertise = models.ManyToManyField("ResearchExpertise", blank=True)
     atmospheric_sciences = models.ManyToManyField("AtmosphericSciences", blank=True)
-    hydrospheric_sciences = models.ManyToManyField("HydrosphericSciences", blank=True)
+    biological_sciences = models.ManyToManyField("BiologicalSciences", blank=True)
     cryospheric_sciences = models.ManyToManyField("CryosphericSciences", blank=True)
     earth_sciences = models.ManyToManyField("EarthSciences", blank=True)
-    biological_sciences = models.ManyToManyField("BiologicalSciences", blank=True)
-    social_sciences_and_humanities = models.ManyToManyField("SocialSciencesAndHumanities", blank=True)
+    hydrospheric_sciences = models.ManyToManyField("HydrosphericSciences", blank=True)
     integrated_systems = models.ManyToManyField("IntegratedSystems", blank=True)
+    social_sciences_and_humanities = models.ManyToManyField("SocialSciencesAndHumanities", blank=True)
 
     other_expertise = models.TextField(null=True, blank=True, help_text="This should be a comma seperated list")
 
@@ -217,6 +217,11 @@ class Expertise(models.Model):
     other_methods = models.CharField(
         max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list"
     )
+    mountain_ranges_of_research_expertise = models.ManyToManyField(Mountain, blank=True, related_name="+")
+    other_mountain_ranges_of_research_expertise = models.TextField(null=True, blank=True)
+
+    mountain_ranges_of_research_interest = models.ManyToManyField(Mountain, blank=True, related_name="+")
+    other_mountain_ranges_of_research_interest = models.TextField(null=True, blank=True)
 
     participation_in_assessments = models.ManyToManyField("ParticipationInAssessments", blank=True)
     other_participation_in_assessments = models.CharField(
@@ -224,16 +229,13 @@ class Expertise(models.Model):
     )
     more_detail_about_participation_in_assessments = models.TextField(null=True, blank=True)
 
-    inputs_or_participation_to_un_conventions = models.ManyToManyField("InputsOrParticipationToUNConventions", blank=True)
-    other_inputs_or_participation_to_un_conventions = models.CharField(
-        max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list"
+    inputs_or_participation_to_un_conventions = models.ManyToManyField(
+        "InputsOrParticipationToUNConventions", blank=True, verbose_name="Inputs / Participation to UN Conventions"
     )
-
-    mountain_ranges_of_research_interest = models.ManyToManyField(Mountain, blank=True, related_name="+")
-    other_mountain_ranges_of_research_interest = models.TextField(null=True, blank=True)
-
-    mountain_ranges_of_research_expertise = models.ManyToManyField(Mountain, blank=True, related_name="+")
-    other_mountain_ranges_of_research_expertise = models.TextField(null=True, blank=True)
+    other_inputs_or_participation_to_un_conventions = models.CharField(
+        max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list",
+        verbose_name="Other Inputs / Participation to UN Conventions"
+    )
 
     user = models.OneToOneField(
         User, help_text="Research expertise", on_delete=models.CASCADE, related_name="expertise"
@@ -354,6 +356,9 @@ class ResearchExpertise(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        verbose_name_plural = "Research Expertise"
+
 
 class AtmosphericSciences(models.Model):
     title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
@@ -361,6 +366,9 @@ class AtmosphericSciences(models.Model):
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        verbose_name_plural = "Atmospheric Sciences"
 
 
 class HydrosphericSciences(models.Model):
@@ -370,6 +378,9 @@ class HydrosphericSciences(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        verbose_name_plural = "Hydrospheric Sciences"
+
 
 class CryosphericSciences(models.Model):
     title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
@@ -377,6 +388,9 @@ class CryosphericSciences(models.Model):
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        verbose_name_plural = "Cryospheric Sciences"
 
 
 class EarthSciences(models.Model):
@@ -386,6 +400,9 @@ class EarthSciences(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        verbose_name_plural = "Earth Sciences"
+
 
 class BiologicalSciences(models.Model):
     title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
@@ -393,6 +410,9 @@ class BiologicalSciences(models.Model):
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        verbose_name_plural = "Biological Sciences"
 
 
 class SocialSciencesAndHumanities(models.Model):
@@ -402,6 +422,9 @@ class SocialSciencesAndHumanities(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        verbose_name_plural = "Social Sciences And Humanities"
+
 
 class IntegratedSystems(models.Model):
     title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
@@ -409,6 +432,9 @@ class IntegratedSystems(models.Model):
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        verbose_name_plural = "Integrated Systems"
 
 
 class SpatialScaleOfExpertise(models.Model):
@@ -418,6 +444,9 @@ class SpatialScaleOfExpertise(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        verbose_name_plural = "Spatial Scale Of Expertise"
+
 
 class StatisticalFocus(models.Model):
     title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
@@ -425,6 +454,9 @@ class StatisticalFocus(models.Model):
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        verbose_name_plural = "Statistical Focus"
 
 
 class TimeScales(models.Model):
@@ -434,6 +466,9 @@ class TimeScales(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        verbose_name_plural = "Time Scales"
+
 
 class Methods(models.Model):
     title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
@@ -441,6 +476,9 @@ class Methods(models.Model):
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        verbose_name_plural = "Methods"
 
 
 class ParticipationInAssessments(models.Model):
@@ -450,6 +488,9 @@ class ParticipationInAssessments(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        verbose_name_plural = "Participation In Assessments"
+
 
 class InputsOrParticipationToUNConventions(models.Model):
     title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
@@ -457,6 +498,9 @@ class InputsOrParticipationToUNConventions(models.Model):
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        verbose_name_plural = "Inputs / Participation To UN Conventions"
 
 
 class RoleAndInvolvement(models.Model):
@@ -480,6 +524,10 @@ class RoleAndInvolvement(models.Model):
     def __str__(self):
         return f"{' '.join([self.user.first_name, self.user.last_name, self.user.username])} 's Role and Involvement"
 
+    class Meta:
+        verbose_name = "Roles and Involvement"
+        verbose_name_plural = "Roles and Involvement"
+
 
 class GeoMountainsRegistry(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -489,6 +537,11 @@ class GeoMountainsRegistry(models.Model):
 
     def __str__(self):
         return f'{self.user.first_name} {self.user.last_name} ({self.user.username})'
+
+    class Meta:
+        verbose_name = "Geo Mountains Registry"
+        verbose_name_plural = "Geo Mountains Registry"
+
 
 # The following is to apply limit on number of affiliations and projects that user can select in their profile
 def affiliations_changed(sender, **kwargs):

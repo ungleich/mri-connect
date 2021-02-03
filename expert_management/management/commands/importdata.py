@@ -8,7 +8,7 @@ from django.db import IntegrityError
 from django.conf import settings
 
 from expert_management import models
-from expert_management.utils.common import non_zero_keys, generate_pseduo_random_password
+from expert_management.utils.common import non_zero_keys
 from expert_management.utils.importdata import *
 from expert_management.utils.mailchimp import Mailchimp
 
@@ -158,7 +158,9 @@ class Command(BaseCommand):
                     }
                 )
                 try:
-                    user = models.User.objects.create_user(username=username, email=email, password=models.User.objects.make_random_password(length=32))
+                    user = models.User.objects.create_user(
+                        username=username, email=email, password=models.User.objects.make_random_password(length=32)
+                    )
                     if not skip_mailchimp_sync:
                         response = mailchimp.get_member(email, settings.MAILCHIMP_LIST_ID)
 
@@ -187,7 +189,9 @@ class Command(BaseCommand):
                     user.expertise.time_scales.add(*time_scales)
                     user.expertise.methods.add(*methods)
                     user.expertise.participation_in_assessments.add(*participation_in_assessments)
-                    user.expertise.inputs_or_participation_to_un_conventions.add(*inputs_or_participation_to_un_conventions)
+                    user.expertise.inputs_or_participation_to_un_conventions.add(
+                        *inputs_or_participation_to_un_conventions
+                    )
                     user.save()
 
                 except IntegrityError:

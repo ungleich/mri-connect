@@ -54,24 +54,45 @@ class ExpertiseForm(forms.ModelForm):
         self.helper.label_class = "col-form-label col-form-label-lg"
         self.helper.layout = Layout(
             Field('research_expertise'),
+
             HTML("<hr>"),
+
             HTML("<h3>Disciplinary Expertise</h3>"),
             Field('atmospheric_sciences'),
-            Field('hydrospheric_sciences'),
+            Field('biological_sciences'),
             Field('cryospheric_sciences'),
             Field('earth_sciences'),
-            Field('biological_sciences'),
-            Field('social_sciences_and_humanities'),
+            Field('hydrospheric_sciences'),
             Field('integrated_systems'),
+            Field('social_sciences_and_humanities'),
+            Field('other_expertise'),
+
             HTML("<hr>"),
-            Field('spatial_scale_of_expertise'),
-            Field('statistical_focus'),
-            Field('time_scales'),
-            Field('methods'),
-            Field('mountain_ranges_of_research_interest'),
-            Field('mountain_ranges_of_research_expertise'),
-            Field('participation_in_assessments'),
+
             Field('inputs_or_participation_to_un_conventions'),
+            Field('other_inputs_or_participation_to_un_conventions'),
+
+            Field('methods'),
+            Field('other_methods'),
+
+            Field('mountain_ranges_of_research_expertise'),
+            Field('other_mountain_ranges_of_research_expertise'),
+
+            Field('mountain_ranges_of_research_interest'),
+            Field('other_mountain_ranges_of_research_interest'),
+
+            Field('participation_in_assessments'),
+            Field('other_participation_in_assessments'),
+            Field('more_detail_about_participation_in_assessments'),
+
+            Field('spatial_scale_of_expertise'),
+            Field('other_spatial_scale_of_expertise'),
+
+            Field('statistical_focus'),
+            Field('other_statistical_focus'),
+
+            Field('time_scales'),
+            Field('other_time_scales'),
         )
 
     class Meta:
@@ -97,6 +118,13 @@ class ExpertiseForm(forms.ModelForm):
 
 
 class SearchForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.use_custom_control = False
+        self.helper.add_input(Submit("search", "Search"))
+        self.helper.label_class = "col-form-label"
+
     name = forms.CharField(required=False)
 
     # We are allowing custom choices (on client side) for the expertise field
@@ -116,30 +144,87 @@ class SearchForm(forms.Form):
             models.ResearchExpertise.objects.none()
         ).order_by("title")
     )
-    regions_of_expertise = forms.ModelChoiceField(
-        queryset=models.Mountain.objects.all(), required=False, widget=forms.SelectMultiple(attrs={'multiple': 'multiple'}),
+    mountain_ranges_of_research_expertise = forms.ModelChoiceField(
+        queryset=models.Mountain.objects.all(), required=False,
+        widget=forms.SelectMultiple(attrs={'multiple': 'multiple'}),
         label="Mountain Ranges of Research Expertise", to_field_name="name"
     )
 
 
 class AdvancedSearchForm(SearchForm):
-    regions_of_interest = forms.ModelChoiceField(
-        queryset=models.Mountain.objects.all(), required=False, widget=forms.SelectMultiple(attrs={'multiple': 'multiple'}),
+    expertise = None
+    mountain_ranges_of_research_interest = forms.ModelChoiceField(
+        queryset=models.Mountain.objects.all(), required=False,
+        widget=forms.SelectMultiple(attrs={'multiple': 'multiple'}),
         label="Mountain Ranges of Research Interest", to_field_name="name"
     )
+
+    research_expertise = forms.ModelChoiceField(
+        queryset=models.ResearchExpertise.objects.all(), required=False,
+        widget=forms.SelectMultiple(attrs={'multiple': 'multiple'}), to_field_name="title"
+    )
+    atmospheric_sciences = forms.ModelChoiceField(
+        queryset=models.AtmosphericSciences.objects.all(), required=False,
+        widget=forms.SelectMultiple(attrs={'multiple': 'multiple'}), to_field_name="title"
+    )
+    hydrospheric_sciences = forms.ModelChoiceField(
+        queryset=models.HydrosphericSciences.objects.all(), required=False,
+        widget=forms.SelectMultiple(attrs={'multiple': 'multiple'}), to_field_name="title"
+    )
+    cryospheric_sciences = forms.ModelChoiceField(
+        queryset=models.CryosphericSciences.objects.all(), required=False,
+        widget=forms.SelectMultiple(attrs={'multiple': 'multiple'}), to_field_name="title"
+    )
+    earth_sciences = forms.ModelChoiceField(
+        queryset=models.EarthSciences.objects.all(), required=False,
+        widget=forms.SelectMultiple(attrs={'multiple': 'multiple'}), to_field_name="title"
+    )
+    biological_sciences = forms.ModelChoiceField(
+        queryset=models.BiologicalSciences.objects.all(), required=False,
+        widget=forms.SelectMultiple(attrs={'multiple': 'multiple'}), to_field_name="title"
+    )
+    social_sciences_and_humanities = forms.ModelChoiceField(
+        queryset=models.SocialSciencesAndHumanities.objects.all(), required=False,
+        widget=forms.SelectMultiple(attrs={'multiple': 'multiple'}), to_field_name="title"
+    )
+    integrated_systems = forms.ModelChoiceField(
+        queryset=models.IntegratedSystems.objects.all(), required=False,
+        widget=forms.SelectMultiple(attrs={'multiple': 'multiple'}), to_field_name="title"
+    )
+    spatial_scale_of_expertise = forms.ModelChoiceField(
+        queryset=models.SpatialScaleOfExpertise.objects.all(), required=False,
+        widget=forms.SelectMultiple(attrs={'multiple': 'multiple'}), to_field_name="title"
+    )
+    statistical_focus = forms.ModelChoiceField(
+        queryset=models.StatisticalFocus.objects.all(), required=False,
+        widget=forms.SelectMultiple(attrs={'multiple': 'multiple'}), to_field_name="title"
+    )
+    time_scales = forms.ModelChoiceField(
+        queryset=models.TimeScales.objects.all(), required=False,
+        widget=forms.SelectMultiple(attrs={'multiple': 'multiple'}), to_field_name="title"
+    )
+    methods = forms.ModelChoiceField(
+        queryset=models.Methods.objects.all(), required=False,
+        widget=forms.SelectMultiple(attrs={'multiple': 'multiple'}), to_field_name="title"
+    )
+    participation_in_assessments = forms.ModelChoiceField(
+        queryset=models.ParticipationInAssessments.objects.all(), required=False,
+        widget=forms.SelectMultiple(attrs={'multiple': 'multiple'}), to_field_name="title"
+    )
+    inputs_or_participation_to_un_conventions = forms.ModelChoiceField(
+        queryset=models.InputsOrParticipationToUNConventions.objects.all(), required=False,
+        widget=forms.SelectMultiple(attrs={'multiple': 'multiple'}), to_field_name="title",
+        label="Inputs / Participation to UN Conventions"
+    )
+    other_expertise = forms.CharField(required=False)
+
     career_stage = forms.ChoiceField(
         choices=data.CareerStage.choices, required=False, widget=forms.SelectMultiple(attrs={'multiple': 'multiple'})
     )
     official_functions = forms.CharField(required=False)
     affiliation = forms.ModelChoiceField(
-        queryset=models.Affiliation.objects.all().order_by("name"), widget=forms.SelectMultiple(attrs={'multiple': 'multiple'}),
-        required=False, label="Affiliation", to_field_name="name"
+        queryset=models.Affiliation.objects.all().order_by("name"), required=False, label="Affiliation",
+        to_field_name="name", widget=forms.SelectMultiple(attrs={'multiple': 'multiple'}),
+
     )
     country = CountryField().formfield(required=False, label="Affiliation / Project Country")
-    participation_in_assessments = forms.ModelChoiceField(
-        queryset=models.ParticipationInAssessments.objects.all(), required=False, widget=forms.SelectMultiple(attrs={'multiple': 'multiple'})
-    )
-    inputs_or_participation_to_un_conventions = forms.ModelChoiceField(
-        label="Inputs / Participation to UN Conventions", queryset=models.InputsOrParticipationToUNConventions.objects.all(),
-        required=False, widget=forms.SelectMultiple(attrs={'multiple': 'multiple'})
-    )

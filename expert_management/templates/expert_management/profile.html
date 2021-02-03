@@ -87,14 +87,23 @@
         <dd class="col-sm-7">{{object.orcid}}</dd>
     </dl>
     <div>
+        {% if object.expertise.research_expertise_display %}
+        <dl class="row">
+            <dt class="col-sm-5">Research Expertise</dt>
+            <dd class="col-sm-7">{{object.expertise.research_expertise_display}}</dd>
+        </dl>
+        {% endif %}
+    </div>
+    <hr>
+    <div>
         <h4>Disciplinary Expertise</h4>
         <dl class="row">
             {% if object.expertise.atmospheric_sciences_display %}
             <dt class="col-sm-5">Atmospheric Sciences</dt><dd class="col-sm-7">{{object.expertise.atmospheric_sciences_display}}</dd>
             {% endif %}
 
-            {% if object.expertise.hydrospheric_sciences_display %}
-            <dt class="col-sm-5">Hydrospheric Sciences</dt><dd class="col-sm-7">{{object.expertise.hydrospheric_sciences_display}}</dd>
+            {% if object.expertise.biological_sciences_display %}
+            <dt class="col-sm-5">Biological Sciences</dt><dd class="col-sm-7">{{object.expertise.biological_sciences_display}}</dd>
             {% endif %}
 
             {% if object.expertise.cryospheric_sciences_display %}
@@ -105,16 +114,16 @@
             <dt class="col-sm-5">Earth Sciences</dt><dd class="col-sm-7">{{object.expertise.earth_sciences_display}}</dd>
             {% endif %}
 
-            {% if object.expertise.biological_sciences_display %}
-            <dt class="col-sm-5">Biological Sciences</dt><dd class="col-sm-7">{{object.expertise.biological_sciences_display}}</dd>
-            {% endif %}
-
-            {% if object.expertise.social_sciences_and_humanities_display %}
-            <dt class="col-sm-5">Social Sciences and Humanities</dt><dd class="col-sm-7">{{object.expertise.social_sciences_and_humanities_display}}</dd>
+            {% if object.expertise.hydrospheric_sciences_display %}
+            <dt class="col-sm-5">Hydrospheric Sciences</dt><dd class="col-sm-7">{{object.expertise.hydrospheric_sciences_display}}</dd>
             {% endif %}
 
             {% if object.expertise.integrated_systems_display %}
             <dt class="col-sm-5">Integrated Systems</dt><dd class="col-sm-7">{{object.expertise.integrated_systems_display}}</dd>
+            {% endif %}
+
+            {% if object.expertise.social_sciences_and_humanities_display %}
+            <dt class="col-sm-5">Social Sciences and Humanities</dt><dd class="col-sm-7">{{object.expertise.social_sciences_and_humanities_display}}</dd>
             {% endif %}
 
             {% if object.expertise.other_expertise %}
@@ -122,71 +131,71 @@
             {% endif %}
         </dl>
     </div>
-    <h3>Expertise</h3>
-    <dl class="row">
-        <dt class="col-sm-5">Research Expertise</dt>
-        <dd class="col-sm-7">{{object.expertise.research_expertise_display}}</dd>
-
-        {% if object.expertise.spatial_scale_of_expertise_display %}
-        <dt class="col-sm-5">Spatial Scale of Expertise</dt>
-        <dd class="col-sm-7">
-            {{object.expertise.spatial_scale_of_expertise_display}}
-        </dd>
-        {% endif %}
-
-        {% if object.expertise.statistical_focus_display %}
-        <dt class="col-sm-5">Statistical Focus</dt>
-        <dd class="col-sm-7">
-            {{object.expertise.statistical_focus_display}}
-        </dd>
-        {% endif %}
-
-        {% if object.expertise.time_scales_display %}
-        <dt class="col-sm-5">Time Scales</dt>
-        <dd class="col-sm-7">
-            {{object.expertise.time_scales_display}}
-        </dd>
-        {% endif %}
-
-        {% if object.expertise.methods_display %}
-        <dt class="col-sm-5">Methods</dt>
-        <dd class="col-sm-7">
-            {{object.expertise.methods_display}}
-        </dd>
-        {% endif %}
-
-        {% if object.expertise.mountain_ranges_of_research_interest_display %}
-        <dt class="col-sm-5">Mountain Ranges of Research Interest</dt>
-        <dd class="col-sm-7">
-            {{object.expertise.mountain_ranges_of_research_interest_display}}
-        </dd>
-        {% endif %}
-
-        {% if object.expertise.mountain_ranges_of_research_expertise_display %}
-        <dt class="col-sm-5">Mountain Ranges of Research Expertise</dt>
-        <dd class="col-sm-7">
-            {{object.expertise.mountain_ranges_of_research_expertise_display}}
-        </dd>
-        {% endif %}
-
-        {% if object.expertise.participation_in_assessments_display %}
-        <dt class="col-sm-5">Participation in Assessments</dt>
-        <dd class="col-sm-7">
-            {{object.expertise.participation_in_assessments_display}}
-            {% if object.expertise.more_detail_about_participation_in_assessments %}
-            <dl class="row">
-                <dt class="col-sm-5">Details</dt>
-                <dt class="col-sm-7">{{object.expertise.more_detail_about_participation_in_assessments}}</dt>
-            </dl>
+    <hr>
+    <div>
+        <dl class="row">
+            {% if object.expertise.inputs_or_participation_to_un_conventions_display %}
+            <dt class="col-sm-5">Inputs / Participation to/in UN Conventions</dt>
+            <dd class="col-sm-7">{{object.expertise.inputs_or_participation_to_un_conventions_display}}</dd>
             {% endif %}
-        </dd>
-        {% endif %}
 
-        {% if object.expertise.inputs_or_participation_to_un_conventions_display %}
-        <dt class="col-sm-5">Inputs / Participation to/in UN Conventions</dt>
-        <dd class="col-sm-7">{{object.expertise.inputs_or_participation_to_un_conventions_display}}</dd>
-        {% endif %}
-    </dl>
+            {% if object.expertise.methods_display %}
+            <dt class="col-sm-5">Methods</dt>
+            <dd class="col-sm-7">
+                {{object.expertise.methods_display}}
+            </dd>
+            {% endif %}
+
+            {% if object.expertise.mountain_ranges_of_research_expertise_display %}
+            <dt class="col-sm-5">Mountain Ranges of Research Expertise</dt>
+            <dd class="col-sm-7">
+                {{object.expertise.mountain_ranges_of_research_expertise_display}}
+            </dd>
+            {% endif %}
+
+            {% if object.expertise.mountain_ranges_of_research_interest_display %}
+            <dt class="col-sm-5">Mountain Ranges of Research Interest</dt>
+            <dd class="col-sm-7">
+                {{object.expertise.mountain_ranges_of_research_interest_display}}
+            </dd>
+            {% endif %}
+
+            {% if object.expertise.participation_in_assessments_display %}
+            <dt class="col-sm-5">Participation in Assessments</dt>
+            <dd class="col-sm-7">
+                {{object.expertise.participation_in_assessments_display}}
+                {% if object.expertise.more_detail_about_participation_in_assessments %}
+                <dl class="row">
+                    <dt class="col-sm-5">Details</dt>
+                    <dt class="col-sm-7">{{object.expertise.more_detail_about_participation_in_assessments}}</dt>
+                </dl>
+                {% endif %}
+            </dd>
+            {% endif %}
+
+            {% if object.expertise.spatial_scale_of_expertise_display %}
+            <dt class="col-sm-5">Spatial Scale of Expertise</dt>
+            <dd class="col-sm-7">
+                {{object.expertise.spatial_scale_of_expertise_display}}
+            </dd>
+            {% endif %}
+
+            {% if object.expertise.statistical_focus_display %}
+            <dt class="col-sm-5">Statistical Focus</dt>
+            <dd class="col-sm-7">
+                {{object.expertise.statistical_focus_display}}
+            </dd>
+            {% endif %}
+
+            {% if object.expertise.time_scales_display %}
+            <dt class="col-sm-5">Time Scales</dt>
+            <dd class="col-sm-7">
+                {{object.expertise.time_scales_display}}
+            </dd>
+            {% endif %}
+        </dl>
+    </div>
+
     <h3>Affiliations</h3>
     <div class="row justify-content-start">
     {% for affiliation in object.affiliations.all %}

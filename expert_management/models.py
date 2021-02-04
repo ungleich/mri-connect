@@ -178,9 +178,15 @@ class Project(models.Model):
         return self.name
 
 
+class MountainManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().all().order_by("name")
+
+
 # GMBA Mountains
 class Mountain(models.Model):
     name = models.CharField(max_length=256, unique=True, blank=False, null=False)
+    objects = MountainManager()
 
     def __str__(self):
         return self.name
@@ -188,15 +194,41 @@ class Mountain(models.Model):
 
 class Expertise(models.Model):
     research_expertise = models.ManyToManyField("ResearchExpertise", blank=True)
-    atmospheric_sciences = models.ManyToManyField("AtmosphericSciences", blank=True)
-    biological_sciences = models.ManyToManyField("BiologicalSciences", blank=True)
-    cryospheric_sciences = models.ManyToManyField("CryosphericSciences", blank=True)
-    earth_sciences = models.ManyToManyField("EarthSciences", blank=True)
-    hydrospheric_sciences = models.ManyToManyField("HydrosphericSciences", blank=True)
-    integrated_systems = models.ManyToManyField("IntegratedSystems", blank=True)
-    social_sciences_and_humanities = models.ManyToManyField("SocialSciencesAndHumanities", blank=True)
 
-    other_expertise = models.TextField(null=True, blank=True, help_text="This should be a comma seperated list")
+    atmospheric_sciences = models.ManyToManyField("AtmosphericSciences", blank=True)
+    other_atmospheric_sciences = models.CharField(
+        max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list"
+    )
+
+    biological_sciences = models.ManyToManyField("BiologicalSciences", blank=True)
+    other_biological_sciences = models.CharField(
+        max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list"
+    )
+
+    cryospheric_sciences = models.ManyToManyField("CryosphericSciences", blank=True)
+    other_cryospheric_sciences = models.CharField(
+        max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list"
+    )
+
+    earth_sciences = models.ManyToManyField("EarthSciences", blank=True)
+    other_earth_sciences = models.CharField(
+        max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list"
+    )
+
+    hydrospheric_sciences = models.ManyToManyField("HydrosphericSciences", blank=True)
+    other_hydrospheric_sciences = models.CharField(
+        max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list"
+    )
+
+    integrated_systems = models.ManyToManyField("IntegratedSystems", blank=True)
+    other_integrated_systems = models.CharField(
+        max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list"
+    )
+
+    social_sciences_and_humanities = models.ManyToManyField("SocialSciencesAndHumanities", blank=True)
+    other_social_sciences_and_humanities = models.CharField(
+        max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list"
+    )
 
     spatial_scale_of_expertise = models.ManyToManyField("SpatialScaleOfExpertise", blank=True)
     other_spatial_scale_of_expertise = models.CharField(
@@ -230,11 +262,11 @@ class Expertise(models.Model):
     more_detail_about_participation_in_assessments = models.TextField(null=True, blank=True)
 
     inputs_or_participation_to_un_conventions = models.ManyToManyField(
-        "InputsOrParticipationToUNConventions", blank=True, verbose_name="Inputs / Participation to UN Conventions"
+        "InputsOrParticipationToUNConventions", blank=True, verbose_name="Inputs / Participation to United Nations Conventions"
     )
     other_inputs_or_participation_to_un_conventions = models.CharField(
         max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list",
-        verbose_name="Other Inputs / Participation to UN Conventions"
+        verbose_name="Other Inputs / Participation to United Nations Conventions"
     )
 
     user = models.OneToOneField(
@@ -247,31 +279,52 @@ class Expertise(models.Model):
 
     @property
     def atmospheric_sciences_display(self):
-        return ", ".join([expertise.title for expertise in self.atmospheric_sciences.all()])
+        return join_true_values([
+            ", ".join([expertise.title for expertise in self.atmospheric_sciences.all()]),
+            self.other_atmospheric_sciences
+        ])
 
     @property
     def hydrospheric_sciences_display(self):
-        return ", ".join([expertise.title for expertise in self.hydrospheric_sciences.all()])
+        return join_true_values([
+            ", ".join([expertise.title for expertise in self.hydrospheric_sciences.all()]),
+            self.other_hydrospheric_sciences
+        ])
 
     @property
     def cryospheric_sciences_display(self):
-        return ", ".join([expertise.title for expertise in self.cryospheric_sciences.all()])
+        return join_true_values([
+            ", ".join([expertise.title for expertise in self.atmospheric_sciences.all()]),
+            self.other_cryospheric_sciences
+        ])
 
     @property
     def earth_sciences_display(self):
-        return ", ".join([expertise.title for expertise in self.earth_sciences.all()])
+        return join_true_values([
+            ", ".join([expertise.title for expertise in self.atmospheric_sciences.all()]),
+            self.other_earth_sciences
+        ])
 
     @property
     def biological_sciences_display(self):
-        return ", ".join([expertise.title for expertise in self.biological_sciences.all()])
+        return join_true_values([
+            ", ".join([expertise.title for expertise in self.atmospheric_sciences.all()]),
+            self.other_biological_sciences
+        ])
 
     @property
     def social_sciences_and_humanities_display(self):
-        return ", ".join([expertise.title for expertise in self.social_sciences_and_humanities.all()])
+        return join_true_values([
+            ", ".join([expertise.title for expertise in self.atmospheric_sciences.all()]),
+            self.other_social_sciences_and_humanities
+        ])
 
     @property
     def integrated_systems_display(self):
-        return ", ".join([expertise.title for expertise in self.integrated_systems.all()])
+        return join_true_values([
+            ", ".join([expertise.title for expertise in self.atmospheric_sciences.all()]),
+            self.other_integrated_systems
+        ])
 
     @property
     def spatial_scale_of_expertise_display(self):

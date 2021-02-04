@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django_countries',
     'django.contrib.admin', # comes at the end because the theme is replaced
     'mapwidgets',
+    'captcha',
     'expert_management.apps.ExpertManagementConfig'
 ]
 

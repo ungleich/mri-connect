@@ -20,5 +20,6 @@ urlpatterns = [
 
     path('', views.Search.as_view(), name='search'),
     path('advanced-search/', views.AdvancedSearch.as_view(), name='advanced-search'),
-    path('search-result/', views.SearchResultView.as_view(), name='search-result')
+    path('search-result/', views.SearchResultView.as_view(), name='search-result'),
+    path('contact/<str:username>/', views.Contact.as_view(), name='contact')
 ]

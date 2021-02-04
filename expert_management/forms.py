@@ -14,6 +14,7 @@ from . import data
 from . import models
 from .utils.common import zip_with_itself
 from .utils.mailchimp import Mailchimp
+from captcha.fields import ReCaptchaField
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -59,13 +60,26 @@ class ExpertiseForm(forms.ModelForm):
 
             HTML("<h3>Disciplinary Expertise</h3>"),
             Field('atmospheric_sciences'),
+            Field('other_atmospheric_sciences'),
+
             Field('biological_sciences'),
+            Field('other_biological_sciences'),
+
             Field('cryospheric_sciences'),
+            Field('other_cryospheric_sciences'),
+
             Field('earth_sciences'),
+            Field('other_earth_sciences'),
+
             Field('hydrospheric_sciences'),
+            Field('other_hydrospheric_sciences'),
+
             Field('integrated_systems'),
+            Field('other_integrated_systems'),
+
             Field('social_sciences_and_humanities'),
-            Field('other_expertise'),
+
+            Field('other_social_sciences_and_humanities'),
 
             HTML("<hr>"),
 
@@ -214,7 +228,7 @@ class AdvancedSearchForm(SearchForm):
     inputs_or_participation_to_un_conventions = forms.ModelChoiceField(
         queryset=models.InputsOrParticipationToUNConventions.objects.all(), required=False,
         widget=forms.SelectMultiple(attrs={'multiple': 'multiple'}), to_field_name="title",
-        label="Inputs / Participation to UN Conventions"
+        label="Inputs / Participation to United Nations Conventions"
     )
     other_expertise = forms.CharField(required=False)
 
@@ -228,3 +242,15 @@ class AdvancedSearchForm(SearchForm):
 
     )
     country = CountryField().formfield(required=False, label="Affiliation / Project Country")
+
+
+class ContactForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.use_custom_control = False
+        self.helper.add_input(Submit("", "Email"))
+        self.helper.label_class = "col-form-label"
+
+    body = forms.CharField(widget=forms.Textarea, required=True)
+    captcha = ReCaptchaField()

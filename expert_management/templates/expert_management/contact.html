@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load crispy_forms_tags %}
+
+<div class="p-5 bg-white rounded">
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{message.tags}}" role="alert">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    <h1>Contact</h1>
+    <form method="POST" action="">
+        {% crispy form form.helper %}
+    </form>
+</div>
+{% endblock %}

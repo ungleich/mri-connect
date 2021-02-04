@@ -33,6 +33,7 @@ DATABASES = {
         # PGPORT environment variables (these get picked up by libpq).
     }
 }
+SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
 MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware'] + MIDDLEWARE
 

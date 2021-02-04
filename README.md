@@ -82,6 +82,8 @@ env = SECRET_KEY=secret_key
 env = MAILCHIMP_API_KEY=mailchimp_api_key
 env = MAILCHIMP_SERVER_PREFIX=mailchimp_server_prefix
 env = MAILCHIMP_LIST_ID=mailchimp_list_id
+env = RECAPTCHA_PUBLIC_KEY=recaptcha_public_key
+env = RECAPTCHA_PRIVATE_KEY=recaptcha_private_key
 ```
 
 Settings can also be provided using `mriconnect/settings/local.py`

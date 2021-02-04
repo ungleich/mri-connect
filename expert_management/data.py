@@ -65,24 +65,20 @@ EXPERTS_PREFERENCES = (
     (
         "join_ecr",
         _(
-            "Would you like to join the MRI Early Career Researchers (ECRs) fellows group? (applies to currently enrolled students, practitioners, or postgraduate/postdoctoral scholars up to 5 years since obtaining last degree)"
+            "I would like to join the MRI Early Career Researchers (ECRs) fellows group (for enrolled students, practitioners, or scholars within 5 years of obtaining last degree)"
         ),
     ),
     (
         "contact_me",
         _(
-            "I allow MRI to contact me regarding my profile, as listed on the database, to link to and promote in its communications channels (website, social media, newsletter article)."
+            "I allow the MRI to contact me about my profile and link to it in its communications channels (website, social media, newsletter article)."
         ),
     ),
     (
         "expert_registry",
         _(
-            "I would like to be added to an experts registry for internal use by the MRI Coordination Office to identify and connect with external requests for consultancies, expertise, provide inputs for policy briefs/policy reviews, speaking role, or interviews (such as by third parties, journalists or collaborators of the MRI)."
+            "I would like to be added to an experts registry for the MRI to connect me with external requests for consultancies, expertise, policy inputs, speaking roles, or interviews."
         ),
-    ),
-    (
-        "newsletter",
-        _("I would like to receive monthly MRI Global Newsletters and Newsflashes from the MRI"),
     ),
 )
 

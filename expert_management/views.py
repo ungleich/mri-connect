@@ -1,21 +1,30 @@
 from django.conf import settings
+
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.gis.db.models import F, Q, Value
 from django.db.models.functions import Concat
 from django.forms.models import fields_for_model, ModelMultipleChoiceField
 
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render, get_object_or_404
+from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse_lazy
 from django.views import generic
+from django.template import loader
+from django.core.mail import EmailMessage
 
 from . import data
-from .forms import AdvancedSearchForm, ProjectForm, SearchForm, CustomUserCreationForm, ExpertiseForm
-from .models import Expertise, Project
+from .forms import AdvancedSearchForm, ProjectForm, SearchForm, CustomUserCreationForm, ExpertiseForm, ContactForm
+from .models import Expertise, Project, User
 from .selector import get_user_profile
 from .utils.common import Q_if_truthy, non_zero_keys
 from .utils.mailchimp import Mailchimp
 from .utils.importdata import classify_expertise
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class TitleMixin:
@@ -268,3 +277,38 @@ class SearchResultView(TitleMixin, generic.ListView):
         )
 
         return queryset.filter(query & Q(is_public=True)).distinct() if query else queryset.none()
+
+
+class Contact(TitleMixin, LoginRequiredMixin, generic.FormView):
+    template_name = "expert_management/contact.html"
+    form_class = ContactForm
+    title = "Contact"
+    success_url = "contact"
+
+    def get_success_url(self):
+        return reverse_lazy("contact", args=[self.kwargs["username"]])
+
+    def get(self, request, *args, **kwargs):
+        get_object_or_404(User, username=kwargs["username"]).email
+        return super().get(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        body, *_ = form.cleaned_data.values()
+        self.send_email(body)
+        return super().form_valid(form)
+
+    def send_email(self, body):
+        try:
+            recepient_email = get_object_or_404(User, username=self.kwargs["username"]).email
+            email = EmailMessage(
+                subject=f'Message from {get_current_site(self.request).name}',
+                body=body,
+                to=[recepient_email],
+                reply_to=[self.request.user.email]
+            )
+            email.send(fail_silently=False)
+        except Exception as e:
+            logger.exception(e)
+            messages.add_message(self.request, messages.ERROR, 'An error occurred while sending email', 'danger')
+        else:
+            messages.add_message(self.request, messages.SUCCESS, 'Message sent successfully')

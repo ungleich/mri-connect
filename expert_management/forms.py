@@ -15,6 +15,7 @@ from . import models
 from .utils.common import zip_with_itself
 from .utils.mailchimp import Mailchimp
 from captcha.fields import ReCaptchaField
+from captcha.widgets import ReCaptchaV3
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -253,4 +254,6 @@ class ContactForm(forms.Form):
         self.helper.label_class = "col-form-label"
 
     body = forms.CharField(widget=forms.Textarea, required=True)
-    captcha = ReCaptchaField()
+    captcha = ReCaptchaField(widget=ReCaptchaV3)
+    if getattr(settings, 'DEBUG', False):
+        captcha.clean = lambda x: x

@@ -112,8 +112,8 @@ if 'LOG_DIR' in env:
     LOGGING['loggers']['django.security']['handlers'].append('errors_file')
 
 
-RECAPTCHA_PUBLIC_KEY = env.get("RECAPTCHA_PUBLIC_KEY", "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI")
-RECAPTCHA_PRIVATE_KEY = env.get("RECAPTCHA_PRIVATE_KEY", "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe")
+RECAPTCHA_PUBLIC_KEY = env.get("RECAPTCHA_PUBLIC_KEY", "")
+RECAPTCHA_PRIVATE_KEY = env.get("RECAPTCHA_PRIVATE_KEY", "")
 
 try:
     from .local import *

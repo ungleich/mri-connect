@@ -294,35 +294,35 @@ class Expertise(models.Model):
     @property
     def cryospheric_sciences_display(self):
         return join_true_values([
-            ", ".join([expertise.title for expertise in self.atmospheric_sciences.all()]),
+            ", ".join([expertise.title for expertise in self.cryospheric_sciences.all()]),
             self.other_cryospheric_sciences
         ])
 
     @property
     def earth_sciences_display(self):
         return join_true_values([
-            ", ".join([expertise.title for expertise in self.atmospheric_sciences.all()]),
+            ", ".join([expertise.title for expertise in self.earth_sciences.all()]),
             self.other_earth_sciences
         ])
 
     @property
     def biological_sciences_display(self):
         return join_true_values([
-            ", ".join([expertise.title for expertise in self.atmospheric_sciences.all()]),
+            ", ".join([expertise.title for expertise in self.biological_sciences.all()]),
             self.other_biological_sciences
         ])
 
     @property
     def social_sciences_and_humanities_display(self):
         return join_true_values([
-            ", ".join([expertise.title for expertise in self.atmospheric_sciences.all()]),
+            ", ".join([expertise.title for expertise in self.social_sciences_and_humanities.all()]),
             self.other_social_sciences_and_humanities
         ])
 
     @property
     def integrated_systems_display(self):
         return join_true_values([
-            ", ".join([expertise.title for expertise in self.atmospheric_sciences.all()]),
+            ", ".join([expertise.title for expertise in self.integrated_systems.all()]),
             self.other_integrated_systems
         ])
 

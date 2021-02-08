@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'django.contrib.gis',
     'django.contrib.sites',
+    'corsheaders',
     'crispy_forms',
     'jazzmin',
     'django_countries',
@@ -52,6 +53,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -62,7 +64,8 @@ MIDDLEWARE = [
 SITE_ID = 1
 
 ROOT_URLCONF = 'mriconnect.urls'
-
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+CORS_ALLOW_ALL_ORIGINS = True
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -134,8 +137,6 @@ STATIC_URL = '/static/'
 DATABASES = {
 }
 
-# This should be changed once we put this in production.
-CORS_ORIGIN_ALLOW_ALL = True
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -164,7 +165,7 @@ JAZZMIN_SETTINGS = {
     "hide_apps": ["data_wizard"],
 
     "changeform_format": "single",
-    "language_chooser": True,
+    "language_chooser": False,
     "navigation_expanded": True,
 }
 

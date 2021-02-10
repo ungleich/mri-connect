@@ -51,9 +51,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -71,7 +71,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://mountainresearchinitiative.org/",
     "https://django-hosting.ch/",
     "https://mri.django-hosting.ch/",
-    "https://mri-staging.django-hosting.ch/",
+    "https://mri-staging.django-hosting.ch/"
 ]
 
 TEMPLATES = [

@@ -58,14 +58,22 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 SITE_ID = 1
 
 ROOT_URLCONF = 'mriconnect.urls'
 X_FRAME_OPTIONS = 'SAMEORIGIN'
-CORS_ALLOW_ALL_ORIGINS = True
+
+# Some domains might not be need in the end
+CORS_ALLOWED_ORIGINS = [
+    "https://ungleich.ch",
+    "https://mountainresearchinitiative.org/",
+    "https://django-hosting.ch/",
+    "https://mri.django-hosting.ch/",
+    "https://mri-staging.django-hosting.ch/",
+]
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',

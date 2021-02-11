@@ -68,10 +68,10 @@ X_FRAME_OPTIONS = 'SAMEORIGIN'
 # Some domains might not be need in the end
 CORS_ALLOWED_ORIGINS = [
     "https://ungleich.ch",
-    "https://mountainresearchinitiative.org/",
-    "https://django-hosting.ch/",
-    "https://mri.django-hosting.ch/",
-    "https://mri-staging.django-hosting.ch/"
+    "https://mountainresearchinitiative.org",
+    "https://django-hosting.ch",
+    "https://mri.django-hosting.ch",
+    "https://mri-staging.django-hosting.ch"
 ]
 
 TEMPLATES = [

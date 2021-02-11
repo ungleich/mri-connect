@@ -1,0 +1,35 @@
+{% load i18n %}{% autoescape off %}
+
+<p>Dear <b>{{ user.first_name}} {{ user.last_name }}</b>,</p>
+
+<p>Thank you for being part of the Mountain Research Initiative (MRI) Expert Database!</p>
+
+<p>As part of our global network, you have made the MRI Expert Database a useful tool for connection and collaboration for the mountain research community for many years. To ensure we continue to meet your needs for the years to come, the MRI has been working hard on a brand new Expert Database. We hope you will continue to be a part of it!</p>
+<p>
+Please go to the following page to choose a new password for your MRI Expert Database user account:
+{% block reset_link %}
+{{ protocol }}://{{ domain }}{% url 'password_reset_confirm' uidb64=uid token=token %}
+{% endblock %}
+</p>
+<p>Your username: {{ user.get_username }}</p>
+
+<p>
+The new MRI Expert Database builds on the strong foundations that were already in place, while offering updated features like improved search functionality and data privacy. By continuing your membership, your personal expert profile will be published as part of the new MRI Expert Database, helping you to identify and connect with colleagues involved in mountain research, management, and working in governmental and non-governmental institutions and the private sector worldwide. As an MRI Expert Database member, you will also be entitled to participate in future <a href="https://www.mountainresearchinitiative.org/activities/community-led-activities/synthesis-workshops">MRI Synthesis Workshop calls</a>. The MRI Coordination Office will be able to recommend you for opportunities such as communication campaigns; consultancies; data contributions; inputs to assessments (e.g., IPCC); media requests for mountain research expertise; project participation; proposal bids; and speaking engagements.
+</p>
+
+<p>
+We’d love for you to stay part of our online community of mountain experts – <span style="text-decoration-line: underline;">but for this we need your consent!</span> We have migrated your personal profiles from the old database, which was hosted by ProClim at scnat. When you follow the link above, <b>you can agree to display your profile</b> in the new MRI Expert Database. This means that the data you provide will be made visible and searchable through our website in order to facilitate your connection and collaboration with other members of the mountain research community. You will also have the opportunity to update your profile, if you wish, and to start exploring the exciting features of the new MRI Expert Database. You can delete your profile at any time. For more information about how we collect and store your data, please consult our <a href="https://www.mountainresearchinitiative.org/who-we-are/privacy-policy">Privacy Policy</a>. 
+</p>
+
+<p>
+Please note that later in 2021, your profile will be permanently deleted from the MRI database hosted at ProClim. This deletion will not affect your data in any other ProClim database of which you are a member.  
+</p>
+
+<p>
+We look forward to welcoming you to our new MRI Expert Database, and hope that you will find its improvements useful as you continue to make connections for our changing mountains. If you encounter any issues with, or have feedback about, the new database, please <a href="mailto:mri@mountainresearchinitiative.org">contact us</a> by 1 April 2021. 
+</p>
+
+Warm regards,
+<br/>
+The MRI Coordination Office Team
+{% endautoescape %}

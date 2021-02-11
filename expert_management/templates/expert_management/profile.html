@@ -111,14 +111,6 @@
     </div>
     {% endif %}
 
-    <div>
-        {% if object.expertise.research_expertise_display %}
-        <dl class="row">
-            <dt class="col-sm-5">Research Expertise</dt>
-            <dd class="col-sm-7">{{object.expertise.research_expertise_display}}</dd>
-        </dl>
-        {% endif %}
-    </div>
     <hr>
     <div>
         <h4>Disciplines</h4>
@@ -158,7 +150,15 @@
     </div>
     <hr>
     <div>
+        <h4>Expertise</h4>
         <dl class="row">
+
+          {% if object.expertise.research_expertise_display %}
+          <dt class="col-sm-5">Research Expertise</dt>
+          <dd class="col-sm-7">{{object.expertise.research_expertise_display}}</dd>
+          {% endif %}
+
+
             {% if object.expertise.inputs_or_participation_to_un_conventions_display %}
             <dt class="col-sm-5">Inputs / Participation to/in UN Conventions</dt>
             <dd class="col-sm-7">{{object.expertise.inputs_or_participation_to_un_conventions_display}}</dd>

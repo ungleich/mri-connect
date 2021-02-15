@@ -279,7 +279,7 @@ class SearchResultView(TitleMixin, generic.ListView):
         return queryset.filter(query & Q(is_public=True)).distinct() if query else queryset.none()
 
 
-class Contact(TitleMixin, LoginRequiredMixin, generic.FormView):
+class Contact(TitleMixin, generic.FormView):
     template_name = "expert_management/contact.html"
     form_class = ContactForm
     title = "Contact"
@@ -293,18 +293,18 @@ class Contact(TitleMixin, LoginRequiredMixin, generic.FormView):
         return super().get(request, *args, **kwargs)
 
     def form_valid(self, form):
-        body, *_ = form.cleaned_data.values()
-        self.send_email(body)
+        email, body, *_ = form.cleaned_data.values()
+        self.send_email(email, body)
         return super().form_valid(form)
 
-    def send_email(self, body):
+    def send_email(self, email, body):
         try:
             recepient_email = get_object_or_404(User, username=self.kwargs["username"]).email
             email = EmailMessage(
                 subject=f'Message from {get_current_site(self.request).name}',
                 body=body,
                 to=[recepient_email],
-                reply_to=[self.request.user.email]
+                reply_to=[email]
             )
             email.send(fail_silently=False)
         except Exception as e:

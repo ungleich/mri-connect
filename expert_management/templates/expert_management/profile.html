@@ -23,8 +23,7 @@
                     <a href="{% url 'update-expertise' %}" class="btn btn-primary btn-sm" role="btn">Update Expertise</a>
                     <a href="{% url 'password_change' %}" class="btn btn-warning btn-sm" role="btn">Change Password</a>
                     {% else %}
-                    <a href="mailto:mri@mountainresearchinitiative.org">Contact
-                    via the MRI office</a><br/>
+                    <a href="{% url 'contact' object.username %}" class="btn btn-primary btn-sm" role="btn">Contact</a><br/>
                     {% endif %}
                 </div>
 

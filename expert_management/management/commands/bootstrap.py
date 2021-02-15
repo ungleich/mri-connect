@@ -4,10 +4,10 @@ from expert_management import models
 
 
 MOUNTAIN_NAMES = [
-    'Alps', 'Andes', 'Appalachian Mountains', 'Atlas', 'Balkan', 'Cape Ranges', 'Carpathians', 'Caucasus', 'Drakensberg',
-    'Eastern Arc Mountains', 'Ethiopian Highlands', 'Great Dividing Range', 'Himalaya', 'Japanese Alps', 'Kalahari',
-    'Kamchatka Range', 'Karelides', 'Pyrenees', 'Rocky Mountains', 'Scottish Highlands', 'Siberian Plateau', 'Sierra Madre',
-    'Southern Alps New Zealand'
+    'Alps', 'Andes', 'Appalachian Mountains', 'Atlas', 'Balkan', 'Cape Ranges', 'Carpathians', 'Caucasus',
+    'Drakensberg', 'Eastern Arc Mountains', 'Ethiopian Highlands', 'Great Dividing Range', 'Himalaya',
+    'Japanese Alps', 'Kalahari', 'Kamchatka Range', 'Karelides', 'Pyrenees', 'Rocky Mountains',
+    'Scottish Highlands', 'Siberian Plateau', 'Sierra Madre', 'Southern Alps New Zealand'
 ]
 RESEARCH_EXPERTISE_SUB_CATEGORIES = [
     'Basic Research', 'Applied Research', 'Research Interface and Management', 'Interdisciplinary Research',
@@ -32,12 +32,13 @@ BIOLOGICAL_SCIENCES_SUB_CATEGORIES = [
 SOCIAL_SCIENCES_AND_HUMANITIES_SUB_CATEGORIES = [
     'History, classical studies, archaeology, prehistory and early history', 'Linguistics and literature, philosophy',
     'Art studies, musicology, theatre and film studies, architecture', 'Ethnology, social and human geography',
-    'Psychology', 'Educational studies', 'Sociology, social work', 'Political sciences', 'Media and communication studies',
-    'Public health', 'Economics', 'Law'
+    'Psychology', 'Educational studies', 'Sociology, social work', 'Political sciences',
+    'Media and communication studies', 'Public health', 'Economics', 'Law'
 ]
 
 INTEGRATED_SYSTEMS_SUB_CATEGORIES = [
-    'Carbon Cycle', 'Other Biogeochemical Cycles', 'Hydrogeochemical Cycle', 'Nutrient Cycle', 'Social-ecological Systems'
+    'Carbon Cycle', 'Other Biogeochemical Cycles', 'Hydrogeochemical Cycle', 'Nutrient Cycle',
+    'Social-ecological Systems'
 ]
 
 SPATIAL_SCALE_OF_EXPERTISE_SUB_CATEGORIES = [
@@ -61,6 +62,15 @@ PARTICIPATION_IN_ASSESSMENTS_SUB_CATEGORIES = ['IPCC', 'IPBES', 'UNDRR GAR']
 INPUTS_OR_PARTICIPATION_TO_UN_CONVENTIONS_SUB_CATEGORIES = [
     'UN Agenda 2030 (SDGs) / UN HLPF', 'UNFCCC', 'CBD', 'UNDRR Sedai', 'UNCCD'
 ]
+
+SWISS_CHEESE = [
+    'Sbrinz', 'Berner Hobelkäse', 'Appenzeller', 'Berner Alpkäse', 'Bündner Bergkäse',
+    'Gruyère/Greyerzer', "L'Etivaz", 'Röthenbacher Bergkäse', 'Mutschli', 'Schabziger',
+    'Tête de Moine', 'Emmentaler', 'Raclette', 'Scharfe Maxx', 'Le Marechal', 'Tilsiter',
+    'Vacherin Fribourgeois', 'Formaggini', 'Luzerner Rahmkäse', "Vacherin Mont d'Or",
+    'Gala', 'Büsciun da cavra', 'Tomme Vaudoise', 'Bleuchâtel'
+]
+
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
@@ -92,7 +102,10 @@ class Command(BaseCommand):
             ignore_conflicts=True
         )
         models.SocialSciencesAndHumanities.objects.bulk_create(
-            [models.SocialSciencesAndHumanities(title=title) for title in SOCIAL_SCIENCES_AND_HUMANITIES_SUB_CATEGORIES],
+            [
+                models.SocialSciencesAndHumanities(title=title)
+                for title in SOCIAL_SCIENCES_AND_HUMANITIES_SUB_CATEGORIES
+            ],
             ignore_conflicts=True
         )
         models.IntegratedSystems.objects.bulk_create(
@@ -124,5 +137,9 @@ class Command(BaseCommand):
                 models.InputsOrParticipationToUNConventions(title=title)
                 for title in INPUTS_OR_PARTICIPATION_TO_UN_CONVENTIONS_SUB_CATEGORIES
             ],
+            ignore_conflicts=True
+        )
+        models.SpamFilterWord.objects.bulk_create(
+            [models.SpamFilterWord(text=text) for text in SWISS_CHEESE],
             ignore_conflicts=True
         )

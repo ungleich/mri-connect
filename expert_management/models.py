@@ -1,3 +1,5 @@
+import random
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.contrib.gis.db import models
@@ -67,7 +69,10 @@ class User(AbstractUser):
         help_text="Official functions that I hold in national and international programs, commissions, etc.",
     )
 
-    photo = models.ImageField(upload_to="experts", null=True, blank=True, help_text="Format: .jpg, .png, Size: 300x350 pixels")
+    photo = models.ImageField(
+        upload_to="experts", null=True, blank=True,
+        help_text="Format: .jpg, .png, Size: 300x350 pixels"
+    )
 
     url_personal = models.URLField(
         _("Personal website"),
@@ -95,9 +100,15 @@ class User(AbstractUser):
     url_publications = models.URLField(_("Link to publications"), null=True, blank=True, max_length=1024)
     list_publications = models.TextField(_("Free text list of publications"), null=True, blank=True)
 
-    is_public = models.BooleanField(default=False, verbose_name="I allow for my profile to be publicly visible in the MRI Expert Database")
-    is_photo_public = models.BooleanField(default=False, verbose_name="I allow for my photo to be publicly visible in the MRI Expert Database")
-    is_subscribed_to_newsletter = models.BooleanField(default=False, blank=False, null=False, verbose_name="I would like to subscribe to the MRI Global Newsletter")
+    is_public = models.BooleanField(
+        default=False, verbose_name="I allow for my profile to be publicly visible in the MRI Expert Database"
+    )
+    is_photo_public = models.BooleanField(
+        default=False, verbose_name="I allow for my photo to be publicly visible in the MRI Expert Database"
+    )
+    is_subscribed_to_newsletter = models.BooleanField(
+        default=False, blank=False, null=False, verbose_name="I would like to subscribe to the MRI Global Newsletter"
+    )
 
     # 2 EXPERTISE
 
@@ -182,6 +193,10 @@ class MountainManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().all().order_by("name")
 
+    def random(self, n):
+        ids = random.sample([obj.id for obj in self.get_queryset().all()], k=self.get_queryset().count() - n)
+        return self.get_queryset().exclude(id__in=ids)
+
 
 # GMBA Mountains
 class Mountain(models.Model):
@@ -262,7 +277,8 @@ class Expertise(models.Model):
     more_detail_about_participation_in_assessments = models.TextField(null=True, blank=True)
 
     inputs_or_participation_to_un_conventions = models.ManyToManyField(
-        "InputsOrParticipationToUNConventions", blank=True, verbose_name="Inputs / Participation to United Nations Conventions"
+        "InputsOrParticipationToUNConventions", blank=True,
+        verbose_name="Inputs / Participation to United Nations Conventions"
     )
     other_inputs_or_participation_to_un_conventions = models.CharField(
         max_length=1024, null=True, blank=True, help_text="This should be a comma seperated list",
@@ -401,7 +417,6 @@ class SortedExpertiseModelManager(models.Manager):
         return super().get_queryset().all().order_by("title")
 
 
-#FIXME: This looks very bad. Note to me to refactor it someday
 class ResearchExpertise(models.Model):
     title = models.CharField(max_length=1024, null=False, blank=False, unique=True)
     objects = SortedExpertiseModelManager()
@@ -569,7 +584,8 @@ class RoleAndInvolvement(models.Model):
     other_working_group = models.TextField(null=True, blank=True)
     working_group_notes = models.TextField(null=True, blank=True)
     involvement = MultiSelectField(
-        models.CharField(choices=data.InvolvementInMRIActivity.choices, max_length=512), default=list, null=True, blank=True
+        models.CharField(choices=data.InvolvementInMRIActivity.choices, max_length=512), default=list,
+        null=True, blank=True
     )
     other_involvement = models.TextField(null=True, blank=True)
     involvement_notes = models.TextField(null=True, blank=True)
@@ -594,6 +610,19 @@ class GeoMountainsRegistry(models.Model):
     class Meta:
         verbose_name = "Geo Mountains Registry"
         verbose_name_plural = "Geo Mountains Registry"
+
+
+class SpamFilterWordManager(models.Manager):
+    def random(self, n):
+        ids = random.sample([obj.id for obj in self.get_queryset().all()], k=self.get_queryset().count() - n)
+        return self.get_queryset().exclude(id__in=ids)
+
+
+class SpamFilterWord(models.Model):
+    text = models.CharField(max_length=512)
+    objects = SpamFilterWordManager()
+    def __str__(self):
+        return self.text
 
 
 # The following is to apply limit on number of affiliations and projects that user can select in their profile

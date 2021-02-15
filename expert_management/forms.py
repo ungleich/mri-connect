@@ -1,9 +1,12 @@
+import random
+
 from functools import reduce
 from django import forms
 from django.conf import settings
 
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm
 from django_countries.fields import CountryField
+from django.forms import ValidationError
 from django.forms.widgets import CheckboxSelectMultiple
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, HTML, Layout, Field
@@ -12,16 +15,15 @@ from mapwidgets.widgets import GooglePointFieldWidget
 
 from . import data
 from . import models
-from .utils.common import zip_with_itself
 from .utils.mailchimp import Mailchimp
-from captcha.fields import ReCaptchaField
-from captcha.widgets import ReCaptchaV3
 
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = models.User
-        fields = ("first_name", "last_name", "username", "email", "password1", "password2", "is_subscribed_to_newsletter")
+        fields = (
+            "first_name", "last_name", "username", "email", "password1", "password2", "is_subscribed_to_newsletter"
+        )
 
     def save(self, commit=True):
         user = super().save(commit)
@@ -245,6 +247,23 @@ class AdvancedSearchForm(SearchForm):
     country = CountryField().formfield(required=False, label="Affiliation / Project Country")
 
 
+class CaptchaField(forms.ChoiceField):
+    #TODO: We should movie the choices inside the CaptchaField
+    #      but I don't see a way to do it dynamically i.e the choices
+    #      are updated everytime
+    def __init__(self, *args, **kwargs):
+        kwargs["label"] = "Prove you are a human! Select the item which is not a mountain"
+        super().__init__(*args, **kwargs)
+
+    def clean(self, value):
+        try:
+            models.SpamFilterWord.objects.get(text=value)
+        except models.SpamFilterWord.DoesNotExist:
+            raise ValidationError("Incorrect value selected", "invalid")
+        else:
+            return value
+
+
 class ContactForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -252,8 +271,13 @@ class ContactForm(forms.Form):
         self.helper.use_custom_control = False
         self.helper.add_input(Submit("", "Email"))
         self.helper.label_class = "col-form-label"
+        self.fields['captcha'].choices = (
+            [(mountain.name, mountain.name) for mountain in models.Mountain.objects.random(3)] +
+            [(word.text, word.text) for word in models.SpamFilterWord.objects.random(1)]
+        )
+        random.shuffle(self.fields['captcha'].choices)
 
+
+    email = forms.EmailField(required=True)
     body = forms.CharField(widget=forms.Textarea, required=True)
-    captcha = ReCaptchaField(widget=ReCaptchaV3)
-    if getattr(settings, 'DEBUG', False):
-        captcha.clean = lambda x: x
+    captcha = CaptchaField()

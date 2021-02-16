@@ -278,6 +278,6 @@ class ContactForm(forms.Form):
         random.shuffle(self.fields['captcha'].choices)
 
 
-    email = forms.EmailField(required=True)
-    body = forms.CharField(widget=forms.Textarea, required=True)
+    email = forms.EmailField(required=True, label="Your Email")
+    body = forms.CharField(widget=forms.Textarea, required=True, label="Message")
     captcha = CaptchaField()

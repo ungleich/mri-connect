@@ -252,7 +252,7 @@ class CaptchaField(forms.ChoiceField):
     #      but I don't see a way to do it dynamically i.e the choices
     #      are updated everytime
     def __init__(self, *args, **kwargs):
-        kwargs["label"] = "Prove you are a human! Select the item which is not a mountain, but a Swiss cheese."
+        kwargs["label"] = "Prove you are a human! Select the item that is not a mountain range."
         super().__init__(*args, **kwargs)
 
     def clean(self, value):

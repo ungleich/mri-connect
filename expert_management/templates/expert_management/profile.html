@@ -12,9 +12,7 @@
                     <div style="width: 256px;margin:auto;">
                         <img src="{{ object.photo.url }}" class="img-thumbnail" style="max-width: 100%; height: auto;" alt="Profile Image" />
                     </div>
-                    <h1 class="fw-light">
-                        {{object.get_title_display |default:""}} {{object.first_name}} {{object.last_name}}
-                    </h1>
+                    <h1 class="fw-light">{{object.get_title_display |default:""}} {{object.first_name}} {{object.last_name}}</h1>
 
                     {% if object == request.user %}
                     <a href="mailto:{{ object.email }}">Email: {{ object.email }}</a><br/>
@@ -62,7 +60,7 @@
         <dt class="col-sm-5">Personal Webpage</dt>
         <dd class="col-sm-7">
             {% if object.url_personal %}
-                <a href="{{object.url_personal}}">{{object.url_personal}}</a>
+                <a href="{{object.url_personal}}" target=_blank>{{object.url_personal}}</a>
             {% else %}
                 Not Mentioned
             {% endif %}
@@ -71,7 +69,7 @@
         <dt class="col-sm-5">CV</dt>
         <dd class="col-sm-7">
             {% if object.url_cv %}
-                <a href="{{object.url_cv}}">{{object.url_cv}}</a>
+                <a href="{{object.url_cv}}" target=_blank>{{object.url_cv}}</a>
             {% else %}
                 Not Mentioned
             {% endif %}
@@ -80,7 +78,7 @@
         <dt class="col-sm-5">ResearchGate Profile</dt>
         <dd class="col-sm-7">
             {% if object.url_researchgate %}
-                <a href="{{object.url_researchgate}}">{{object.url_researchgate}}</a>
+                <a href="{{object.url_researchgate}}" target=_blank>{{object.url_researchgate}}</a>
             {% else %}
                 Not Mentioned
             {% endif %}

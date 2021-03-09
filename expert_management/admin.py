@@ -1,9 +1,11 @@
 from django.contrib import admin
-from django.contrib.gis.db.models import PointField, ManyToManyField
+from django.contrib.gis.db.models import ManyToManyField, PointField
 from django.forms.widgets import CheckboxSelectMultiple
-from mapwidgets.widgets import GooglePointFieldWidget
 
 from . import models
+
+# from mapwidgets.widgets import GooglePointFieldWidget
+
 
 
 @admin.register(models.Expertise)
@@ -41,7 +43,6 @@ class ExpertiseAdmin(admin.ModelAdmin):
                 'biological_sciences',
                 'social_sciences_and_humanities',
                 'integrated_systems',
-                'other_expertise'
             ]
         })
     ]
@@ -56,10 +57,10 @@ class ExpertiseInlineAdmin(admin.StackedInline):
 
 class ProjectInlineAdmin(admin.StackedInline):
     model = models.Project
-
-    formfield_overrides = {
-        PointField: {"widget": GooglePointFieldWidget}
-    }
+    exclude = ["coordinates"]
+    # formfield_overrides = {
+    #     PointField: {"widget": GooglePointFieldWidget}
+    # }
 
 
 @admin.register(models.User)
@@ -80,10 +81,10 @@ class ProjectAdmin(admin.ModelAdmin):
     ordering = ('-date_ending',)
     search_fields = ('name', 'location',)
     list_display = ('name', 'date_ending', 'location')
-
-    formfield_overrides = {
-        PointField: {"widget": GooglePointFieldWidget}
-    }
+    exclude = ["coordinates"]
+    # formfield_overrides = {
+    #     PointField: {"widget": GooglePointFieldWidget}
+    # }
 
 
 @admin.register(models.GeoMountainsRegistry)

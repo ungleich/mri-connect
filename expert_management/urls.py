@@ -14,6 +14,11 @@ urlpatterns = [
     path('update-project/<int:pk>/', views.UpdateProject.as_view(), name='update-project'),
     path('delete-project/<int:pk>/', views.DeleteProject.as_view(), name='delete-project'),
 
+    # Affiliation views
+    path('affiliations/', views.AffiliationList.as_view(), name='affiliations'),
+    path('create-affiliation/', views.CreateAffiliation.as_view(), name='create-affiliation'),
+    path('update-affiliation/<int:pk>/', views.UpdateAffiliation.as_view(), name='update-affiliation'),
+
     # Expertise views
     path('create-expertise/', views.CreateExpertise.as_view(), name='create-expertise'),
     path('update-expertise/', views.UpdateExpertise.as_view(), name='update-expertise'),

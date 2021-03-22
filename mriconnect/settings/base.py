@@ -219,4 +219,7 @@ MAILCHIMP_LIST_ID = env.get("MAILCHIMP_LIST_ID")
 
 # Allow iframing / using CSRF
 CSRF_COOKIE_SECURE = True
-CSRF_COOKIE_SAMESITE = None
+CSRF_COOKIE_SAMESITE = 'None'
+
+# Also need to allow the session cookie
+SESSION_COOKIE_SAMESITE = None

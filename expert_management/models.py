@@ -149,6 +149,7 @@ class Affiliation(models.Model):
     post_code = models.CharField(max_length=256, null=True, blank=True)
     city = models.CharField(max_length=256, null=True, blank=True)
     country = CountryField(null=False, blank=False)
+    creator = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True, blank=True)
 
     @property
     def location(self):
@@ -176,6 +177,8 @@ class Project(models.Model):
         blank=True,
         help_text="This is the location where the research is conducted or the fieldwork, not the home of research group/affiliation",
     )
+    # Although, we are not using it at the moment, but it have been in used for some period of time
+    # and may contain entires for it in the database, so we would let it stay.
     coordinates = models.PointField(null=True, blank=True)
     country = CountryField(
         null=True,

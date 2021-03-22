@@ -1,21 +1,22 @@
 import random
-
 from functools import reduce
+
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import HTML, Field, Layout, Submit
 from django import forms
 from django.conf import settings
-
 from django.contrib.auth.forms import UserCreationForm
-from django_countries.fields import CountryField
 from django.forms import ValidationError
+from django.forms.models import fields_for_model
 from django.forms.widgets import CheckboxSelectMultiple
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, HTML, Layout, Field
+from django.urls import reverse_lazy
+from django_countries.fields import CountryField
 
-from mapwidgets.widgets import GooglePointFieldWidget
-
-from . import data
-from . import models
+from . import data, models
 from .utils.mailchimp import Mailchimp
+
+# from mapwidgets.widgets import GooglePointFieldWidget
+
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -40,13 +41,60 @@ class CustomUserCreationForm(UserCreationForm):
 class ProjectForm(forms.ModelForm):
     class Meta:
         model = models.Project
-        exclude = ("user", )
+        exclude = ("user", "coordinates")
         fields = "__all__"
         widgets = {
-            'coordinates': GooglePointFieldWidget,
+            # 'coordinates': GooglePointFieldWidget,
             'date_start': forms.DateInput(attrs={'type': 'date'}),
             'date_ending': forms.DateInput(attrs={'type': 'date'}),
         }
+
+
+class AffiliationForm(forms.ModelForm):
+    class Meta:
+        model = models.Affiliation
+        exclude = ("creator",)
+        fields = "__all__"
+
+
+class ProfileForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.use_custom_control = False
+        self.helper.add_input(Submit("submit", "Submit"))
+        self.helper.label_class = "col-form-label col-form-label"
+        self.helper.layout = Layout(
+            Field('last_name'),
+            Field('first_name'),
+            Field('email'),
+            Field('title'),
+            Field('gender'),
+            Field('position'),
+            Field('affiliations'),
+            HTML(f'<b>Note:</b> If your affiliation is not found in the list. You can create/manage your affiliations by clicking <a href=\"{reverse_lazy("affiliations")}\">here</a>'),
+            Field('career_stage'),
+            Field('career_stage_note'),
+            Field('year_of_last_degree_graduation'),
+            Field('preferences'),
+            Field('official_functions'),
+            Field('photo'),
+            Field('url_personal'),
+            Field('url_cv'),
+            Field('url_researchgate'),
+            Field('orcid'),
+            Field('url_publications'),
+            Field('list_publications'),
+            Field('is_public'),
+            Field('is_photo_public'),
+            Field('is_subscribed_to_newsletter'),
+        )
+
+    class Meta:
+        model = models.User
+
+        fields = fields_for_model(model, exclude=data.AUTH_SPECIFIC_FIELDS)
+        # exclude = ("user",)
 
 
 class ExpertiseForm(forms.ModelForm):

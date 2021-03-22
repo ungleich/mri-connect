@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block head %}
+<script src="https://maps.googleapis.com/maps/api/js?key={{ google_map_api_key }}&callback=initMap&libraries=&v=weekly" defer></script>
+{% endblock %}
+
+{% block content %}
+{% load crispy_forms_tags %}
+
+<div class="p-5 bg-white rounded">
+  <h1>{{title}}</h1>
+  <a href="{% url 'create-affiliation' %}" class="btn btn-primary btn-sm" role="btn">Create Affiliation</a> <br/>
+  {% for affiliation in object_list %}
+  <div class="card mb-3">
+      <div class="row g-0">
+        <div class="col-md-12">
+          <div class="card-body">
+              <h5 class="card-title">
+                  {{affiliation.name}}
+              </h5>
+              <p class="card-text">
+                  <dl class="row">
+                      <dt class="col-sm-6">Street</dt><dd class="col-sm-6">{{affiliation.street}}</dd>
+                      <dt class="col-sm-6">Post Code</dt><dd class="col-sm-6">{{affiliation.post_code}}</dd>
+                      <dt class="col-sm-6">City</dt><dd class="col-sm-6">{{affiliation.city}}</dd>
+                      <dt class="col-sm-6">Country</dt><dd class="col-sm-6">{{affiliation.country}}</dd>
+                  </dl>
+                  <a href="{% url 'update-affiliation' affiliation.id %}" class="btn btn-primary" role="button">Update</a>
+              </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  {% empty %}
+  No affiliation yet.
+  {% endfor %}
+</div>
+{% endblock%}

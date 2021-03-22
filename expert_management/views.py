@@ -1,28 +1,28 @@
-from django.conf import settings
+import logging
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.gis.db.models import F, Q, Value
-from django.db.models.functions import Concat
-from django.forms.models import fields_for_model, ModelMultipleChoiceField
-
-from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import EmailMessage
+from django.db.models.functions import Concat
+from django.forms.models import ModelMultipleChoiceField, fields_for_model
+from django.shortcuts import get_object_or_404, redirect, render
+from django.template import loader
 from django.urls import reverse_lazy
 from django.views import generic
-from django.template import loader
-from django.core.mail import EmailMessage
 
 from . import data
-from .forms import AdvancedSearchForm, ProjectForm, SearchForm, CustomUserCreationForm, ExpertiseForm, ContactForm
-from .models import Expertise, Project, User
+from .forms import (AdvancedSearchForm, AffiliationForm, ContactForm,
+                    CustomUserCreationForm, ExpertiseForm, ProfileForm,
+                    ProjectForm, SearchForm)
+from .models import Affiliation, Expertise, Project, User
 from .selector import get_user_profile
 from .utils.common import Q_if_truthy, non_zero_keys
-from .utils.mailchimp import Mailchimp
 from .utils.importdata import classify_expertise
-
-import logging
+from .utils.mailchimp import Mailchimp
 
 logger = logging.getLogger(__name__)
 
@@ -85,7 +85,8 @@ class UpdateProfile(TitleMixin, LoginRequiredMixin, generic.UpdateView):
     template_name = "expert_management/set-profile.html"
     success_url = reverse_lazy("my-profile")
     title = "Update Profile"
-    fields = fields_for_model(model, exclude=data.AUTH_SPECIFIC_FIELDS)
+    form_class = ProfileForm
+    # fields = fields_for_model(model, exclude=data.AUTH_SPECIFIC_FIELDS)
 
     def get_object(self, queryset=None):
         return self.request.user
@@ -147,6 +148,39 @@ class DeleteProject(TitleMixin, LoginRequiredMixin, generic.DeleteView):
 
     def get_queryset(self):
         return Project.objects.filter(user=self.request.user)
+
+class AffiliationList(TitleMixin, GoogleMapAPIKeyMixin, LoginRequiredMixin, generic.ListView):
+    title = "My Affiliations (created by me)"
+
+    def get_queryset(self):
+        return Affiliation.objects.filter(creator=self.request.user)
+
+
+class CreateAffiliation(TitleMixin, GoogleMapAPIKeyMixin, LoginRequiredMixin, generic.CreateView):
+    form_class = AffiliationForm
+    template_name = "expert_management/set-affiliation.html"
+    success_url = reverse_lazy("affiliations")
+    title = "Create Affiliation"
+
+    def form_valid(self, form):
+        form.instance.creator = self.request.user
+        return super().form_valid(form)
+
+
+class UpdateAffiliation(TitleMixin, GoogleMapAPIKeyMixin, LoginRequiredMixin, generic.UpdateView):
+    form_class = AffiliationForm
+    template_name = "expert_management/set-affiliation.html"
+    success_url = reverse_lazy("affiliations")
+    title = "Update Affiliation"
+
+    def get_queryset(self, queryset=None):
+        if queryset is None:
+            queryset = Affiliation.objects.filter(creator=self.request.user)
+        return queryset
+
+    def form_valid(self, form):
+        form.instance.creator = self.request.user
+        return super().form_valid(form)
 
 
 class CreateExpertise(TitleMixin, LoginRequiredMixin, generic.CreateView):
